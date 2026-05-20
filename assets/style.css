@@ -1,0 +1,160 @@
+/* ═══════════════════════════════════════
+   SEÑORES DEL ORO — stylesheet
+   ═══════════════════════════════════════ */
+
+:root {
+  --negro:    #0C0C0C;
+  --oro:      #C9A84C;
+  --champagne:#E8E0CC;
+  --hueso:    #F7F5F0;
+  --carbon:   #1a1510;
+  --carbon2:  #0f0b06;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--negro);
+  color: var(--champagne);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ── TIPOGRAFÍA ── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Montserrat:wght@300;400;500&display=swap');
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 22px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(to bottom, rgba(12,12,12,.97), transparent);
+  transition: all .4s;
+}
+nav.scrolled {
+  background: rgba(12,12,12,.98);
+  padding: 14px 60px;
+  border-bottom: 1px solid rgba(201,168,76,.12);
+}
+.nav-logo { height: 28px; display: block; }
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a {
+  color: var(--champagne); text-decoration: none;
+  font-size: 10px; letter-spacing: 3.5px; text-transform: uppercase;
+  opacity: .55; transition: all .3s;
+}
+.nav-links a:hover, .nav-links a.active { opacity: 1; color: var(--oro); }
+
+/* ── FOOTER ── */
+footer {
+  background: #050300;
+  padding: 68px 60px 48px;
+  border-top: 1px solid rgba(201,168,76,.07);
+}
+.ft-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 48px; padding-bottom: 48px;
+  border-bottom: 1px solid rgba(201,168,76,.06);
+}
+.ft-logo { height: 24px; opacity: .55; }
+.ft-cols { display: flex; gap: 52px; }
+.ft-col h4 {
+  font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--oro); margin-bottom: 16px;
+}
+.ft-col a, .ft-col p {
+  display: block; font-size: 11px; color: rgba(232,224,204,.35);
+  text-decoration: none; margin-bottom: 8px; transition: color .3s;
+}
+.ft-col a:hover { color: var(--champagne); }
+.ft-bot { display: flex; align-items: center; justify-content: space-between; }
+.ft-copy { font-size: 10px; color: rgba(232,224,204,.18); letter-spacing: 1px; }
+.ft-copy span { color: var(--oro); }
+.ft-tag { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 14px; color: rgba(232,224,204,.18); }
+
+/* ── UTILS ── */
+.sec-label {
+  font-size: 9px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--oro); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 14px;
+}
+.sec-label::after { content: ''; height: 1px; width: 48px; background: var(--oro); opacity: .3; }
+.sec-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(38px,5vw,66px); font-weight: 300;
+  color: var(--champagne); line-height: 1;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes grow {
+  0%, 100% { transform: scaleY(0); transform-origin: top; }
+  50%       { transform: scaleY(1); transform-origin: top; }
+}
+
+/* ── MODAL ── */
+.modal {
+  position: fixed; inset: 0; background: rgba(5,3,0,.96);
+  z-index: 500; display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .4s;
+}
+.modal.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: var(--carbon2); width: 86vw; max-width: 960px; max-height: 88vh;
+  display: grid; grid-template-columns: 1fr 1fr; overflow: hidden;
+  transform: translateY(32px); transition: transform .5s cubic-bezier(.16,1,.3,1);
+}
+.modal.open .modal-box { transform: translateY(0); }
+.modal-img {
+  background: #1c1409; display: flex; align-items: center; justify-content: center;
+  min-height: 420px; position: relative; overflow: hidden;
+}
+.modal-img img.photo { width:100%;height:100%;object-fit:cover;position:absolute;inset:0; }
+.modal-img img.ph { width: 56px; height: 56px; object-fit: contain; opacity: .2; }
+.modal-body { padding: 48px 42px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
+.m-close {
+  position: fixed; top: 20px; right: 28px; font-size: 20px; cursor: pointer;
+  color: rgba(232,224,204,.35); transition: color .3s; z-index: 501; background: none; border: none;
+}
+.m-close:hover { color: var(--champagne); }
+.m-kil { font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: var(--oro); margin-bottom: 14px; }
+.m-nombre { font-family:'Cormorant Garamond',serif; font-size: clamp(28px,3vw,44px); font-weight: 300; color: var(--champagne); line-height: 1.05; margin-bottom: 8px; }
+.m-sku { font-size: 8px; letter-spacing: 3px; color: rgba(232,224,204,.18); margin-bottom: 20px; }
+.m-desc { font-size: 12px; line-height: 1.85; color: rgba(232,224,204,.55); margin-bottom: 28px; max-width: 340px; }
+.m-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; border-top: 1px solid rgba(201,168,76,.1); padding-top: 20px; margin-bottom: 28px; }
+.m-sl { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: rgba(232,224,204,.28); margin-bottom: 2px; }
+.m-sv { font-size: 12px; color: var(--champagne); }
+.m-precio { font-family:'Cormorant Garamond',serif; font-size: 28px; color: var(--oro); margin-bottom: 22px; }
+.m-precio.na { font-size: 12px; font-family:'Montserrat',sans-serif; color: rgba(232,224,204,.3); font-style: italic; }
+.m-btn {
+  display: inline-block; background: var(--oro); color: var(--negro);
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  padding: 13px 32px; cursor: pointer; border: none;
+  font-family:'Montserrat',sans-serif; font-weight: 500; transition: all .3s;
+}
+.m-btn:hover { background: var(--champagne); transform: translateY(-1px); }
+
+/* ── CARDS ── */
+.card { background: var(--carbon); cursor: pointer; overflow: hidden; display: flex; flex-direction: column; }
+.card-img {
+  aspect-ratio: 1/1; background: #1c1409;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; position: relative;
+}
+.card-img img.photo { width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.16,1,.3,1); }
+.card:hover .photo { transform: scale(1.05); }
+.card-ph { display:flex;align-items:center;justify-content:center;width:100%;height:100%; }
+.card-ph::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,168,76,.05) 0%,transparent 65%); }
+.card-ph img { width:32px;height:32px;object-fit:contain;opacity:.18;position:relative;z-index:1; }
+.card:hover .card-ov { opacity: 1; }
+.kilate { position:absolute;top:12px;left:12px;font-size:8px;letter-spacing:2.5px;color:var(--oro);background:rgba(12,12,12,.75);padding:4px 8px;border:1px solid rgba(201,168,76,.2);z-index:2; }
+.card-ov { position:absolute;inset:0;background:rgba(12,12,12,.42);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .35s;z-index:3; }
+.card-ov span { font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--champagne);border:1px solid rgba(232,224,204,.45);padding:9px 18px; }
+.card-info { padding:16px 18px;border-top:1px solid rgba(201,168,76,.07); }
+.card-nombre { font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:var(--champagne);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.card-precio { font-size:11px;color:var(--oro);letter-spacing:.5px; }
+.card-precio.na { color:rgba(232,224,204,.25);font-style:italic;font-size:10px; }
