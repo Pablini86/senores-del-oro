@@ -7,7 +7,7 @@
 function driveToImg(url) {
   if (!url) return null;
   const m = url.match(/(?:id=|\/d\/)([a-zA-Z0-9_-]{25,})/);
-  if (m) return `https://lh3.googleusercontent.com/d/${m[1]}`;
+  if (m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w800`;
   if (url.startsWith('http')) return url;
   return null;
 }
