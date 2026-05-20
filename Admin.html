@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Señores del Oro</title>
+<style>
+/* ── BASE ── */
+:root {
+  --negro: #0C0C0C;
+  --oro: #C9A84C;
+  --champagne: #E8E0CC;
+  --carbon: #1a1510;
+  --carbon2: #0f0b06;
+  --verde: #4CAF7D;
+  --rojo: #C94C4C;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;500&display=swap');
+body {
+  background: var(--negro);
+  color: var(--champagne);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+}
+
+/* ── LOGIN ── */
+.login-wrap {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh;
+  background: var(--carbon2);
+}
+.login-box {
+  background: var(--carbon);
+  padding: 56px 48px;
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid rgba(201,168,76,.1);
+}
+.login-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--champagne);
+  margin-bottom: 6px;
+}
+.login-sub {
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(201,168,76,.6);
+  margin-bottom: 44px;
+}
+.field { margin-bottom: 20px; }
+.field label {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(232,224,204,.4);
+  margin-bottom: 8px;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(201,168,76,.2);
+  color: var(--champagne);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color .3s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: rgba(201,168,76,.5);
+}
+.field textarea { min-height: 80px; resize: vertical; }
+.field select { appearance: none; cursor: pointer; }
+.btn {
+  background: var(--oro);
+  color: var(--negro);
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 13px 32px;
+  cursor: pointer;
+  transition: all .3s;
+  width: 100%;
+}
+.btn:hover { background: var(--champagne); }
+.btn.secondary {
+  background: transparent;
+  color: var(--oro);
+  border: 1px solid rgba(201,168,76,.3);
+  width: auto;
+}
+.btn.secondary:hover { background: rgba(201,168,76,.08); }
+.btn.danger {
+  background: var(--rojo);
+  color: #fff;
+  width: auto;
+  font-size: 9px;
+  padding: 9px 20px;
+}
+.btn.danger:hover { background: #a83030; }
+.btn.sm {
+  font-size: 8px;
+  padding: 8px 16px;
+  width: auto;
+  letter-spacing: 2px;
+}
+
+/* ── LAYOUT ── */
+.admin-wrap { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 220px;
+  background: var(--carbon2);
+  border-right: 1px solid rgba(201,168,76,.08);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.sidebar-header {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(201,168,76,.08);
+}
+.sidebar-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--champagne);
+  margin-bottom: 2px;
+}
+.sidebar-tag {
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: rgba(201,168,76,.5);
+  text-transform: uppercase;
+}
+.sidebar-nav { padding: 16px 0; flex: 1; }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 24px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(232,224,204,.4);
+  cursor: pointer;
+  transition: all .3s;
+  border-left: 2px solid transparent;
+}
+.nav-item:hover { color: var(--champagne); background: rgba(201,168,76,.04); }
+.nav-item.active { color: var(--oro); border-left-color: var(--oro); background: rgba(201,168,76,.06); }
+.nav-item svg { flex-shrink: 0; opacity: .7; }
+.sidebar-footer {
+  padding: 20px 24px;
+  border-top: 1px solid rgba(201,168,76,.08);
+}
+.sidebar-footer a {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: rgba(232,224,204,.3);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color .3s;
+}
+.sidebar-footer a:hover { color: var(--oro); }
+
+/* ── MAIN ── */
+.admin-main {
+  flex: 1;
+  padding: 40px 48px;
+  overflow-x: hidden;
+}
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 300;
+  color: var(--champagne);
+  margin-bottom: 6px;
+}
+.page-sub {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: rgba(232,224,204,.3);
+  text-transform: uppercase;
+  margin-bottom: 36px;
+}
+
+/* ── STATS ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin-bottom: 40px;
+}
+.stat-card {
+  background: var(--carbon);
+  padding: 24px 28px;
+  border-left: 2px solid rgba(201,168,76,.2);
+}
+.stat-n {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px;
+  font-weight: 300;
+  color: var(--oro);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-l { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(232,224,204,.35); }
+
+/* ── TABLE ── */
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.table-title { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--oro); }
+.table-actions { display: flex; gap: 10px; align-items: center; }
+.search-box {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(201,168,76,.15);
+  color: var(--champagne);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  padding: 8px 14px;
+  outline: none;
+  width: 200px;
+  transition: border-color .3s;
+}
+.search-box:focus { border-color: rgba(201,168,76,.4); }
+.search-box::placeholder { color: rgba(232,224,204,.25); }
+
+.catalog-table { width: 100%; border-collapse: collapse; }
+.catalog-table th {
+  text-align: left;
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(232,224,204,.3);
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(201,168,76,.1);
+  white-space: nowrap;
+}
+.catalog-table td {
+  padding: 12px 14px;
+  font-size: 12px;
+  color: rgba(232,224,204,.7);
+  border-bottom: 1px solid rgba(201,168,76,.05);
+  vertical-align: middle;
+}
+.catalog-table tr:hover td { background: rgba(201,168,76,.03); }
+.td-nombre { color: var(--champagne) !important; font-weight: 400; max-width: 200px; }
+.td-sku { font-size: 10px !important; color: rgba(201,168,76,.6) !important; font-family: monospace; }
+.td-precio { color: var(--oro) !important; }
+.td-foto { }
+.foto-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--verde);
+}
+.foto-dot.empty { background: rgba(232,224,204,.15); }
+.thumb {
+  width: 40px; height: 40px;
+  object-fit: cover;
+  border: 1px solid rgba(201,168,76,.15);
+}
+.td-actions { display: flex; gap: 6px; }
+
+/* ── PAGINATION ── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(201,168,76,.08);
+}
+.pag-info { font-size: 10px; color: rgba(232,224,204,.3); letter-spacing: 1px; }
+.pag-btns { display: flex; gap: 6px; }
+.pag-btn {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(201,168,76,.15);
+  color: rgba(232,224,204,.5);
+  font-size: 10px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all .3s;
+}
+.pag-btn:hover, .pag-btn.active { background: var(--oro); color: var(--negro); border-color: var(--oro); }
+.pag-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+/* ── DRAWER (add/edit form) ── */
+.drawer-overlay {
+  position: fixed; inset: 0;
+  background: rgba(5,3,0,.85);
+  z-index: 200;
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s;
+}
+.drawer-overlay.open { opacity: 1; pointer-events: all; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 520px; max-width: 95vw;
+  background: var(--carbon);
+  z-index: 201;
+  transform: translateX(100%);
+  transition: transform .45s cubic-bezier(.16,1,.3,1);
+  overflow-y: auto;
+  padding: 44px 40px;
+  display: flex;
+  flex-direction: column;
+}
+.drawer.open { transform: translateX(0); }
+.drawer-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--champagne);
+  margin-bottom: 4px;
+}
+.drawer-sub {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(201,168,76,.5);
+  margin-bottom: 36px;
+}
+.drawer-close {
+  position: absolute; top: 20px; right: 24px;
+  background: none; border: none;
+  color: rgba(232,224,204,.35);
+  font-size: 20px; cursor: pointer;
+  transition: color .3s;
+}
+.drawer-close:hover { color: var(--champagne); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-section {
+  font-size: 8px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--oro);
+  margin: 28px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(201,168,76,.1);
+}
+.drawer-footer {
+  margin-top: auto;
+  padding-top: 28px;
+  border-top: 1px solid rgba(201,168,76,.1);
+  display: flex;
+  gap: 12px;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 32px; right: 32px;
+  background: var(--carbon);
+  border: 1px solid rgba(201,168,76,.2);
+  border-left: 3px solid var(--oro);
+  padding: 14px 24px;
+  font-size: 12px;
+  color: var(--champagne);
+  z-index: 999;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all .35s;
+  min-width: 240px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.error { border-left-color: var(--rojo); }
+
+/* ── EMPTY ── */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+}
+.empty-state img { width: 48px; opacity: .15; margin-bottom: 20px; }
+.empty-state p { font-size: 12px; color: rgba(232,224,204,.3); }
+
+/* ── CAT BADGE ── */
+.cat-badge {
+  display: inline-block;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid rgba(201,168,76,.2);
+  color: rgba(201,168,76,.7);
+}
+
+/* ── HIDDEN ── */
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginWrap" class="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">Señores del Oro</div>
+    <div class="login-sub">Panel de administración</div>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn" onclick="doLogin()">Entrar</button>
+    <p id="loginErr" style="margin-top:14px;font-size:11px;color:var(--rojo);display:none">Contraseña incorrecta</p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminWrap" class="admin-wrap hidden">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">Señores del Oro</div>
+      <div class="sidebar-tag">Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-page="catalog" onclick="showPage('catalog')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Catálogo
+      </div>
+      <div class="nav-item" data-page="add" onclick="openDrawer(null)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        Nueva pieza
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="index.html" target="_blank">Ver sitio →</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+    <!-- CATALOG PAGE -->
+    <div id="pageCatalog">
+      <h1 class="page-title">Catálogo</h1>
+      <p class="page-sub" id="lastSync">Cargando...</p>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-n" id="statTotal">—</div><div class="stat-l">Piezas total</div></div>
+        <div class="stat-card"><div class="stat-n" id="statFotos">—</div><div class="stat-l">Con foto</div></div>
+        <div class="stat-card"><div class="stat-n" id="statPrecio">—</div><div class="stat-l">Con precio</div></div>
+        <div class="stat-card"><div class="stat-n" id="statCats">3</div><div class="stat-l">Categorías</div></div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-header">
+        <span class="table-title">
+          <select id="catFilter" onchange="filterCat()" style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);color:var(--champagne);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;padding:6px 10px;outline:none;text-transform:uppercase;">
+            <option value="all">Todas las piezas</option>
+            <option value="cadenas">Cadenas</option>
+            <option value="pulsos">Pulsos</option>
+            <option value="broqueles">Broqueles</option>
+          </select>
+        </span>
+        <div class="table-actions">
+          <input type="text" class="search-box" id="searchBox" placeholder="Buscar SKU o nombre..." oninput="filterTable()">
+          <button class="btn secondary sm" onclick="openDrawer(null)">+ Nueva pieza</button>
+        </div>
+      </div>
+
+      <table class="catalog-table">
+        <thead>
+          <tr>
+            <th>Foto</th>
+            <th>SKU</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Kilate</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+
+      <div class="pagination">
+        <span class="pag-info" id="pagInfo"></span>
+        <div class="pag-btns" id="pagBtns"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  <div class="drawer-title" id="drawerTitle">Nueva pieza</div>
+  <div class="drawer-sub" id="drawerSub">Agregar al catálogo</div>
+
+  <form id="pieceForm" onsubmit="return false">
+    <div class="form-section">Identificación</div>
+    <div class="field-row">
+      <div class="field">
+        <label>SKU *</label>
+        <input type="text" id="fSku" placeholder="CAD-MEX-001" required>
+      </div>
+      <div class="field">
+        <label>Kilate *</label>
+        <select id="fKilate">
+          <option value="10K">10K</option>
+          <option value="14K">14K</option>
+          <option value="18K">18K</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Nombre *</label>
+      <input type="text" id="fNombre" placeholder="Cadena Barbado Planchada" required>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Categoría *</label>
+        <select id="fCategoria" onchange="updateCatFields()">
+          <option value="cadenas">Cadena</option>
+          <option value="pulsos">Pulso</option>
+          <option value="broqueles">Broquel</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Precio MXN</label>
+        <input type="text" id="fPrecio" placeholder="$19,950">
+      </div>
+    </div>
+
+    <div class="form-section">Descripción</div>
+    <div class="field">
+      <label>Descripción</label>
+      <textarea id="fDesc" placeholder="Cadena barbado en oro 10K, 65 cm de largo..."></textarea>
+    </div>
+
+    <div id="cadenaFields">
+      <div class="form-section">Especificaciones — Cadena / Pulso</div>
+      <div class="field-row">
+        <div class="field"><label>Largo (cm)</label><input type="text" id="fLargo" placeholder="65"></div>
+        <div class="field"><label>Grosor (mm)</label><input type="text" id="fGrosor" placeholder="5"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Eslabón (mm)</label><input type="text" id="fEslabon" placeholder="6"></div>
+        <div class="field"><label>Peso (gr)</label><input type="text" id="fPeso" placeholder="13.3"></div>
+      </div>
+    </div>
+
+    <div class="form-section">Foto</div>
+    <div class="field">
+      <label>URL de foto (Google Drive, Imgur, etc.)</label>
+      <input type="text" id="fFoto" placeholder="https://drive.google.com/open?id=...">
+    </div>
+    <div id="fotoPreview" style="margin-top:10px;display:none">
+      <img id="fotoImg" style="width:100%;max-height:200px;object-fit:contain;border:1px solid rgba(201,168,76,.1)" alt="">
+    </div>
+
+    <div class="form-section">Notas</div>
+    <div class="field">
+      <label>Notas internas</label>
+      <input type="text" id="fNotas" placeholder="Sin placa · Destacado · etc.">
+    </div>
+
+    <div class="drawer-footer">
+      <button class="btn" style="flex:1" onclick="savePiece()">Guardar pieza</button>
+      <button class="btn secondary" onclick="closeDrawer()">Cancelar</button>
+    </div>
+  </form>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="assets/catalog.js"></script>
+<script>
+// ══════════════════════════════════════
+//  CONFIG — ACTUALIZA ESTO
+// ══════════════════════════════════════
+const ADMIN_PASSWORD = 'señoresdeloro2025'; // ← cambia esto
+const SHEET_ID = '1HmNtzUE6KNLA641MoYCFupHoVhWe7Fz9Pp2Gtzk3XP4';
+
+// Apps Script URL para escribir al sheet
+// (Instrucciones para crear el script están al final del archivo)
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/library/d/1WYgl-ABlNpgZO3hQHQ1t9RdShmZurpZ2gEhu4ZlezR-zN3UlUdyilCPs/1'; // ← pega aquí la URL de tu Apps Script desplegado
+
+// ══════════════════════════════════════
+//  ESTADO
+// ══════════════════════════════════════
+let allItems = [];
+let filtered = [];
+let currentPage = 1;
+const PER_PAGE = 20;
+let editingItem = null;
+
+// ══════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════
+function doLogin() {
+  const pw = document.getElementById('pwInput').value;
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('loginWrap').classList.add('hidden');
+    document.getElementById('adminWrap').classList.remove('hidden');
+    loadCatalog();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+  }
+}
+
+// ══════════════════════════════════════
+//  LOAD CATALOG
+// ══════════════════════════════════════
+function loadCatalog() {
+  allItems = [];
+  ['cadenas','pulsos','broqueles'].forEach(cat => {
+    CATALOG[cat].forEach(item => allItems.push({...item, _cat: cat}));
+  });
+  updateStats();
+  filtered = [...allItems];
+  currentPage = 1;
+  renderTable();
+  document.getElementById('lastSync').textContent =
+    `Catálogo local · ${allItems.length} piezas · Última carga: ${new Date().toLocaleTimeString('es-MX')}`;
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = allItems.length;
+  document.getElementById('statFotos').textContent = allItems.filter(i => i.foto).length;
+  document.getElementById('statPrecio').textContent = allItems.filter(i => i.precio).length;
+}
+
+// ══════════════════════════════════════
+//  TABLE RENDER
+// ══════════════════════════════════════
+function renderTable() {
+  const start = (currentPage - 1) * PER_PAGE;
+  const page = filtered.slice(start, start + PER_PAGE);
+  const tbody = document.getElementById('tableBody');
+
+  if (!page.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:60px;color:rgba(232,224,204,.2)">Sin resultados</td></tr>`;
+    document.getElementById('pagInfo').textContent = '';
+    document.getElementById('pagBtns').innerHTML = '';
+    return;
+  }
+
+  tbody.innerHTML = page.map(item => {
+    const imgUrl = driveToImg(item.foto);
+    return `<tr>
+      <td class="td-foto">
+        ${imgUrl
+          ? `<img src="${imgUrl}" class="thumb" alt="" onerror="this.outerHTML='<span class=\\'foto-dot empty\\'></span>'">`
+          : `<span class="foto-dot empty"></span>`}
+      </td>
+      <td><span class="td-sku">${item.sku}</span></td>
+      <td class="td-nombre">${item.nombre}</td>
+      <td><span class="cat-badge">${catLabels[item._cat]}</span></td>
+      <td class="td-precio">${item.precio || '—'}</td>
+      <td style="font-size:11px;color:rgba(201,168,76,.6)">${item.kilate}</td>
+      <td>
+        <div class="td-actions">
+          <button class="btn sm secondary" onclick="openDrawer('${item.sku}')">Editar</button>
+          <a class="btn sm secondary" href="producto.html?sku=${item.sku}" target="_blank" style="text-decoration:none;padding:8px 12px">Ver</a>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Pagination
+  const total = filtered.length;
+  const pages = Math.ceil(total / PER_PAGE);
+  document.getElementById('pagInfo').textContent = `${start + 1}–${Math.min(start + PER_PAGE, total)} de ${total}`;
+
+  let btns = `<button class="pag-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>←</button>`;
+  for (let p = Math.max(1, currentPage-2); p <= Math.min(pages, currentPage+2); p++) {
+    btns += `<button class="pag-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  }
+  btns += `<button class="pag-btn" onclick="goPage(${currentPage+1})" ${currentPage>=pages?'disabled':''}>→</button>`;
+  document.getElementById('pagBtns').innerHTML = btns;
+}
+
+function goPage(p) {
+  const pages = Math.ceil(filtered.length / PER_PAGE);
+  if (p < 1 || p > pages) return;
+  currentPage = p;
+  renderTable();
+}
+
+// ══════════════════════════════════════
+//  FILTER
+// ══════════════════════════════════════
+const catLabels = { cadenas:'Cadena', pulsos:'Pulso', broqueles:'Broquel' };
+
+function filterTable() {
+  const q = document.getElementById('searchBox').value.toLowerCase();
+  const cat = document.getElementById('catFilter').value;
+  filtered = allItems.filter(i =>
+    (cat === 'all' || i._cat === cat) &&
+    (i.nombre.toLowerCase().includes(q) || i.sku.toLowerCase().includes(q))
+  );
+  currentPage = 1;
+  renderTable();
+}
+
+function filterCat() { filterTable(); }
+
+// ══════════════════════════════════════
+//  DRAWER
+// ══════════════════════════════════════
+function openDrawer(sku) {
+  if (sku) {
+    editingItem = allItems.find(i => i.sku === sku);
+    document.getElementById('drawerTitle').textContent = 'Editar pieza';
+    document.getElementById('drawerSub').textContent = sku;
+    if (editingItem) fillForm(editingItem);
+  } else {
+    editingItem = null;
+    document.getElementById('drawerTitle').textContent = 'Nueva pieza';
+    document.getElementById('drawerSub').textContent = 'Agregar al catálogo';
+    clearForm();
+  }
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+}
+
+function fillForm(item) {
+  document.getElementById('fSku').value = item.sku || '';
+  document.getElementById('fNombre').value = item.nombre || '';
+  document.getElementById('fDesc').value = item.desc || '';
+  document.getElementById('fPrecio').value = item.precio || '';
+  document.getElementById('fKilate').value = item.kilate || '10K';
+  document.getElementById('fFoto').value = item.foto || '';
+  document.getElementById('fNotas').value = item.notas || '';
+  document.getElementById('fLargo').value = item.largo || '';
+  document.getElementById('fGrosor').value = item.grosor || '';
+  document.getElementById('fEslabon').value = item.eslabon || '';
+  document.getElementById('fPeso').value = item.peso || '';
+
+  // Map category
+  const catMap = { cadenas:'cadenas', pulsos:'pulsos', broqueles:'broqueles' };
+  document.getElementById('fCategoria').value = item._cat || 'cadenas';
+  updateCatFields();
+  previewFoto();
+}
+
+function clearForm() {
+  ['fSku','fNombre','fDesc','fPrecio','fFoto','fNotas',
+   'fLargo','fGrosor','fEslabon','fPeso'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('fKilate').value = '10K';
+  document.getElementById('fCategoria').value = 'cadenas';
+  updateCatFields();
+  document.getElementById('fotoPreview').style.display = 'none';
+}
+
+function updateCatFields() {
+  const cat = document.getElementById('fCategoria').value;
+  document.getElementById('cadenaFields').style.display =
+    cat === 'broqueles' ? 'none' : 'block';
+}
+
+// Preview foto
+document.getElementById('fFoto').addEventListener('input', previewFoto);
+function previewFoto() {
+  const url = document.getElementById('fFoto').value;
+  const imgUrl = driveToImg(url) || url;
+  if (imgUrl) {
+    document.getElementById('fotoImg').src = imgUrl;
+    document.getElementById('fotoPreview').style.display = 'block';
+  } else {
+    document.getElementById('fotoPreview').style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════
+//  SAVE PIECE
+// ══════════════════════════════════════
+function savePiece() {
+  const sku = document.getElementById('fSku').value.trim();
+  const nombre = document.getElementById('fNombre').value.trim();
+  if (!sku || !nombre) { showToast('SKU y nombre son obligatorios', 'error'); return; }
+
+  const piece = {
+    sku,
+    nombre,
+    categoria: document.getElementById('fCategoria').value,
+    desc: document.getElementById('fDesc').value.trim(),
+    precio: document.getElementById('fPrecio').value.trim(),
+    kilate: document.getElementById('fKilate').value,
+    foto: document.getElementById('fFoto').value.trim(),
+    largo: document.getElementById('fLargo').value.trim(),
+    grosor: document.getElementById('fGrosor').value.trim(),
+    eslabon: document.getElementById('fEslabon').value.trim(),
+    peso: document.getElementById('fPeso').value.trim(),
+    notas: document.getElementById('fNotas').value.trim(),
+  };
+
+  if (APPS_SCRIPT_URL) {
+    // Save to Google Sheet via Apps Script
+    showToast('Guardando en Google Sheets...', '');
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: editingItem ? 'update' : 'insert', piece })
+    }).then(() => {
+      showToast(`✓ ${nombre} guardado en el sheet`, '');
+      closeDrawer();
+      // Update local CATALOG
+      updateLocalCatalog(piece, editingItem);
+      loadCatalog();
+    }).catch(() => {
+      showToast('Error al conectar con el sheet', 'error');
+    });
+  } else {
+    // No Apps Script configured — show the catalog.js line to copy
+    showToast('✓ Copia el código de abajo a tu catalog.js', '');
+    const line = buildCatalogLine(piece);
+    // Update locally anyway
+    updateLocalCatalog(piece, editingItem);
+    loadCatalog();
+    closeDrawer();
+    setTimeout(() => {
+      showCodeModal(line, piece.categoria);
+    }, 400);
+  }
+}
+
+function updateLocalCatalog(piece, wasEditing) {
+  const cat = piece.categoria;
+  const item = {
+    sku: piece.sku,
+    nombre: piece.nombre,
+    desc: piece.desc,
+    kilate: piece.kilate,
+    precio: piece.precio,
+    foto: piece.foto,
+    largo: piece.largo ? piece.largo + ' cm' : '',
+    grosor: piece.grosor ? piece.grosor + ' mm' : '',
+    eslabon: piece.eslabon ? piece.eslabon + ' mm' : '',
+    peso: piece.peso ? piece.peso + 'g' : '',
+  };
+  if (wasEditing) {
+    const idx = CATALOG[cat].findIndex(i => i.sku === piece.sku);
+    if (idx >= 0) CATALOG[cat][idx] = item;
+  } else {
+    CATALOG[cat].push(item);
+  }
+}
+
+function buildCatalogLine(p) {
+  const cat = p.categoria;
+  if (cat === 'broqueles') {
+    return `{ sku:'${p.sku}', nombre:'${p.nombre}', desc:'${p.desc}', kilate:'${p.kilate}', precio:'${p.precio}', foto:'${p.foto}' },`;
+  } else if (cat === 'cadenas') {
+    return `{ sku:'${p.sku}', nombre:'${p.nombre}', desc:'${p.desc}', largo:'${p.largo} cm', grosor:'${p.grosor} mm', peso:'${p.peso}g', precio:'${p.precio}', kilate:'${p.kilate}', foto:'${p.foto}' },`;
+  } else {
+    return `{ sku:'${p.sku}', nombre:'${p.nombre}', desc:'${p.desc}', largo:'${p.largo} cm', eslabon:'${p.eslabon} mm', peso:'${p.peso}g', precio:'${p.precio}', kilate:'${p.kilate}', foto:'${p.foto}' },`;
+  }
+}
+
+// Code modal fallback
+function showCodeModal(line, cat) {
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;inset:0;background:rgba(5,3,0,.92);z-index:999;display:flex;align-items:center;justify-content:center;';
+  el.innerHTML = `
+    <div style="background:var(--carbon);padding:40px;max-width:680px;width:90%;border:1px solid rgba(201,168,76,.15)">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--champagne);margin-bottom:8px">Copia esta línea</div>
+      <div style="font-size:9px;letter-spacing:3px;color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:24px">Pégala en assets/catalog.js en la sección ${cat}</div>
+      <textarea onclick="this.select()" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(201,168,76,.2);color:var(--champagne);font-size:11px;padding:14px;font-family:monospace;min-height:80px;outline:none" readonly>${line}</textarea>
+      <div style="margin-top:20px;display:flex;gap:12px">
+        <button onclick="navigator.clipboard.writeText(\`${line.replace(/`/g,"'")}\`).then(()=>this.textContent='✓ Copiado!')" class="btn" style="background:var(--oro);color:var(--negro);border:none;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:12px 28px;cursor:pointer">Copiar</button>
+        <button onclick="this.closest('div[style]').remove()" style="background:transparent;border:1px solid rgba(201,168,76,.2);color:rgba(232,224,204,.5);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:12px 20px;cursor:pointer">Cerrar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(el);
+}
+
+// ══════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════
+function driveToImg(url) {
+  if (!url) return null;
+  const m = url.match(/(?:id=|\/d\/)([a-zA-Z0-9_-]{25,})/);
+  if (m) return `https://lh3.googleusercontent.com/d/${m[1]}`;
+  if (url.startsWith('http')) return url;
+  return null;
+}
+
+function showPage(page) {
+  document.querySelectorAll('.nav-item').forEach(n =>
+    n.classList.toggle('active', n.dataset.page === page));
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type === 'error' ? 'error' : ''} show`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+
+<!--
+═══════════════════════════════════════════════════════
+  APPS SCRIPT — Para guardar directo al Google Sheet
+  
+  1. Abre tu Google Sheet
+  2. Extensiones → Apps Script
+  3. Pega este código en un archivo nuevo (ej. "WebAdmin.gs"):
+
+function doPost(e) {
+  var data = JSON.parse(e.postData.contents);
+  var ss = SpreadsheetApp.openById('1HmNtzUE6KNLA641MoYCFupHoVhWe7Fz9Pp2Gtzk3XP4');
+  var sheetName = data.piece.categoria === 'cadenas' ? 'Cadenas'
+                : data.piece.categoria === 'pulsos'  ? 'Pulsos'
+                : 'Broqueles';
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) sheet = ss.insertSheet(sheetName);
+  
+  var row = [
+    data.piece.sku,
+    data.piece.nombre,
+    data.piece.categoria,
+    data.piece.desc,
+    data.piece.largo,
+    data.piece.grosor || data.piece.eslabon,
+    data.piece.peso,
+    data.piece.kilate,
+    data.piece.precio,
+    data.piece.foto,
+    data.piece.notas
+  ];
+  
+  if (data.action === 'insert') {
+    sheet.appendRow(row);
+  } else {
+    // Find row by SKU in column A and update
+    var values = sheet.getDataRange().getValues();
+    for (var i = 1; i < values.length; i++) {
+      if (values[i][0] === data.piece.sku) {
+        sheet.getRange(i+1, 1, 1, row.length).setValues([row]);
+        break;
+      }
+    }
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({ok:true}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+  4. Implementar → Nueva implementación → Aplicación web
+  5. Quién puede acceder: Cualquier usuario (Anyone)
+  6. Copia la URL y pégala en APPS_SCRIPT_URL arriba
+═══════════════════════════════════════════════════════
+-->
+</body>
+</html>
