@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Producto — Señores del Oro</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+/* ── PRODUCT HERO ── */
+.prod-wrap {
+  min-height: 100vh;
+  padding-top: 80px;
+  background: var(--negro);
+}
+.prod-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 80px);
+}
+.prod-img-col {
+  position: sticky;
+  top: 80px;
+  height: calc(100vh - 80px);
+  background: #0f0b06;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.prod-img-col img.foto {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.prod-img-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%; height: 100%;
+}
+.prod-img-placeholder img {
+  width: 120px;
+  opacity: .12;
+}
+.prod-img-placeholder span {
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(201,168,76,.3);
+}
+
+/* ── PRODUCT INFO ── */
+.prod-info-col {
+  padding: 80px 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--carbon2);
+}
+.prod-breadcrumb {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(232,224,204,.28);
+  margin-bottom: 40px;
+}
+.prod-breadcrumb a {
+  color: rgba(232,224,204,.28);
+  text-decoration: none;
+  transition: color .3s;
+}
+.prod-breadcrumb a:hover { color: var(--oro); }
+.prod-breadcrumb span { margin: 0 10px; }
+.prod-kilate {
+  font-size: 9px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--oro);
+  margin-bottom: 14px;
+}
+.prod-nombre {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 4vw, 60px);
+  font-weight: 300;
+  color: var(--champagne);
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
+.prod-sku {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(232,224,204,.2);
+  margin-bottom: 28px;
+}
+.prod-desc {
+  font-size: 13px;
+  line-height: 1.9;
+  color: rgba(232,224,204,.5);
+  max-width: 420px;
+  margin-bottom: 40px;
+}
+.prod-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid rgba(201,168,76,.1);
+  border-left: 1px solid rgba(201,168,76,.1);
+  margin-bottom: 44px;
+}
+.prod-spec {
+  padding: 16px 20px;
+  border-right: 1px solid rgba(201,168,76,.1);
+  border-bottom: 1px solid rgba(201,168,76,.1);
+}
+.prod-spec-label {
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(232,224,204,.28);
+  margin-bottom: 5px;
+}
+.prod-spec-val {
+  font-size: 14px;
+  color: var(--champagne);
+  font-family: 'Cormorant Garamond', serif;
+}
+.prod-precio {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  font-weight: 300;
+  color: var(--oro);
+  line-height: 1;
+  margin-bottom: 28px;
+}
+.prod-precio.na {
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  color: rgba(232,224,204,.3);
+  font-style: italic;
+}
+.prod-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--oro);
+  color: var(--negro);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 16px 40px;
+  cursor: pointer;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  transition: all .3s;
+  text-decoration: none;
+  width: fit-content;
+}
+.prod-cta:hover {
+  background: var(--champagne);
+  transform: translateY(-2px);
+}
+.prod-cta svg { flex-shrink: 0; }
+
+/* ── RELATED ── */
+.related {
+  padding: 90px 60px;
+  background: var(--negro);
+}
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin-top: 44px;
+}
+
+/* ── LOADING / ERROR ── */
+.prod-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+  gap: 20px;
+}
+.prod-loading img { width: 56px; opacity: .3; animation: pulse 1.8s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity:.15; } 50% { opacity:.45; } }
+.prod-loading span { font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: rgba(232,224,204,.25); }
+
+/* ── NOTA FOTO ── */
+.foto-nota {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: rgba(201,168,76,.3);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .prod-grid { grid-template-columns: 1fr; }
+  .prod-img-col { height: 60vw; position: relative; top: 0; min-height: 300px; }
+  .prod-info-col { padding: 48px 32px; }
+  .related-grid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html"><img src="assets/SEN_ORES_DEL_ORO_LOGO_DORADO_PNG.png" class="nav-logo" alt="Señores del Oro"></a>
+  <ul class="nav-links">
+    <li><a href="coleccion.html?cat=cadenas">Cadenas</a></li>
+    <li><a href="coleccion.html?cat=pulsos">Pulsos</a></li>
+    <li><a href="coleccion.html?cat=broqueles">Broqueles</a></li>
+    <li><a href="index.html#origen">Casa</a></li>
+    <li><a href="index.html#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<div id="prodContent">
+  <div class="prod-loading">
+    <img src="assets/SEN_ORES_DEL_ORO_LOGO_UNICO_DORADO.png" alt="">
+    <span>Cargando pieza...</span>
+  </div>
+</div>
+
+<!-- Related section (populated by JS) -->
+<section class="related" id="relatedSection" style="display:none">
+  <div class="sec-label">También te puede interesar</div>
+  <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3vw,44px);font-weight:300;color:var(--champagne);">Otras piezas</h2>
+  <div class="related-grid" id="relatedGrid"></div>
+</section>
+
+<footer>
+  <div class="ft-top">
+    <img src="assets/SEN_ORES_DEL_ORO_LOGO_DORADO_PNG.png" class="ft-logo" alt="Señores del Oro">
+    <div class="ft-cols">
+      <div class="ft-col">
+        <h4>Colección</h4>
+        <a href="coleccion.html?cat=cadenas">Cadenas</a>
+        <a href="coleccion.html?cat=pulsos">Pulsos</a>
+        <a href="coleccion.html?cat=broqueles">Broqueles</a>
+      </div>
+      <div class="ft-col">
+        <h4>Contacto</h4>
+        <a href="mailto:hola@señoresdeloro.mx">hola@señoresdeloro.mx</a>
+        <a href="https://instagram.com/señoresdeloro" target="_blank">@señoresdeloro</a>
+        <p>Guadalajara, Jalisco · MX</p>
+      </div>
+    </div>
+  </div>
+  <div class="ft-bot">
+    <p class="ft-copy">© 2025 <span>Señores del Oro</span> · Hecho en GDL</p>
+    <p class="ft-tag">No es joyería. Es territorio.</p>
+  </div>
+</footer>
+
+<script src="assets/catalog.js"></script>
+<script>
+// ── CONFIG ──
+const SHEET_ID = '1HmNtzUE6KNLA641MoYCFupHoVhWe7Fz9Pp2Gtzk3XP4';
+const PHICON = 'assets/SEN_ORES_DEL_ORO_LOGO_UNICO_DORADO.png';
+const WA_NUMBER = '523300000000'; // ← ACTUALIZA con número real
+
+// ── GET SKU FROM URL ──
+const params = new URLSearchParams(location.search);
+const skuParam = params.get('sku');
+
+// ── CONVERT DRIVE LINK TO DIRECT IMG URL ──
+function driveToImg(url) {
+  if (!url) return null;
+  // Extract file ID from various Drive URL formats
+  const m = url.match(/(?:id=|\/d\/)([a-zA-Z0-9_-]{25,})/);
+  if (m) return `https://lh3.googleusercontent.com/d/${m[1]}`;
+  return null;
+}
+
+// ── FIND ITEM ACROSS ALL CATEGORIES ──
+function findItem(sku) {
+  for (const cat of ['cadenas','pulsos','broqueles']) {
+    const item = CATALOG[cat].find(i => i.sku === sku);
+    if (item) return { item, cat };
+  }
+  return null;
+}
+
+// ── GET CATEGORY LABEL ──
+function catLabel(cat) {
+  return { cadenas:'Cadenas', pulsos:'Pulsos', broqueles:'Broqueles' }[cat] || cat;
+}
+
+// ── BUILD SPEC ROW ──
+function specRow(label, val) {
+  if (!val) return '';
+  return `<div class="prod-spec"><div class="prod-spec-label">${label}</div><div class="prod-spec-val">${val}</div></div>`;
+}
+
+// ── RENDER PRODUCT ──
+function renderProduct(item, cat) {
+  document.title = `${item.nombre} — Señores del Oro`;
+  const imgUrl = driveToImg(item.foto);
+  const waMsg = encodeURIComponent(`Hola, me interesa la pieza: ${item.sku} - ${item.nombre}`);
+
+  // Build specs
+  let specs = '';
+  specs += specRow('Kilate', item.kilate);
+  if (item.largo) specs += specRow('Largo', item.largo);
+  if (item.grosor) specs += specRow('Grosor', item.grosor);
+  if (item.eslabon) specs += specRow('Eslabón', item.eslabon);
+  if (item.placa) specs += specRow('Placa', item.placa);
+  if (item.peso) specs += specRow('Peso', item.peso);
+
+  document.getElementById('prodContent').innerHTML = `
+    <div class="prod-wrap">
+      <div class="prod-grid">
+        <div class="prod-img-col">
+          ${imgUrl
+            ? `<img src="${imgUrl}" class="foto" alt="${item.nombre}" onerror="this.style.display='none';document.querySelector('.prod-img-placeholder').style.display='flex'">
+               <div class="prod-img-placeholder" style="display:none;position:absolute;inset:0">
+                 <img src="${PHICON}" alt="">
+                 <span>Foto próximamente</span>
+               </div>`
+            : `<div class="prod-img-placeholder">
+                 <img src="${PHICON}" alt="">
+                 <span>Foto próximamente</span>
+               </div>`}
+          <div class="foto-nota">${item.sku}</div>
+        </div>
+        <div class="prod-info-col">
+          <div class="prod-breadcrumb">
+            <a href="index.html">Inicio</a>
+            <span>/</span>
+            <a href="coleccion.html?cat=${cat}">${catLabel(cat)}</a>
+            <span>/</span>
+            ${item.nombre}
+          </div>
+          <div class="prod-kilate">${item.kilate} · Oro Amarillo</div>
+          <h1 class="prod-nombre">${item.nombre}</h1>
+          <p class="prod-sku">${item.sku}</p>
+          <p class="prod-desc">${item.desc}</p>
+          ${specs ? `<div class="prod-specs">${specs}</div>` : ''}
+          <div class="prod-precio ${item.precio ? '' : 'na'}">${item.precio || 'Consultar precio'}</div>
+          <a class="prod-cta" href="https://wa.me/${WA_NUMBER}?text=${waMsg}" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Consultar por WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── RENDER RELATED ──
+function renderRelated(item, cat) {
+  const pool = CATALOG[cat].filter(i => i.sku !== item.sku);
+  const picks = pool.sort(() => Math.random() - .5).slice(0, 4);
+  if (!picks.length) return;
+
+  const grid = document.getElementById('relatedGrid');
+  picks.forEach(p => {
+    const imgUrl = driveToImg(p.foto);
+    const d = document.createElement('div');
+    d.className = 'card';
+    d.style.cursor = 'pointer';
+    d.innerHTML = `
+      <div class="card-img">
+        ${imgUrl
+          ? `<img src="${imgUrl}" class="photo" alt="${p.nombre}" onerror="this.style.display='none'">`
+          : `<div class="card-ph"><img src="${PHICON}" alt=""></div>`}
+        <span class="kilate">${p.kilate}</span>
+        <div class="card-ov"><span>Ver pieza</span></div>
+      </div>
+      <div class="card-info">
+        <div class="card-nombre">${p.nombre}</div>
+        <div class="card-precio ${p.precio ? '' : 'na'}">${p.precio || 'Consultar precio'}</div>
+      </div>`;
+    d.onclick = () => location.href = `producto.html?sku=${p.sku}`;
+    grid.appendChild(d);
+  });
+
+  document.getElementById('relatedSection').style.display = 'block';
+}
+
+// ── INIT ──
+if (!skuParam) {
+  document.getElementById('prodContent').innerHTML = `
+    <div class="prod-loading">
+      <img src="${PHICON}" alt="">
+      <span>SKU no encontrado</span>
+    </div>`;
+} else {
+  const found = findItem(skuParam);
+  if (!found) {
+    document.getElementById('prodContent').innerHTML = `
+      <div class="prod-loading">
+        <img src="${PHICON}" alt="">
+        <span>Pieza no encontrada · <a href="coleccion.html" style="color:var(--oro)">Ver colección</a></span>
+      </div>`;
+  } else {
+    renderProduct(found.item, found.cat);
+    renderRelated(found.item, found.cat);
+  }
+}
+
+window.addEventListener('scroll', () =>
+  document.getElementById('nav').classList.toggle('scrolled', scrollY > 70));
+</script>
+</body>
+</html>
