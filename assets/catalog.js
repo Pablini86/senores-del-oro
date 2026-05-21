@@ -1,4 +1,4 @@
-// Generado automáticamente — 21/5/2026, 2:54:15 p.m.
+// Generado automáticamente — 21/5/2026, 2:56:08 p.m.
 
 function driveToImg(url) {
   if (!url) return null;
