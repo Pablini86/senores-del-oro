@@ -1,4 +1,4 @@
-// Generado automáticamente — 21/5/2026, 2:42:42 p.m.
+// Generado automáticamente — 21/5/2026, 2:48:06 p.m.
 
 function driveToImg(url) {
   if (!url) return null;
@@ -276,14 +276,6 @@ const CATALOG = {
   }
 ],
   broqueles: [
-  {
-    "sku": "SKU",
-    "nombre": "Nombre",
-    "desc": "Variante",
-    "kilate": "10K",
-    "precio": "",
-    "foto": "Foto URL"
-  },
   {
     "sku": "BRQ-001",
     "nombre": "Broquel Corazón con Zirconia 10K",
