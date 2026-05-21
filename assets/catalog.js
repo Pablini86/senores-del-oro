@@ -1,4 +1,4 @@
-// Generado automáticamente — 21/5/2026, 2:48:06 p.m.
+// Generado automáticamente — 21/5/2026, 2:54:15 p.m.
 
 function driveToImg(url) {
   if (!url) return null;
@@ -1315,102 +1315,6 @@ const CATALOG = {
     "kilate": "10K",
     "precio": "",
     "foto": "https://drive.google.com/open?id=1wiXI4lELbqR4jGb-E5bsyki6tSsHB09A&usp=drive_copy"
-  },
-  {
-    "sku": "BRQ-131",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
-  },
-  {
-    "sku": "BRQ-132",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
-  },
-  {
-    "sku": "BRQ-133",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
-  },
-  {
-    "sku": "BRQ-134",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
-  },
-  {
-    "sku": "BRQ-135",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
-  },
-  {
-    "sku": "BRQ-136",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
-  },
-  {
-    "sku": "BRQ-137",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
-  },
-  {
-    "sku": "BRQ-138",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
-  },
-  {
-    "sku": "BRQ-139",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
-  },
-  {
-    "sku": "BRQ-140",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
-  },
-  {
-    "sku": "BRQ-141",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
-  },
-  {
-    "sku": "BRQ-142",
-    "nombre": "",
-    "desc": "",
-    "kilate": "10K",
-    "precio": "",
-    "foto": ""
   }
 ]
 };
