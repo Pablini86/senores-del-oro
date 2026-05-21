@@ -174,3 +174,7 @@ const CATALOG = {
   ],
 
 };
+
+Object.values(CATALOG).forEach(arr =>
+  arr.forEach(p => { if(p.foto) p.foto = driveToImg(p.foto); })
+);
