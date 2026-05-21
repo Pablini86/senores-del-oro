@@ -487,7 +487,7 @@ function buildCarouselCard(item, isBrq) {
       <div class="cinfo-nombre">${item.nombre}</div>
       <div class="cinfo-precio ${precio?'':'na'}">${precio||'Consultar precio'}</div>
     </div>`;
-  d.onclick = () => openModal(item);
+  d.onclick = () => location.href = `producto.html?sku=${item.sku}`;
   return d;
 }
 
@@ -507,7 +507,7 @@ function buildCard(item) {
       <div class="cinfo-nombre">${item.nombre}</div>
       <div class="cinfo-precio na">Consultar precio</div>
     </div>`;
-  d.onclick = () => openModal(item);
+  d.onclick = () => location.href = `producto.html?sku=${item.sku}`;
   return d;
 }
 
