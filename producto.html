@@ -213,19 +213,6 @@
 </style>
 </head>
 <body>
-<script>
-(function(){
-  var tb = document.querySelector(".topbar");
-  var nav = document.getElementById("nav");
-  function setOffset(){
-    var h = tb ? tb.offsetHeight : 0;
-    document.documentElement.style.setProperty("--topbar-h", h + "px");
-    if(nav) nav.style.top = h + "px";
-  }
-  setOffset();
-  window.addEventListener("resize", setOffset);
-})();
-</script>
 
 
 <!-- TOP BAR -->
@@ -448,6 +435,19 @@ if (!skuParam) {
 
 window.addEventListener('scroll', () =>
   document.getElementById('nav').classList.toggle('scrolled', scrollY > 70));
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  var tb = document.querySelector(".topbar");
+  var nav = document.getElementById("nav");
+  function setOffset(){
+    var h = tb ? tb.offsetHeight : 0;
+    document.documentElement.style.setProperty("--topbar-h", h + "px");
+    if(nav) nav.style.top = h + "px";
+  }
+  setOffset();
+  window.addEventListener("resize", setOffset);
+});
 </script>
 </body>
 </html>
