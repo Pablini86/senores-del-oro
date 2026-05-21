@@ -8,20 +8,7 @@
 <link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <style>
-/* ── TOP BAR ── */
-.topbar {
-  background: var(--carbon2);
-  border-bottom: 1px solid rgba(201,168,76,.15);
-  padding: 10px 60px;
-  display: flex; align-items: center; justify-content: center; gap: 48px;
-}
-.topbar-item {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
-  color: rgba(232,224,204,.55); white-space: nowrap;
-}
-.topbar-item svg { color: var(--oro); flex-shrink: 0; }
-.topbar-sep { width: 1px; height: 14px; background: rgba(201,168,76,.2); }
+/* ── TOP BAR: estilos en style.css ── */
 
 /* ── HERO ── */
 .hero {
@@ -261,6 +248,20 @@
 </style>
 </head>
 <body>
+<script>
+(function(){
+  var tb = document.querySelector(".topbar");
+  var nav = document.getElementById("nav");
+  function setOffset(){
+    var h = tb ? tb.offsetHeight : 0;
+    document.documentElement.style.setProperty("--topbar-h", h + "px");
+    if(nav) nav.style.top = h + "px";
+  }
+  setOffset();
+  window.addEventListener("resize", setOffset);
+})();
+</script>
+
 
 <!-- TOP BAR -->
 <div class="topbar">

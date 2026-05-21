@@ -187,3 +187,63 @@ footer {
 @media (max-width: 480px) {
   .nav-links { display: none; } /* En móvil chico solo logo */
 }
+
+/* ══════════════════════════════════════
+   FIX: TOPBAR FIXED + NAV OFFSET + MÓVIL
+   ══════════════════════════════════════ */
+
+/* Topbar siempre arriba, fija */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: rgba(15,11,6,.92);
+  border-bottom: 1px solid rgba(201,168,76,.18);
+  padding: 9px 60px;
+  display: flex; align-items: center; justify-content: center; gap: 48px;
+}
+
+/* Nav debajo de la topbar — JS setea --topbar-h */
+nav {
+  top: var(--topbar-h, 38px);
+}
+
+/* Body compensar topbar+nav al inicio */
+body { padding-top: 0; }
+
+/* Fix catálogo: cards no demasiado chicas en móvil */
+@media (max-width: 768px) {
+  /* Topbar scroll horizontal en móvil */
+  .topbar {
+    padding: 7px 16px;
+    gap: 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .topbar::-webkit-scrollbar { display: none; }
+  .topbar-sep { display: none; }
+  .topbar-item { font-size: 8px; letter-spacing: 1.2px; flex-shrink: 0; padding-right: 16px; }
+
+  /* Grids: 2 columnas forzado */
+  .cat-grid,
+  .cat-grid.cols5,
+  .brq-grid,
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Carousel cards — tamaño más generoso */
+  .carousel-card { flex: 0 0 45vw; max-width: 200px; }
+
+  /* Opacidad topbar-item subir */
+  .topbar-item { color: rgba(232,224,204,.80); }
+
+  /* Tabs sticky — ajustar al nuevo offset */
+  .tabs { top: calc(var(--topbar-h, 38px) + 54px); }
+
+  /* Cat banners en móvil apilados */
+  .cat-banners-row { grid-template-columns: 1fr; }
+  .cat-banner { height: 240px; }
+  .cat-banner-title { font-size: clamp(32px,8vw,48px); }
+}
