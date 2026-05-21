@@ -1,4 +1,4 @@
-// Generado automáticamente — 21/5/2026, 2:35:35 p.m.
+// Generado automáticamente — 21/5/2026, 2:42:42 p.m.
 
 function driveToImg(url) {
   if (!url) return null;
@@ -282,7 +282,7 @@ const CATALOG = {
     "desc": "Variante",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "Foto URL"
   },
   {
     "sku": "BRQ-001",
@@ -290,7 +290,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K con diseño de corazón calado y zirconia central.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1hO6171s2vGKq93gQJ8XI5GW_rvepmt0J&usp=drive_copy"
   },
   {
     "sku": "BRQ-002",
@@ -298,7 +298,7 @@ const CATALOG = {
     "desc": "Par de broqueles de oro con diseño de corazón liso y acabado pulido.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=18nnTNmHDq32XCFrDSgjtHHyCBhvnVMfp&usp=drive_copy"
   },
   {
     "sku": "BRQ-003",
@@ -306,7 +306,7 @@ const CATALOG = {
     "desc": "Broquel dorado con diseño de Árbol de la Vida y orla de circonias.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1ba9fY9VeJ8ZEbyRqDrOJI32OR3Up98jW&usp=drive_copy"
   },
   {
     "sku": "BRQ-004",
@@ -314,7 +314,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K con diseño de cruz y broche de rosca.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1yUj7kAeHArKLrjW7VIQUzHUEB9xclCi0&usp=drive_copy"
   },
   {
     "sku": "BRQ-005",
@@ -322,7 +322,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de corazón y una zirconia engastada.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1II5GTRnKPh3V0td8ZLPmW-YHyngn8X5q&usp=drive_copy"
   },
   {
     "sku": "BRQ-006",
@@ -330,7 +330,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de estrella y superficie rayada.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1zOcSG0VGeAQxD3e-aghcEYBxruscI-ZK&usp=drive_copy"
   },
   {
     "sku": "BRQ-007",
@@ -338,7 +338,7 @@ const CATALOG = {
     "desc": "Broquel de oro con diseño floral, zafiro central y diamantes circundantes.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1pYHmil9cR6w1zA6vafaARldJS8DgRhti&usp=drive_copy"
   },
   {
     "sku": "BRQ-008",
@@ -346,7 +346,7 @@ const CATALOG = {
     "desc": "Broquel de oro con doble piedra, circonia blanca y rosa, broche de rosca.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1f_HxN9vgTL4z-uFrPavenOOuHKqGh7j6&usp=drive_copy"
   },
   {
     "sku": "BRQ-009",
@@ -354,7 +354,7 @@ const CATALOG = {
     "desc": "Broquel de oro con estrella de circonia y perla.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1zCAi-sVcozfchE1xoIhRntlBux4jz8n-&usp=drive_copy"
   },
   {
     "sku": "BRQ-010",
@@ -362,7 +362,7 @@ const CATALOG = {
     "desc": "Broquel de oro con diseño floral de piedras blancas y rosas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1Cr87Lq0itdIyklTq8dKtX15bqE_Cc8j-&usp=drive_copy"
   },
   {
     "sku": "BRQ-011",
@@ -370,7 +370,7 @@ const CATALOG = {
     "desc": "Broquel de oro con perlas cultivadas redondas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=10QktLf81h6nKztcr2E7o2BC4dIJ04QdW&usp=drive_copy"
   },
   {
     "sku": "BRQ-012",
@@ -378,7 +378,7 @@ const CATALOG = {
     "desc": "Broquel de oro 10K con diseño de flor de cuatro zirconias y broche de rosca.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1ALNNLcZezO3P6RPinI09qrNxM8tkkc2R&usp=drive_copy"
   },
   {
     "sku": "BRQ-013",
@@ -386,7 +386,7 @@ const CATALOG = {
     "desc": "Broquel de oro con diseño floral y zirconias incrustadas, cierre de rosca.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1ULO3zzNbqmYo5ojOymCnx-6aeXeUDsaO&usp=drive_copy"
   },
   {
     "sku": "BRQ-014",
@@ -394,7 +394,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K con zirconia redonda en engaste de cuatro puntas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1VZbUEN8AYBAqKozPE1B2uCxoTPGQZ_LI&usp=drive_copy"
   },
   {
     "sku": "BRQ-015",
@@ -402,7 +402,7 @@ const CATALOG = {
     "desc": "Broquel de oro con piedra redonda engastada y broche de rosca.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1ZtarkZg4Jqs9sWURkKGYjrFlEUIC3Nue&usp=drive_copy"
   },
   {
     "sku": "BRQ-016",
@@ -410,7 +410,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K cuadrados con piedra negra central y bisel texturizado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=18W7eFFQ5VpXqsNr1uZYZZSrrw-2LfuSs&usp=drive_copy"
   },
   {
     "sku": "BRQ-017",
@@ -418,7 +418,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con piedras cuadradas en engaste de cuatro puntas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1BdnUkpwAUZlX8bTh875b5aUhwMxIxNiV&usp=drive_copy"
   },
   {
     "sku": "BRQ-018",
@@ -426,7 +426,7 @@ const CATALOG = {
     "desc": "Broquel de oro con diseño floral, zirconia central y broche de rosca.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1f_BrmSgfWHoC7JdjneeRlBdJ8m1iTskn&usp=drive_copy"
   },
   {
     "sku": "BRQ-019",
@@ -434,7 +434,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K con diseño de estrella rayada.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1bgmlJdW_ywUVRg3a1_DsKE7DIL3467oP&usp=drive_copy"
   },
   {
     "sku": "BRQ-020",
@@ -442,7 +442,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K con diseño de corazón y piedra brillante central.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1ss6_K_fpx0qY06dkNHqCdpVBuxSYSVz1&usp=drive_copy"
   },
   {
     "sku": "BRQ-021",
@@ -450,7 +450,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con forma de corazón y diseño rayado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1aHMGkUKcJW49oP8218DIQckxi4Sxa9nh&usp=drive_copy"
   },
   {
     "sku": "BRQ-022",
@@ -458,7 +458,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño calado de tres corazones anidados.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1wvcaXC7AqgVRN6GrXhozmcgDaVjbCA78&usp=drive_copy"
   },
   {
     "sku": "BRQ-023",
@@ -466,7 +466,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño floral de cinco pétalos y acabado rayado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1Y-bLHuYErMSTuQdAYgKY3hHa_5cgGciY&usp=drive_copy"
   },
   {
     "sku": "BRQ-024",
@@ -474,7 +474,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de corazón calado y una piedra central.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1LIBi4U2vAFSRiU84IOy677W8rzNpvp8i&usp=drive_copy"
   },
   {
     "sku": "BRQ-025",
@@ -482,7 +482,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de tres corazones: uno vertical y otro horizontal.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1OjXrMY6Fy89haVwDdu3UxC1uFOSccaT7&usp=drive_copy"
   },
   {
     "sku": "BRQ-026",
@@ -490,7 +490,7 @@ const CATALOG = {
     "desc": "Broquel de oro con diseño floral de cinco pétalos y textura radiante.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=13-LYRjO6tCxY0lNHEmKYs4taUN7wiD_F&usp=drive_copy"
   },
   {
     "sku": "BRQ-027",
@@ -498,7 +498,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K con diseño circular de rayos.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1akW2ecxURH6zFWpDI0fARIaz_AAAvoYk&usp=drive_copy"
   },
   {
     "sku": "BRQ-028",
@@ -506,7 +506,7 @@ const CATALOG = {
     "desc": "Broquel de oro con piedra roja en forma de corazón.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1_EWizdO7CBRXftL-ptyNaADk8eF2dPd3&usp=drive_copy"
   },
   {
     "sku": "BRQ-029",
@@ -514,7 +514,7 @@ const CATALOG = {
     "desc": "Broqueles de diseño en forma de cisne con acabado dorado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=13pPVHOinW9Mfs1FiC7bsTqwGCx3DaFvy&usp=drive_copy"
   },
   {
     "sku": "BRQ-030",
@@ -522,7 +522,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de delfín, acabado pulido.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1xj0jOluIHx41iWZk6B-K9ilb-GsiP3VL&usp=drive_copy"
   },
   {
     "sku": "BRQ-031",
@@ -530,7 +530,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K con diseño de búho y ojos de ónix negro.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1SUmpkGMcXP9dvgR7uyrTyzl72AB4oBgn&usp=drive_copy"
   },
   {
     "sku": "BRQ-032",
@@ -538,7 +538,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de huella de patita.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1yTnhLpGP-GVUOQdCvh08jCsqp-dG_t_a&usp=drive_copy"
   },
   {
     "sku": "BRQ-033",
@@ -546,7 +546,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de elefante, acabado dorado y textura detallada.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1TsUHbVsiH96OTXhHbTG9pdCYeCswnqky&usp=drive_copy"
   },
   {
     "sku": "BRQ-034",
@@ -554,7 +554,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de gato, ideales para uso diario.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1l5-InT1F3y7k3H0n3WUVrxWg3cqU9rZB&usp=drive_copy"
   },
   {
     "sku": "BRQ-035",
@@ -562,7 +562,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de árbol calado, acabado pulido.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1d8Y2onnSeWSIpFdCF745TJ2tvr1xJ0VD&usp=drive_copy"
   },
   {
     "sku": "BRQ-036",
@@ -570,7 +570,7 @@ const CATALOG = {
     "desc": "Broquel de oro con diseño de flor y broche de rosca.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1kDE9QF4fRW6PI6ieOKF60t8lN5Dgq-Ou&usp=drive_copy"
   },
   {
     "sku": "BRQ-037",
@@ -578,7 +578,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K con diseño de ranas, acabado pulido.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1-anlB-MYMb3VfJLR7tOddIpD6FWn0vnX&usp=drive_copy"
   },
   {
     "sku": "BRQ-038",
@@ -586,7 +586,7 @@ const CATALOG = {
     "desc": "Par de broqueles dorados con diseño de corona y zirconias incrustadas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=10FSr5cEFLM7R8T-muYpw68nhDxZXQFl4&usp=drive_copy"
   },
   {
     "sku": "BRQ-039",
@@ -594,7 +594,7 @@ const CATALOG = {
     "desc": "Broquel de oro con diseño de llave en forma de corazón y zirconias.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1RmWXm5RSZdPaPPZWCyqg7cHuZ5BOBnTj&usp=drive_copy"
   },
   {
     "sku": "BRQ-040",
@@ -602,7 +602,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de concha marina, acabado pulido.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=16LoiBTrc2JK9xhx3BEEZTsOdQojs0cAr&usp=drive_copy"
   },
   {
     "sku": "BRQ-041",
@@ -610,7 +610,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K con diseño de corona princesa y zirconias.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1rs6Sf6km2BAI0rXkBm4KUxPPcVb7XcCs&usp=drive_copy"
   },
   {
     "sku": "BRQ-042",
@@ -618,7 +618,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de ángel, adornados con zirconias cúbicas brillantes.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1ipM0dqJiuSngstu0HZrAGgQXF-gXEywa&usp=drive_copy"
   },
   {
     "sku": "BRQ-043",
@@ -626,7 +626,7 @@ const CATALOG = {
     "desc": "Broquel de oro con diseño de infinito y la palabra 'love' calada.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1vMeJQAzkzrSV4nJp5MGhQ1g8hU_EzMWi&usp=drive_copy"
   },
   {
     "sku": "BRQ-044",
@@ -634,7 +634,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de infinito, adornados con pequeñas piedras.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1Yxqyu0xtqghEDeybLRutYpLTwZ4qUa3l&usp=drive_copy"
   },
   {
     "sku": "BRQ-045",
@@ -642,7 +642,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de estrella marina texturizada.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1i4Kzm-5oJEmgXoDWqm3ISivgBeH5P-Pk&usp=drive_copy"
   },
   {
     "sku": "BRQ-046",
@@ -650,7 +650,7 @@ const CATALOG = {
     "desc": "Broquel de oro 10K con diseño de sol y broche de rosca.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1ED2ZuOyLij3zy-FnE4sNJbkSNFkn4WJa&usp=drive_copy"
   },
   {
     "sku": "BRQ-047",
@@ -658,7 +658,7 @@ const CATALOG = {
     "desc": "Par de broqueles de oro con diseño de corona, acabado pulido.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1lsKRN7TQSD3ZzsyZR-XZbrQ3m-mtLJzb&usp=drive_copy"
   },
   {
     "sku": "BRQ-048",
@@ -666,7 +666,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño floral y gema roja central engastada.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1JMQ_rmwp5Vwyi6VLOPt3N6rt61_uJ7SN&usp=drive_copy"
   },
   {
     "sku": "BRQ-049",
@@ -674,7 +674,7 @@ const CATALOG = {
     "desc": "Broquel de oro con zirconia central engastada en forma de flor.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1CSVucUo7iocGLT3pGFGaLeak66GcG1YZ&usp=drive_copy"
   },
   {
     "sku": "BRQ-050",
@@ -682,7 +682,7 @@ const CATALOG = {
     "desc": "Par de broqueles de oro con diseño estilizado en forma de ala.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1H3ohkXDzCCXSadfjTV5TJl79Kstj3xu2&usp=drive_copy"
   },
   {
     "sku": "BRQ-051",
@@ -690,7 +690,7 @@ const CATALOG = {
     "desc": "Broquel de oro con zirconia redonda engastada en bisel trenzado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1x5G85pu3Wd_RbK817jUo3A8tQfrn_qjH&usp=drive_copy"
   },
   {
     "sku": "BRQ-052",
@@ -698,7 +698,7 @@ const CATALOG = {
     "desc": "Broquel de oro con piedra cuadrada colgante y detalle de circonia.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1iIQk9kJXv0a_DEOd4BuNhVJtAF2BtLRW&usp=drive_copy"
   },
   {
     "sku": "BRQ-053",
@@ -706,7 +706,7 @@ const CATALOG = {
     "desc": "Broquel con zirconia y dije de gota pulida.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1lDc5lfp2i_PWLypFCQNDkIdBm-4zSqvu&usp=drive_copy"
   },
   {
     "sku": "BRQ-054",
@@ -714,7 +714,7 @@ const CATALOG = {
     "desc": "Broquel de oro con piedra redonda y gota colgante.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=13gu1sU5WytOKezDwUEHUQPX3ef0OqeJ7&usp=drive_copy"
   },
   {
     "sku": "BRQ-055",
@@ -722,7 +722,7 @@ const CATALOG = {
     "desc": "Broquel de oro con zirconia y dije colgante de flecha.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1zG4DW1uQIaHNY9TOJRhvlORKXy0z4_8_&usp=drive_copy"
   },
   {
     "sku": "BRQ-056",
@@ -730,7 +730,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con zirconias cúbicas en diseño de flor colgante.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=19vffDxJNhycxqyAvfUyjfCoLEudLhC1v&usp=drive_copy"
   },
   {
     "sku": "BRQ-057",
@@ -738,7 +738,7 @@ const CATALOG = {
     "desc": "Broquel de oro con gema y dije de pulpo colgante.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1vxUoc8w5BMzNyY2vuuPN-_kZmvyPllqc&usp=drive_copy"
   },
   {
     "sku": "BRQ-058",
@@ -746,7 +746,7 @@ const CATALOG = {
     "desc": "Broquel con poste, piedra redonda, barra torcida y gota colgante.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1bf2r7a1P9noSdw2w7L-b15XwfIIphCc9&usp=drive_copy"
   },
   {
     "sku": "BRQ-059",
@@ -754,7 +754,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con zafiro central y diamantes en diseño floral.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1TUN8eGze510dvqzaG8rh8DMxNfQnkmmS&usp=drive_copy"
   },
   {
     "sku": "BRQ-060",
@@ -762,7 +762,7 @@ const CATALOG = {
     "desc": "Broquel de oro con figura de la Virgen de Guadalupe y orla de zirconias.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1ACrR_OfC-L2GgUtixTBV60qHXJCxIuF1&usp=drive_copy"
   },
   {
     "sku": "BRQ-061",
@@ -770,7 +770,7 @@ const CATALOG = {
     "desc": "Broquel de oro con diseño de ángel, alas, halo y zirconias incrustadas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1o7pr-uhIc4ccQH_7qVoySX9kEbvfyFGo&usp=drive_copy"
   },
   {
     "sku": "BRQ-062",
@@ -778,7 +778,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de cruces estilizadas y zirconias.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1OkKUjc7rarefyJG06pFIPgaaeeDJzFp6&usp=drive_copy"
   },
   {
     "sku": "BRQ-063",
@@ -786,7 +786,7 @@ const CATALOG = {
     "desc": "Broquel de oro 10K con diseño de flor y seis zirconias incrustadas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1jLnC8daNjtQqHB2EUKv5C9UzBo9C9so0&usp=drive_copy"
   },
   {
     "sku": "BRQ-064",
@@ -794,7 +794,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con tres piedras redondas engastadas en línea.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=13JXeLJY8N7MF-18wZ5Arj_c22WEmH1ul&usp=drive_copy"
   },
   {
     "sku": "BRQ-065",
@@ -802,7 +802,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de trébol y tres circonias cúbicas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1jvsg0BShTsf0uZQSzm6Eyk7qCm3JnQ_D&usp=drive_copy"
   },
   {
     "sku": "BRQ-066",
@@ -810,7 +810,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con gema rectangular engastada en bisel.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1Gbfut2mlzyqUWt5G8OH6v_EBF1Wakzpc&usp=drive_copy"
   },
   {
     "sku": "BRQ-067",
@@ -818,7 +818,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con cuatro piedras blancas formando un cluster cuadrado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1I1fLL_MCLq1C71uB07HSgwt7i7TgyK40&usp=drive_copy"
   },
   {
     "sku": "BRQ-068",
@@ -826,7 +826,7 @@ const CATALOG = {
     "desc": "Broquel de oro con tres esmeraldas talla redonda en línea.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1mDwI8gT4zDoB-PsfaZbBmApg8y_ZDoCH&usp=drive_copy"
   },
   {
     "sku": "BRQ-069",
@@ -834,7 +834,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de ojo y una zirconia central brillante.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1PCM-R8IlQ20EoivchscUD7AkgiI0_AKs&usp=drive_copy"
   },
   {
     "sku": "BRQ-070",
@@ -842,7 +842,7 @@ const CATALOG = {
     "desc": "Broquel de oro 10K con zirconia central blanca y dos laterales rosas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1psy-JPprYqoAbRCLYNR5VQUyhN28K8sw&usp=drive_copy"
   },
   {
     "sku": "BRQ-071",
@@ -850,7 +850,7 @@ const CATALOG = {
     "desc": "Broquel de oro con tres piedras redondas transparentes en diseño de barra.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1-wIEV9aW4qgESbByB4CFGBuCvElHVEKK&usp=drive_copy"
   },
   {
     "sku": "BRQ-072",
@@ -858,7 +858,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de flor calada y zirconia central brillante.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1HvXiTbjo6Z40dywu3nCFpkQ2mwHzQCxh&usp=drive_copy"
   },
   {
     "sku": "BRQ-073",
@@ -866,7 +866,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con tres piedras verdes talla marquesa en forma de hoja.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1KWSNNAUJlqYoo6KhPX72O8HX_wNMiyjy&usp=drive_copy"
   },
   {
     "sku": "BRQ-074",
@@ -874,7 +874,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño calado de tres corazones anidados.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1RvRu6DzmAUmAz-hZFGoyU3mB0DZDW35D&usp=drive_copy"
   },
   {
     "sku": "BRQ-075",
@@ -882,7 +882,7 @@ const CATALOG = {
     "desc": "Broquel de barra con múltiples circonias incrustadas y broche de seguridad.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1izWpJT5nm5kgsyAk2fv0aReA6Wwq0RsA&usp=drive_copy"
   },
   {
     "sku": "BRQ-076",
@@ -890,7 +890,7 @@ const CATALOG = {
     "desc": "Broquel de oro con tres piedras blancas engastadas en línea.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1YWIV82uu5xObescFYR8D27FA3s6irioo&usp=drive_copy"
   },
   {
     "sku": "BRQ-077",
@@ -898,7 +898,7 @@ const CATALOG = {
     "desc": "Broquel de oro con piedra de zirconia en forma de flor.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1TWyBYjgfxqKHD-fRr2y03PYYvbNYSMRr&usp=drive_copy"
   },
   {
     "sku": "BRQ-078",
@@ -906,7 +906,7 @@ const CATALOG = {
     "desc": "Broquel de oro con doble piedra transparente, una redonda y una corazón colgante.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1YejYcECBSvNc77oHV6Sw9MeMlA531ETk&usp=drive_copy"
   },
   {
     "sku": "BRQ-079",
@@ -914,7 +914,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de sol y luna.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1yjPKRkZSL6lPuBI8vdNJn3gYQb8UWL-I&usp=drive_copy"
   },
   {
     "sku": "BRQ-080",
@@ -922,7 +922,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de tortuga, esmalte verde y zirconia.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1Nn0zNGhH5jOcIThFhCrHvReNW1FQd0QW&usp=drive_copy"
   },
   {
     "sku": "BRQ-081",
@@ -930,7 +930,7 @@ const CATALOG = {
     "desc": "Broquel de oro con piedra central en engaste hexagonal.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1nVbdu-Q3F9cYtslVCNSxUrTCgD9Nfrgd&usp=drive_copy"
   },
   {
     "sku": "BRQ-082",
@@ -938,7 +938,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de corazón hueco, acabado pulido y poste con broche de bola.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1rFHTHBPiKG5Mp58YQrrrLFaHu83pAXGu&usp=drive_copy"
   },
   {
     "sku": "BRQ-083",
@@ -946,7 +946,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con zirconia central en forma de flor.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1E3HWp_6qkFstCYimvrfkTgGX3I3XxwDD&usp=drive_copy"
   },
   {
     "sku": "BRQ-084",
@@ -954,7 +954,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K con piedra rosa facetada y diseño floral.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1bpypxdxLV1RLeNmb2BTvQPLVIgymZDPJ&usp=drive_copy"
   },
   {
     "sku": "BRQ-085",
@@ -962,7 +962,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de corazón y broche de rosca.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1-mhXPwfpLa4zEMU7IDYr2jLSy5JCFxci&usp=drive_copy"
   },
   {
     "sku": "BRQ-086",
@@ -970,7 +970,7 @@ const CATALOG = {
     "desc": "Broquel de oro 10K con bola diamantada y broche de presión.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1kxYSR_E2aL8_n8ntp21OZ_BLD3Fl7HAz&usp=drive_copy"
   },
   {
     "sku": "BRQ-087",
@@ -978,7 +978,7 @@ const CATALOG = {
     "desc": "Broquel de oro con diseño de media luna y zirconias engastadas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1WxIqrYxh_9jBo51mcM5oyDepOKNoxphl&usp=drive_copy"
   },
   {
     "sku": "BRQ-088",
@@ -986,7 +986,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con corazón de piedra central y orilla texturizada.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1MskjucCJtcBXjo7EU5RG9nWKe1Y8pBI6&usp=drive_copy"
   },
   {
     "sku": "BRQ-089",
@@ -994,7 +994,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con zirconia cuadrada engastada, cierre de rosca.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1uAGSclwURlZ7rzDp0J5JpVQjJyfxp7H2&usp=drive_copy"
   },
   {
     "sku": "BRQ-090",
@@ -1002,7 +1002,7 @@ const CATALOG = {
     "desc": "Par de broqueles con piedra cuadrada transparente en engaste sencillo.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1WU60DwvALDitvGUHHQOYD4I9kCOI5rSF&usp=drive_copy"
   },
   {
     "sku": "BRQ-091",
@@ -1010,7 +1010,7 @@ const CATALOG = {
     "desc": "Broquel de oro con zirconia corte pera, engaste de cuatro puntas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=13tjqVLVGl_VhZ1cz7Q2_YT0it6n3A1q6&usp=drive_copy"
   },
   {
     "sku": "BRQ-092",
@@ -1018,7 +1018,7 @@ const CATALOG = {
     "desc": "Broquel de oro con piedra marquise amatista en engaste de cuatro puntas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1MJ0m4G1J5MWT_pIRc-Up3i4ajMhAIlBN&usp=drive_copy"
   },
   {
     "sku": "BRQ-093",
@@ -1026,7 +1026,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con piedra en forma de pera y bisel texturizado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=182bk3bYgjdR4R8C7Y7oQ-gga5vLQrJAD&usp=drive_copy"
   },
   {
     "sku": "BRQ-094",
@@ -1034,7 +1034,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con zirconias facetadas en forma de corazón y pera.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=14yP_CyX8qRDqgR0RNhSlIDA4Qrto375j&usp=drive_copy"
   },
   {
     "sku": "BRQ-095",
@@ -1042,7 +1042,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de cruz, adornados con múltiples piedras.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1eWleq1Pt1Xbdk0MS18lyx45qYpIeqxrl&usp=drive_copy"
   },
   {
     "sku": "BRQ-096",
@@ -1050,7 +1050,7 @@ const CATALOG = {
     "desc": "Broqueles ovalados dorados con relieve de la Virgen de Guadalupe y orla de circonias.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=12ERXf8hqw2wTdeztDx6xFK6j5lyK2aml&usp=drive_copy"
   },
   {
     "sku": "BRQ-097",
@@ -1058,7 +1058,7 @@ const CATALOG = {
     "desc": "Broquel de oro con dos zirconias redondas engastadas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1Y9zOz0aZCkasQFuK_MXeZ8vKcqvG0nEB&usp=drive_copy"
   },
   {
     "sku": "BRQ-098",
@@ -1066,7 +1066,7 @@ const CATALOG = {
     "desc": "Broquel de oro con circonia redonda engastada en cuatro garras.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1c4Up5u91Rngx3c4PQbGsyjYsITW7YBI3&usp=drive_copy"
   },
   {
     "sku": "BRQ-099",
@@ -1074,7 +1074,7 @@ const CATALOG = {
     "desc": "Par de broqueles con gema redonda brillante en engaste de cuatro puntas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1a7miul2TF8b8RrFWJvYHzv5x72vlRCLb&usp=drive_copy"
   },
   {
     "sku": "BRQ-100",
@@ -1082,7 +1082,7 @@ const CATALOG = {
     "desc": "Broqueles con piedras facetadas en montura de oro.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1WpheNTd3JtJfGFWxWzkSO1T2Qwra_Y3-&usp=drive_copy"
   },
   {
     "sku": "BRQ-101",
@@ -1090,7 +1090,7 @@ const CATALOG = {
     "desc": "Broqueles con piedra brillante redonda engastada en un diseño de cuatro garras.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1cks2F-X7BG-k4Qc34p-Fkl0uvdy3274Q&usp=drive_copy"
   },
   {
     "sku": "BRQ-102",
@@ -1098,7 +1098,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con piedra negra facetada engastada en cuatro garras.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1nKIJZDXteHuBLFySOSUf1iPBt9JdKgiT&usp=drive_copy"
   },
   {
     "sku": "BRQ-103",
@@ -1106,7 +1106,7 @@ const CATALOG = {
     "desc": "Broquel tipo stud con circonia rosa redonda en engaste de oro.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1eXILFUxxsO2BkvdZ3gfhJECNPQC6Kg4X&usp=drive_copy"
   },
   {
     "sku": "BRQ-104",
@@ -1114,7 +1114,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con piedra redonda central y montura de diseño envolvente.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1qpl-q1wJBObbKo9EgPXLtWfdwGSPmM5R&usp=drive_copy"
   },
   {
     "sku": "BRQ-105",
@@ -1122,7 +1122,7 @@ const CATALOG = {
     "desc": "Broquel de oro con piedra redonda facetada en engaste de bisel.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1jLY5DBf1Zoz_uhnjLRqQ8WszV7zLv2nE&usp=drive_copy"
   },
   {
     "sku": "BRQ-106",
@@ -1130,7 +1130,7 @@ const CATALOG = {
     "desc": "Broqueles de oro amarillo 10K con piedra central redonda engastada.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1f0eH7SCTrP06WQzckPyfXdyw-HSlec3N&usp=drive_copy"
   },
   {
     "sku": "BRQ-107",
@@ -1138,7 +1138,7 @@ const CATALOG = {
     "desc": "Broquel de oro con piedra central y bisel de cuerda.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=18J9jKzVYsUP9O74jqNXKrk3iLHfpCj9z&usp=drive_copy"
   },
   {
     "sku": "BRQ-108",
@@ -1146,7 +1146,7 @@ const CATALOG = {
     "desc": "Broquel de oro con gema central rosa y borde trenzado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1HqHZVRj69Qmh95or3Gdvd63zLpecCrU0&usp=drive_copy"
   },
   {
     "sku": "BRQ-109",
@@ -1154,7 +1154,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con piedra central redonda y orilla con diseño torzal.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1PAU3_WreMVxNNqJ6F-mbFu7tK-7VnfIE&usp=drive_copy"
   },
   {
     "sku": "BRQ-110",
@@ -1162,7 +1162,7 @@ const CATALOG = {
     "desc": "Broqueles redondos con piedra central facetada y bisel de oro con diseño trenzado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1pWoS4WLxfwH3EMCkS2qJ3xFqxzexwyn_&usp=drive_copy"
   },
   {
     "sku": "BRQ-111",
@@ -1170,7 +1170,7 @@ const CATALOG = {
     "desc": "Broquel de oro con piedra redonda y gota de circonia engastadas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1wmz7_8PKFWFMOM5f0pkX9b9lH2WhvPTO&usp=drive_copy"
   },
   {
     "sku": "BRQ-112",
@@ -1178,7 +1178,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de estrella y diamante natural en bruto.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1VsilbDYIYKJmV-4-sBY6wkfJ2pFtFkIP&usp=drive_copy"
   },
   {
     "sku": "BRQ-113",
@@ -1186,7 +1186,7 @@ const CATALOG = {
     "desc": "Par de broqueles con diseño floral en oro y piedra central.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1GyfXiyL2exguFtHGBvAybKYjMjmQjni2&usp=drive_copy"
   },
   {
     "sku": "BRQ-114",
@@ -1194,7 +1194,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con piedra central y diseño floral estriado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1IQlDIoOzJ-gYdrJm8hh-0Dummf3LnVt8&usp=drive_copy"
   },
   {
     "sku": "BRQ-115",
@@ -1202,7 +1202,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con forma de disco liso y acabado pulido.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1ChvRxJUGfZrnl9ePBOBw9zQmA0wOubB0&usp=drive_copy"
   },
   {
     "sku": "BRQ-116",
@@ -1210,7 +1210,7 @@ const CATALOG = {
     "desc": "Broqueles cuadrados de oro con piedra verde central y orilla texturizada.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1hdy50UEUaN-W6QWzq2khIQv9B6I465lp&usp=drive_copy"
   },
   {
     "sku": "BRQ-117",
@@ -1218,7 +1218,7 @@ const CATALOG = {
     "desc": "Broquel de diseño con estrella de circonia y dos colgantes con piedras.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1Y_kL4IfMj6l9-CiYZs3JSboXgHnfsBnO&usp=drive_copy"
   },
   {
     "sku": "BRQ-118",
@@ -1226,7 +1226,7 @@ const CATALOG = {
     "desc": "Broqueles cuadrados de oro con piedra central rosa y orilla texturizada.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1YcpJNIHClO-nblWvY1KMkUr3nAtmgtyk&usp=drive_copy"
   },
   {
     "sku": "BRQ-119",
@@ -1234,7 +1234,7 @@ const CATALOG = {
     "desc": "Broqueles de oro amarillo con piedra central cuadrada y borde facetado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1uzCrh9X05ukdmlPj4-3uJk2c3zY3heGS&usp=drive_copy"
   },
   {
     "sku": "BRQ-120",
@@ -1242,7 +1242,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K con piedra cuadrada central y marco de diseño radiante.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1D21diQfWjXvNpD1ESydueJgrrxHoUdWP&usp=drive_copy"
   },
   {
     "sku": "BRQ-121",
@@ -1250,7 +1250,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con zirconia cuadrada engastada en bisel decorado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1YOTNQ1GHWm47alGU1HUDzsIHqQysfqoy&usp=drive_copy"
   },
   {
     "sku": "BRQ-122",
@@ -1258,7 +1258,7 @@ const CATALOG = {
     "desc": "Broqueles redondos de oro con piedra central facetada en engaste de bisel.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1Dk4GFhPmnowFD8XVh63Nn3r8-taM3ZHB&usp=drive_copy"
   },
   {
     "sku": "BRQ-123",
@@ -1266,7 +1266,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con diseño de sol facetado que maximiza el brillo.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1cawYbEEWsbhChk46UurgAtIBed8acV-y&usp=drive_copy"
   },
   {
     "sku": "BRQ-124",
@@ -1274,7 +1274,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con forma de esfera lisa.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=19-0TRuobHxHJDzLn457OTE1Q3cQe3JY3&usp=drive_copy"
   },
   {
     "sku": "BRQ-125",
@@ -1282,7 +1282,7 @@ const CATALOG = {
     "desc": "Broqueles de oro 10K en forma de esfera lisa y pulida.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1OMqHc3PEX5ilD-WNvbE6f9pQusEjXBrU&usp=drive_copy"
   },
   {
     "sku": "BRQ-126",
@@ -1290,7 +1290,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con piedras redondas facetadas en bisel, una negra y una morada/azul.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1Bj6IoyhlNsUKE95nEDlFoZnGFY19FcOr&usp=drive_copy"
   },
   {
     "sku": "BRQ-127",
@@ -1298,7 +1298,7 @@ const CATALOG = {
     "desc": "Broqueles con piedra cuadrada morada engastada en cuatro puntas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1Dk3w0_9nvg_3j1TcNBCSAKo1svRJetMU&usp=drive_copy"
   },
   {
     "sku": "BRQ-128",
@@ -1306,7 +1306,7 @@ const CATALOG = {
     "desc": "Broquel con piedra cuadrada engastada con cuatro puntas en metal dorado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=14wDxTmYpCohcCzLqVHJeLVDE2cYQEX1f&usp=drive_copy"
   },
   {
     "sku": "BRQ-129",
@@ -1314,7 +1314,7 @@ const CATALOG = {
     "desc": "Broqueles de oro con gema roja facetada en forma de corazón y borde estriado.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1XbqVzL118psmxk8d_HiQmvP--H6YEACc&usp=drive_copy"
   },
   {
     "sku": "BRQ-130",
@@ -1322,7 +1322,7 @@ const CATALOG = {
     "desc": "Broquel con piedra rosa redonda en engaste de cuatro puntas.",
     "kilate": "10K",
     "precio": "",
-    "foto": ""
+    "foto": "https://drive.google.com/open?id=1wiXI4lELbqR4jGb-E5bsyki6tSsHB09A&usp=drive_copy"
   },
   {
     "sku": "BRQ-131",
