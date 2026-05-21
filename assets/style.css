@@ -158,3 +158,32 @@ footer {
 .card-nombre { font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:var(--champagne);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
 .card-precio { font-size:11px;color:var(--oro);letter-spacing:.5px; }
 .card-precio.na { color:rgba(232,224,204,.25);font-style:italic;font-size:10px; }
+
+@media (max-width: 768px) {
+  /* Nav */
+  nav { padding: 16px 20px; }
+  nav.scrolled { padding: 12px 20px; }
+  .nav-links { gap: 18px; }
+  .nav-links a { font-size: 9px; letter-spacing: 2px; }
+
+  /* Topbar */
+  .topbar { padding: 8px 16px; gap: 0; justify-content: center; flex-wrap: nowrap; overflow-x: auto; }
+  .topbar-item { font-size: 9px; letter-spacing: 1.5px; }
+  .topbar-sep { display: none; }
+
+  /* Footer */
+  footer { padding: 48px 24px 32px; }
+  .ft-top { flex-direction: column; gap: 32px; }
+  .ft-cols { flex-direction: column; gap: 28px; }
+
+  /* Cards/grids */
+  .cat-grid { grid-template-columns: repeat(2,1fr); }
+  .featured-header { padding: 0 20px; }
+  .carousel { padding: 0 20px; }
+  .catalog-section { padding: 0 20px 60px; }
+  .page-hero { padding: 120px 20px 60px; }
+}
+
+@media (max-width: 480px) {
+  .nav-links { display: none; } /* En móvil chico solo logo */
+}
