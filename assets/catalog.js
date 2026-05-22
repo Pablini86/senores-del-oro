@@ -1,6 +1,6 @@
 // ══════════════════════════════════════
 //  SEÑORES DEL ORO — catalog.js
-//  21/5/2026, 5:59:39 p.m.
+//  21/5/2026, 6:01:15 p.m.
 // ══════════════════════════════════════
 
 function driveToImg(url) {
@@ -13,8 +13,32 @@ function driveToImg(url) {
 
 const CATALOG = {
   cadenas: [
+    { sku:'CAD-MEX-001', nombre:'Barbado Planchada', desc:'Cadena barbado planchada en oro 10K, 65 cm de largo y 5 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'65 cm', grosor:'5 mm', peso:'13.3g', kilate:'19950', precio:'$NaN', foto:'*Destacado' },
+    { sku:'CAD-MEX-002', nombre:'Cartier', desc:'Cadena Cartier en oro 10K, 60 cm de largo y 3 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'60 cm', grosor:'3 mm', peso:'4.4g', kilate:'6600', precio:'$NaN', foto:'' },
+    { sku:'CAD-MEX-003', nombre:'Cartier', desc:'Cadena Cartier en oro 10K, 50 cm de largo y 3 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'50 cm', grosor:'3 mm', peso:'3.9g', kilate:'5850', precio:'$NaN', foto:'' },
+    { sku:'CAD-MEX-004', nombre:'Cartier', desc:'Cadena Cartier en oro 10K, 50 cm de largo y 5 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'50 cm', grosor:'5 mm', peso:'10.4g', kilate:'15600', precio:'$NaN', foto:'' },
+    { sku:'CAD-MEX-005', nombre:'Planchada', desc:'Cadena planchada en oro 10K, 50 cm de largo y 2 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'50 cm', grosor:'2 mm', peso:'3.1g', kilate:'4650', precio:'$NaN', foto:'' },
+    { sku:'CAD-MEX-006', nombre:'Planchadita', desc:'Cadena planchadita en oro 10K, 40 cm de largo y 2 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'40 cm', grosor:'2 mm', peso:'2.6g', kilate:'3900', precio:'$NaN', foto:'' },
+    { sku:'CAD-MEX-007', nombre:'Gucci', desc:'Cadena estilo Gucci en oro 10K, 50 cm de largo y 4 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'50 cm', grosor:'4 mm', peso:'5.7g', kilate:'8550', precio:'$NaN', foto:'' },
+    { sku:'CAD-MEX-008', nombre:'Planchada', desc:'Cadena planchada en oro 10K, 55 cm de largo y 2.5 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'55 cm', grosor:'2.5 mm', peso:'2.1g', kilate:'3150', precio:'$NaN', foto:'' },
+    { sku:'CAD-MEX-009', nombre:'Planchada', desc:'Cadena planchada en oro 10K, 50 cm de largo y 2 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'50 cm', grosor:'2 mm', peso:'1.9g', kilate:'2850', precio:'$NaN', foto:'' },
+    { sku:'CAD-MEX-010', nombre:'Gucci', desc:'Cadena estilo Gucci en oro 10K, 65 cm de largo y 3 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'65 cm', grosor:'3 mm', peso:'3.4g', kilate:'5100', precio:'$NaN', foto:'' },
+    { sku:'CAD-MEX-011', nombre:'Gucci', desc:'Cadena estilo Gucci en oro 10K, 55 cm de largo y 2 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'55 cm', grosor:'2 mm', peso:'1.6g', kilate:'2400', precio:'$NaN', foto:'' },
+    { sku:'CAD-MEX-012', nombre:'Gucci', desc:'Cadena estilo Gucci en oro 10K, 50 cm de largo y 2 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'50 cm', grosor:'2 mm', peso:'1.6g', kilate:'2400', precio:'$NaN', foto:'' },
+    { sku:'CAD-MEX-013', nombre:'Gucci', desc:'Cadena estilo Gucci en oro 10K, 50 cm de largo y 3 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.', largo:'50 cm', grosor:'3 mm', peso:'2.9g', kilate:'4350', precio:'$NaN', foto:'' },
+    { sku:'Precio base: $1,500 MXN por gramo · 10K · Actualizado: mayo 2026', nombre:'', desc:'', kilate:'', precio:'', foto:'' },
   ],
   pulsos: [
+    { sku:'PUL-MEX-001', nombre:'Petatillo con placa', desc:'Pulso petatillo con placa en oro 10K, 19 cm de largo, eslabón 6 mm y placa 6 mm. Hecho a pedido en Guadalajara, entrega en una semana.', largo:'19 cm', grosor:'6 mm', peso:'10.2g', kilate:'15300', precio:'$NaN', foto:'' },
+    { sku:'PUL-MEX-002', nombre:'Cartier con placa', desc:'Pulso Cartier con placa en oro 10K, 18 cm de largo, eslabón 5 mm y placa 6 mm. Hecho a pedido en Guadalajara, entrega en una semana.', largo:'18 cm', grosor:'6 mm', peso:'4.8g', kilate:'7200', precio:'$NaN', foto:'' },
+    { sku:'PUL-MEX-003', nombre:'Planchado con placa', desc:'Pulso planchado con placa en oro 10K, 21 cm de largo, eslabón 6 mm y placa 7 mm. Hecho a pedido en Guadalajara, entrega en una semana.', largo:'21 cm', grosor:'7 mm', peso:'8.3g', kilate:'12450', precio:'$NaN', foto:'' },
+    { sku:'PUL-MEX-004', nombre:'Cartier', desc:'Pulso Cartier en oro 10K, 19 cm de largo y eslabón 4 mm. Hecho a pedido en Guadalajara, entrega en una semana.', largo:'19 cm', peso:'4.6g', kilate:'6900', precio:'$NaN', foto:'Sin placa' },
+    { sku:'PUL-MEX-005', nombre:'Cartier', desc:'Pulso Cartier en oro 10K, 18.5 cm de largo y eslabón 4 mm. Hecho a pedido en Guadalajara, entrega en una semana.', largo:'18.5 cm', peso:'3.2g', kilate:'4800', precio:'$NaN', foto:'Sin placa' },
+    { sku:'PUL-MEX-006', nombre:'Cartier', desc:'Pulso Cartier en oro 10K, 18 cm de largo y eslabón 3 mm. Hecho a pedido en Guadalajara, entrega en una semana.', largo:'18 cm', peso:'1.6g', kilate:'2400', precio:'$NaN', foto:'Sin placa' },
+    { sku:'PUL-MEX-007', nombre:'Cartier', desc:'Pulso Cartier en oro 10K, 21 cm de largo y eslabón 4.5 mm. Hecho a pedido en Guadalajara, entrega en una semana.', largo:'21 cm', peso:'2.4g', kilate:'3600', precio:'$NaN', foto:'Sin placa' },
+    { sku:'PUL-MEX-008', nombre:'Cartier', desc:'Pulso Cartier en oro 10K, 20 cm de largo y eslabón 4.5 mm. Hecho a pedido en Guadalajara, entrega en una semana.', largo:'20 cm', peso:'2.5g', kilate:'3750', precio:'$NaN', foto:'' },
+    { sku:'PUL-MEX-009', nombre:'Cartier', desc:'Pulso Cartier en oro 10K, 17 cm de largo y eslabón 5 mm. Hecho a pedido en Guadalajara, entrega en una semana.', largo:'17 cm', peso:'4.1g', kilate:'6150', precio:'$NaN', foto:'Sin placa' },
+    { sku:'Precio base: $1,500 MXN por gramo · 10K · Actualizado: mayo 2026', nombre:'', desc:'', kilate:'', precio:'', foto:'' },
   ],
   broqueles: [
     { sku:'BRQ-001', nombre:'Broquel Corazón con Zirconia 10K', desc:'Broqueles de oro 10K con diseño de corazón calado y zirconia central.', kilate:'10k', precio:'$500', foto:'https://drive.google.com/open?id=1hO6171s2vGKq93gQJ8XI5GW_rvepmt0J&usp=drive_copy' },
