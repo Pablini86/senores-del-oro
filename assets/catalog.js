@@ -1,4 +1,4 @@
-// Generado desde Google Sheets · 22/5/2026, 1:17:38 p.m.
+// Generado desde Google Sheets · 22/5/2026, 1:27:18 p.m.
 
 function driveToImg(url) {
   if (!url) return null;
