@@ -524,7 +524,7 @@
 const PHICON = 'assets/SEN_ORES_DEL_ORO_LOGO_UNICO_DORADO.png';
 
 function buildCarouselCard(item, isBrq) {
-  const precio = isBrq ? null : formatPrecio(item.precio);
+  const precio = formatPrecio(item.precio);
   const kilate = item.kilate;
   const d = document.createElement('div');
   d.className = 'carousel-card';
