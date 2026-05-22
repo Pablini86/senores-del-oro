@@ -1,4 +1,4 @@
-// Generado desde Google Sheets · 22/5/2026, 1:06:40 p.m.
+// Generado desde Google Sheets · 22/5/2026, 1:17:38 p.m.
 
 function driveToImg(url) {
   if (!url) return null;
@@ -183,6 +183,7 @@ const CATALOG = {
     {sku:"PU-004",nombre:"Trozo de oro",desc:"Trozo de oro puro",kilate:"",peso:"20g",precio:1200,foto:"https://drive.google.com/file/d/1LR44AwkYUrywoPUhrRbZTOuou9h0Jrog/view?usp=sharing"},
   ],
 };
+
 // ── CONVERTIR FOTOS AL CARGAR ──
 Object.values(CATALOG).forEach(arr =>
   arr.forEach(p => { if (p.foto) p.foto = driveToImg(p.foto); })
