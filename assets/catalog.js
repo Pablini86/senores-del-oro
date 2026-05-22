@@ -5,7 +5,12 @@ function driveToImg(url) {
   const m = url.match(/(?:id=|\/d\/)([a-zA-Z0-9_-]{20,})/);
   return m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w800` : url;
 }
-
+function formatPrecio(val) {
+  if (!val) return null;
+  const num = parseFloat(String(val).replace(/[^0-9.]/g, ''));
+  if (!num) return null;
+  return '$' + num.toLocaleString('es-MX');
+}
 const CATALOG = {
   cadenas: [
   {
