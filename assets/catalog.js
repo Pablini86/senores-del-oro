@@ -11,6 +11,13 @@ function formatPrecio(val) {
   if (!num) return null;
   return '$' + num.toLocaleString('es-MX');
 }
+function formatPrecio(val) {
+  if (!val) return null;
+  const num = parseFloat(String(val).replace(/[^0-9.]/g, ''));
+  if (!num) return null;
+  return '$' + num.toLocaleString('es-MX');
+}
+
 const CATALOG = {
   cadenas: [
   {
