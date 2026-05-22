@@ -1,4 +1,4 @@
-// Generado desde Google Sheets · 22/5/2026, 1:27:18 p.m.
+// Generado desde Google Sheets · 22/5/2026, 1:30:10 p.m.
 
 function driveToImg(url) {
   if (!url) return null;
@@ -30,7 +30,6 @@ const CATALOG = {
     {sku:"CAD-MEX-011",nombre:"Gucci",desc:"Cadena estilo Gucci en oro 10K, 55 cm de largo y 2 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.",largo:"55 cm",grosor:"2 mm",peso:"1.6g",precio:2400,kilate:"10K",foto:"https://drive.google.com/file/d/184Yy1ET1RZo3pvIgKt0XSFPcJrgIE224/view?usp=sharing"},
     {sku:"CAD-MEX-012",nombre:"Gucci",desc:"Cadena estilo Gucci en oro 10K, 50 cm de largo y 2 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.",largo:"50 cm",grosor:"2 mm",peso:"1.6g",precio:2400,kilate:"10K",foto:"https://drive.google.com/file/d/184Yy1ET1RZo3pvIgKt0XSFPcJrgIE224/view?usp=sharing"},
     {sku:"CAD-MEX-013",nombre:"Gucci",desc:"Cadena estilo Gucci en oro 10K, 50 cm de largo y 3 mm de grosor. Hecha a pedido en Guadalajara, entrega en una semana.",largo:"50 cm",grosor:"3 mm",peso:"2.9g",precio:4350,kilate:"10K",foto:"https://drive.google.com/file/d/184Yy1ET1RZo3pvIgKt0XSFPcJrgIE224/view?usp=sharing"},
-    {sku:"Precio base: $1,500 MXN por gramo · 10K · Actualizado: mayo 2026",nombre:"",desc:"",largo:"",grosor:"",peso:"",precio:"",kilate:"",foto:""},
   ],
   pulsos: [
     {sku:"PUL-MEX-001",nombre:"Petatillo con placa",desc:"Pulso petatillo con placa en oro 10K, 19 cm de largo, eslabón 6 mm y placa 6 mm. Hecho a pedido en Guadalajara, entrega en una semana.",largo:"19 cm",eslabon:"6 mm",placa:"6 mm",peso:"10.2g",precio:15300,kilate:"10K",foto:"https://drive.google.com/open?id=1H0G4NhuT3dKH4QhCSPLSCpVxxSWMTnWx"},
@@ -42,7 +41,6 @@ const CATALOG = {
     {sku:"PUL-MEX-007",nombre:"Cartier",desc:"Pulso Cartier en oro 10K, 21 cm de largo y eslabón 4.5 mm. Hecho a pedido en Guadalajara, entrega en una semana.",largo:"21 cm",eslabon:"4.5 mm",placa:"",peso:"2.4g",precio:3600,kilate:"10K",foto:"https://drive.google.com/file/d/1vpdYbcXD8GicDpJqlOFRBqMVhkxOm4S4/view?usp=sharing"},
     {sku:"PUL-MEX-008",nombre:"Cartier",desc:"Pulso Cartier en oro 10K, 20 cm de largo y eslabón 4.5 mm. Hecho a pedido en Guadalajara, entrega en una semana.",largo:"20 cm",eslabon:"4.5 mm",placa:"",peso:"2.5g",precio:3750,kilate:"10K",foto:"https://drive.google.com/file/d/12L4xgNdod1O_LofC7_9VXhwKRma0LHYC/view?usp=sharing"},
     {sku:"PUL-MEX-009",nombre:"Cartier",desc:"Pulso Cartier en oro 10K, 17 cm de largo y eslabón 5 mm. Hecho a pedido en Guadalajara, entrega en una semana.",largo:"17 cm",eslabon:"5 mm",placa:"",peso:"4.1g",precio:6150,kilate:"10K",foto:"https://drive.google.com/file/d/1IHdd2WOAvnDkHpf4Jerz7p9SAmeSQeV4/view?usp=sharing"},
-    {sku:"Precio base: $1,500 MXN por gramo · 10K · Actualizado: mayo 2026",nombre:"",desc:"",largo:"",eslabon:"",placa:"",peso:"",precio:"",kilate:"",foto:""},
   ],
   broqueles: [
     {sku:"BRQ-001",nombre:"Broquel Corazón con Zirconia 10K",desc:"Broqueles de oro 10K con diseño de corazón calado y zirconia central.",kilate:"10k",precio:500,foto:"https://drive.google.com/open?id=1hO6171s2vGKq93gQJ8XI5GW_rvepmt0J&usp=drive_copy"},
