@@ -189,7 +189,7 @@ function renderGrid(items) {
       </div>
       <div class="card-info">
         <div class="card-nombre">${item.nombre}</div>
-        <div class="card-precio ${item.precio ? '' : 'na'}">${item.precio || 'Consultar precio'}</div>
+        <div class="card-precio ${formatPrecio(item.precio) ? '' : 'na'}">${formatPrecio(item.precio) || 'Consultar precio'}</div>
       </div>`;
     c.onclick = () => location.href = `producto.html?sku=${item.sku}`;
     grid.appendChild(c);
@@ -232,7 +232,7 @@ function openModal(item) {
     <p class="m-sku">${item.sku}</p>
     <p class="m-desc">${item.desc}</p>
     <div class="m-specs">${specs}</div>
-    <div class="m-precio ${item.precio ? '' : 'na'}">${item.precio || 'Precio disponible próximamente'}</div>
+    <div class="m-precio ${formatPrecio(item.precio) ? '' : 'na'}">${formatPrecio(item.precio) || 'Precio disponible próximamente'}</div>
     <button class="m-btn" onclick="window.open('https://wa.me/523300000000?text=${encodeURIComponent('Hola, me interesa: ')}${encodeURIComponent(item.sku + ' - ' + item.nombre)}','_blank')">Consultar por WhatsApp</button>`;
 
   const imgEl = document.getElementById('mImg');
