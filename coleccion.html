@@ -200,7 +200,7 @@ function setTab(cat) {
   activeCat = cat;
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
   document.getElementById('searchInput').value = '';
-  filtered = [...(CATALOG[cat] || [])];
+  filtered = (CATALOG[cat] || []).filter(i => i.sku && i.sku.trim() !== '');
   renderGrid(filtered);
   history.replaceState({}, '', `?cat=${cat}`);
 }
