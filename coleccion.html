@@ -233,7 +233,7 @@ function openModal(item) {
     <p class="m-desc">${item.desc}</p>
     <div class="m-specs">${specs}</div>
     <div class="m-precio ${formatPrecio(item.precio) ? '' : 'na'}">${formatPrecio(item.precio) || 'Precio disponible próximamente'}</div>
-    <button class="m-btn" onclick="window.open('https://wa.me/523300000000?text=${encodeURIComponent('Hola, me interesa: ')}${encodeURIComponent(item.sku + ' - ' + item.nombre)}','_blank')">Consultar por WhatsApp</button>`;
+    <button class="m-btn" onclick="window.open('https://wa.me/523322176097?text=${encodeURIComponent('Hola, me interesa: ')}${encodeURIComponent(item.sku + ' - ' + item.nombre)}','_blank')">Consultar por WhatsApp</button>`;
 
   const imgEl = document.getElementById('mImg');
   imgEl.innerHTML = item.foto
