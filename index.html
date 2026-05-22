@@ -523,7 +523,7 @@
 const PHICON = 'assets/SEN_ORES_DEL_ORO_LOGO_UNICO_DORADO.png';
 
 function buildCarouselCard(item, isBrq) {
-  const precio = isBrq ? null : item.precio;
+  const precio = isBrq ? null : formatPrecio(item.precio);
   const kilate = item.kilate;
   const d = document.createElement('div');
   d.className = 'carousel-card';
@@ -605,7 +605,7 @@ function openModal(item) {
     <p class="m-sku">${item.sku}</p>
     <p class="m-desc">${item.desc}</p>
     <div class="m-specs">${specs}</div>
-    <div class="m-precio ${item.precio?'':'na'}">${item.precio||'Precio disponible próximamente'}</div>
+    <div class="m-precio ${formatPrecio(item.precio)?'':'na'}">${formatPrecio(item.precio)||'Precio disponible próximamente'}</div>
     <button class="m-btn" onclick="window.open('https://wa.me/523300000000?text=Hola, me interesa: ${encodeURIComponent(item.sku+' - ')}'+encodeURIComponent('${item.nombre}'),'_blank')">Consultar por WhatsApp</button>`;
   document.getElementById('mImg').innerHTML = item.foto
     ? `<img src="${item.foto}" class="photo" alt="">`
