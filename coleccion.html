@@ -60,6 +60,18 @@
 .search-input::placeholder { color: rgba(232,224,204,.25); }
 .search-input:focus { border-color: rgba(201,168,76,.4); }
 .results-count { font-size: 10px; color: rgba(232,224,204,.35); letter-spacing: 2px; }
+
+  @media (max-width: 768px) {
+  .page-hero { padding: 120px 24px 60px; }
+  .page-hero-bg { font-size: 72px; }
+  .catalog-section { padding: 0 16px 80px; }
+  .tabs { top: 56px; gap: 0; }
+  .tab { padding: 14px 12px; font-size: 9px; letter-spacing: 1.5px; }
+  .cat-grid { grid-template-columns: repeat(2,1fr); }
+  .cat-grid.cols5 { grid-template-columns: repeat(2,1fr); }
+  .search-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .search-input { width: 100%; }
+}
 </style>
 </head>
 <body>
