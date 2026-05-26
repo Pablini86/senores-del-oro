@@ -210,6 +210,12 @@ function renderGrid(items) {
   });
 }
 
+  document.querySelectorAll('.tab').forEach(t => {
+  const cat = t.dataset.cat;
+  if (CATALOG[cat]) {
+    t.querySelector('.tab-count').textContent = CATALOG[cat].length;
+  }
+});
 function setTab(cat) {
   activeCat = cat;
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
