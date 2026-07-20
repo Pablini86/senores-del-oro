@@ -479,7 +479,7 @@ function buildCarouselCard(item) {
     </div>
     <div class="cinfo">
       <div class="cinfo-nombre">${item.nombre}</div>
-      <div class="cinfo-precio ${precio?'':'na'}">${precio||'Consultar precio'}</div>
+      <div class="cinfo-precio ${precio?'':'na'}">${precioDisplay(item)}</div>
     </div>`;
   d.onclick = () => location.href = `producto.html?sku=${item.sku}`;
   return d;
@@ -500,7 +500,7 @@ function buildCard(item) {
     </div>
     <div class="cinfo">
       <div class="cinfo-nombre">${item.nombre}</div>
-      <div class="cinfo-precio ${precio?'':'na'}">${precio||'Consultar precio'}</div>
+      <div class="cinfo-precio ${precio?'':'na'}">${precioDisplay(item)}</div>
     </div>`;
   d.onclick = () => location.href = `producto.html?sku=${item.sku}`;
   return d;

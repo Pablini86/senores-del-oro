@@ -61,6 +61,17 @@ para dejarlo funcionando — te toma ~15 minutos.
 3. Abre `Admin.html`, entra con el correo/contraseña del paso 4, y prueba
    editar o agregar una pieza — debe reflejarse en el sitio al recargar.
 
+## Actualizaciones futuras del esquema
+
+Ya tienes tu proyecto corriendo y aparece un archivo nuevo en
+`supabase/migrations/` (por ejemplo, `0001_variant_groups.sql`)? Solo
+necesitas correr ESE archivo, no todo `schema.sql` de nuevo — son cambios
+incrementales pensados para pegarse tal cual en **SQL Editor → New snippet → Run**.
+
+**Ahora mismo hay dos pendientes** (corre las dos, en orden):
+1. [`supabase/migrations/0001_variant_groups.sql`](supabase/migrations/0001_variant_groups.sql) — agrupar variantes de producto (ver README).
+2. [`supabase/migrations/0002_multiple_photos.sql`](supabase/migrations/0002_multiple_photos.sql) — varias fotos por pieza con galería.
+
 ## Notas
 
 - **No necesitas volver a tocar `catalog.js`** — quedó como respaldo

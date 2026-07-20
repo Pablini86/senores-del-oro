@@ -31,7 +31,7 @@ function openModal(item) {
     <p class="m-sku">${item.sku}</p>
     <p class="m-desc">${item.desc}</p>
     <div class="m-specs">${specs}</div>
-    <div class="m-precio ${precio ? '' : 'na'}">${precio || 'Precio disponible próximamente'}</div>
+    <div class="m-precio ${precio ? '' : 'na'}">${precio ? precioDisplay(item) : 'Precio disponible próximamente'}</div>
     <button class="m-btn" onclick="window.open('${waUrl}','_blank')">Consultar por WhatsApp</button>`;
 
   document.getElementById('mImg').innerHTML = item.foto

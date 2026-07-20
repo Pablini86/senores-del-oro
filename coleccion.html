@@ -58,7 +58,7 @@
 /* SEARCH */
 .search-bar {
   display: flex; align-items: center; gap: 16px;
-  margin-bottom: 32px; padding: 28px 0 0;
+  margin-bottom: 16px; padding: 28px 0 0;
 }
 .search-input {
   background: rgba(255,255,255,.04); border: 1px solid rgba(201,168,76,.15);
@@ -70,6 +70,41 @@
 .search-input:focus { border-color: rgba(201,168,76,.4); }
 .results-count { font-size: 10px; color: rgba(232,224,204,.35); letter-spacing: 2px; }
 
+/* FILTERS BAR */
+.filters-bar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 14px;
+  margin-bottom: 32px; padding-bottom: 24px;
+  border-bottom: 1px solid rgba(201,168,76,.08);
+}
+.filter-select {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(201,168,76,.15);
+  color: var(--champagne); font-family: 'Montserrat', sans-serif; font-size: 11px;
+  padding: 9px 14px; outline: none; letter-spacing: .5px; cursor: pointer;
+  transition: border-color .3s;
+}
+.filter-select:focus { border-color: rgba(201,168,76,.4); }
+.filter-price {
+  display: flex; align-items: center; gap: 6px;
+}
+.filter-price input {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(201,168,76,.15);
+  color: var(--champagne); font-family: 'Montserrat', sans-serif; font-size: 11px;
+  padding: 9px 10px; width: 90px; outline: none;
+  transition: border-color .3s;
+}
+.filter-price input:focus { border-color: rgba(201,168,76,.4); }
+.filter-price span { font-size: 10px; color: rgba(232,224,204,.3); }
+.filter-check {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; color: rgba(232,224,204,.6); letter-spacing: .5px;
+}
+.filter-check input { width: auto; cursor: pointer; }
+.filter-clear {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--oro); background: none; border: none; cursor: pointer;
+  padding: 0; text-decoration: underline; text-underline-offset: 3px;
+}
+
   @media (max-width: 768px) {
   .page-hero { padding: 120px 24px 60px; }
   .page-hero-bg { font-size: 72px; }
@@ -80,6 +115,7 @@
   .cat-grid.cols5 { grid-template-columns: repeat(2,1fr); }
   .search-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
   .search-input { width: 100%; }
+  .filters-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
 }
 </style>
 </head>
@@ -105,6 +141,27 @@
     <input type="text" class="search-input" id="searchInput" placeholder="Buscar pieza...">
     <span class="results-count" id="resultsCount"></span>
   </div>
+  <div class="filters-bar">
+    <select class="filter-select" id="sortSelect">
+      <option value="default">Ordenar por</option>
+      <option value="kilate">Kilataje</option>
+      <option value="precio-asc">Precio: menor a mayor</option>
+      <option value="precio-desc">Precio: mayor a menor</option>
+      <option value="az">Nombre A-Z</option>
+      <option value="za">Nombre Z-A</option>
+    </select>
+    <div class="filter-price">
+      <span>$</span>
+      <input type="number" id="priceMin" placeholder="Mín" min="0">
+      <span>—</span>
+      <input type="number" id="priceMax" placeholder="Máx" min="0">
+    </div>
+    <label class="filter-check">
+      <input type="checkbox" id="onlyPriced">
+      Solo con precio disponible
+    </label>
+    <button class="filter-clear" id="clearFilters" type="button">Limpiar filtros</button>
+  </div>
   <div class="cat-grid" id="catGrid"></div>
 </section>
 
@@ -122,7 +179,6 @@ setupModal();
 
 let CATALOG = {};
 let activeCat = 'cadenas';
-let filtered = [];
 
 // Read URL param
 const params = new URLSearchParams(location.search);
@@ -139,7 +195,6 @@ function renderGrid(items) {
   document.getElementById('resultsCount').textContent = `${items.length} piezas`;
 
   items.forEach(item => {
-    const isBrq = !item.largo;
     const c = document.createElement('div');
     c.className = 'card';
     c.innerHTML = `
@@ -152,32 +207,79 @@ function renderGrid(items) {
       </div>
       <div class="card-info">
         <div class="card-nombre">${item.nombre}</div>
-        <div class="card-precio ${formatPrecio(item.precio) ? '' : 'na'}">${formatPrecio(item.precio) || 'Consultar precio'}</div>
+        <div class="card-precio ${formatPrecio(item.precio) ? '' : 'na'}">${precioDisplay(item)}</div>
       </div>`;
     c.onclick = () => location.href = `producto.html?sku=${item.sku}`;
     grid.appendChild(c);
   });
 }
 
+// ── ORDEN Y FILTROS ──
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const sortBy = document.getElementById('sortSelect').value;
+  const priceMinRaw = document.getElementById('priceMin').value;
+  const priceMaxRaw = document.getElementById('priceMax').value;
+  const priceMin = priceMinRaw === '' ? null : parseFloat(priceMinRaw);
+  const priceMax = priceMaxRaw === '' ? null : parseFloat(priceMaxRaw);
+  const onlyPriced = document.getElementById('onlyPriced').checked;
+
+  let items = (CATALOG[activeCat] || []).filter(i => i.sku && i.sku.trim() !== '');
+
+  if (q) {
+    items = items.filter(i =>
+      i.nombre.toLowerCase().includes(q) ||
+      i.sku.toLowerCase().includes(q) ||
+      i.desc.toLowerCase().includes(q)
+    );
+  }
+
+  // Un rango de precio solo tiene sentido sobre piezas con precio fijado
+  if (onlyPriced || priceMin !== null || priceMax !== null) {
+    items = items.filter(i => i.precio !== null && i.precio !== undefined);
+  }
+  if (priceMin !== null) items = items.filter(i => i.precio >= priceMin);
+  if (priceMax !== null) items = items.filter(i => i.precio <= priceMax);
+
+  items = [...items].sort((a, b) => {
+    switch (sortBy) {
+      case 'kilate': return (a.kilate || '').localeCompare(b.kilate || '');
+      case 'precio-asc': return (a.precio ?? Infinity) - (b.precio ?? Infinity);
+      case 'precio-desc': return (b.precio ?? -Infinity) - (a.precio ?? -Infinity);
+      case 'az': return a.nombre.localeCompare(b.nombre, 'es');
+      case 'za': return b.nombre.localeCompare(a.nombre, 'es');
+      default: return a.orden - b.orden;
+    }
+  });
+
+  renderGrid(items);
+}
+
 function setTab(cat) {
   activeCat = cat;
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
   document.getElementById('searchInput').value = '';
-  filtered = (CATALOG[cat] || []).filter(i => i.sku && i.sku.trim() !== '');
-  renderGrid(filtered);
   history.replaceState({}, '', `?cat=${cat}`);
+  applyFilters();
 }
 
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => setTab(t.dataset.cat));
 
-document.getElementById('searchInput').addEventListener('input', e => {
-  const q = e.target.value.toLowerCase();
-  filtered = (CATALOG[activeCat] || []).filter(i =>
-    i.nombre.toLowerCase().includes(q) ||
-    i.sku.toLowerCase().includes(q) ||
-    i.desc.toLowerCase().includes(q)
-  );
-  renderGrid(filtered);
+['input', 'change'].forEach(evt => {
+  document.getElementById('searchInput').addEventListener(evt, applyFilters);
+  document.getElementById('sortSelect').addEventListener(evt, applyFilters);
+  document.getElementById('priceMin').addEventListener(evt, applyFilters);
+  document.getElementById('priceMax').addEventListener(evt, applyFilters);
+  document.getElementById('onlyPriced').addEventListener(evt, applyFilters);
+});
+
+document.getElementById('clearFilters').addEventListener('click', () => {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('sortSelect').value = 'default';
+  document.getElementById('priceMin').value = '';
+  document.getElementById('priceMax').value = '';
+  document.getElementById('onlyPriced').checked = false;
+  applyFilters();
 });
 
 (async function init() {

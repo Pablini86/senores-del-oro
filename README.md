@@ -22,8 +22,11 @@ senores-del-oro/
 │   ├── catalog.js                       ← Respaldo histórico del catálogo pre-Supabase
 │   └── SEN_ORES_DEL_ORO_*.png           ← Logos
 ├── supabase/
-│   ├── schema.sql                       ← Esquema de base de datos (correr una vez)
-│   └── seed.sql                         ← Carga inicial del catálogo (correr una vez)
+│   ├── schema.sql                       ← Esquema completo (para proyectos nuevos desde cero)
+│   ├── seed.sql                         ← Carga inicial del catálogo (correr una vez)
+│   └── migrations/                      ← Cambios incrementales para un proyecto ya existente
+│       ├── 0001_variant_groups.sql      ← Agrega variantes de producto (largo/talla)
+│       └── 0002_multiple_photos.sql     ← Agrega galería de varias fotos por pieza
 ├── scripts/
 │   ├── generate-seed.js                 ← Regenera seed.sql desde catalog.js
 │   └── generate-sitemap.js              ← Regenera sitemap.xml desde Supabase
@@ -59,6 +62,28 @@ Todo se hace desde `Admin.html`:
 
 En el formulario de edición, desmarca **"Visible en el sitio"**. La pieza
 sigue en el catálogo interno pero desaparece de `index.html`/`coleccion.html`.
+
+### Agrupar variantes (mismo diseño, distinto tamaño)
+
+Si dos piezas son el mismo diseño en distinto largo/talla (ej. una cadena
+Cartier de 50cm y otra de 60cm), no las captures como productos separados
+sin relación. En el formulario de cada una, sección **"Variante"**:
+
+- **Grupo de variante**: el mismo texto en ambas (ej. `cartier-3mm`).
+- **Etiqueta del selector**: lo que va a ver el cliente (ej. `50 cm`, `60 cm`).
+
+El sitio las muestra como una sola publicación con botones para elegir
+tamaño, y el precio de la tarjeta dice "Desde $X" cuando los tamaños
+cuestan distinto.
+
+### Varias fotos por pieza
+
+En el formulario de cada pieza puedes subir o pegar varias fotos. La
+primera de la lista es la **portada** (la que se ve en tarjetas y
+carruseles) — haz clic en **★** sobre cualquier otra foto para que pase a
+ser la portada, o en **✕** para quitarla. En `producto.html`, si una pieza
+tiene más de una foto aparece una tira de miniaturas para cambiar la
+imagen principal.
 
 ---
 

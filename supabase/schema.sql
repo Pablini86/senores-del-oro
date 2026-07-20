@@ -20,17 +20,21 @@ create table if not exists products (
   eslabon     text default '',            -- ej. '6 mm' (pulsos)
   placa       text default '',            -- ej. '6 mm' (pulsos con placa)
   peso        text default '',            -- ej. '13.3g'
-  foto_url    text,                       -- URL pública en Supabase Storage
+  foto_url    text,                       -- URL de la foto portada (para tarjetas/carruseles)
+  fotos       text[] not null default '{}', -- galería completa, en orden; fotos[1] = portada
   notas       text default '',            -- notas internas, no se muestran al público
   destacado   boolean not null default false,
   activo      boolean not null default true,
   orden       integer not null default 0, -- para ordenar manualmente en carruseles/grids
+  variant_group text,                     -- piezas con el mismo valor = una publicación con selector (mismo diseño, distinto tamaño)
+  variant_label  text,                    -- texto del selector, ej. '50 cm' o 'Talla chica'
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
 
 create index if not exists idx_products_categoria on products (categoria);
 create index if not exists idx_products_activo on products (activo);
+create index if not exists idx_products_variant_group on products (variant_group);
 
 -- ── updated_at automático ──
 create or replace function set_updated_at()

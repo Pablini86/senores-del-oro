@@ -110,17 +110,16 @@
   margin-bottom: 40px;
 }
 .prod-specs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  border-top: 1px solid rgba(201,168,76,.1);
-  border-left: 1px solid rgba(201,168,76,.1);
+  display: flex;
+  flex-wrap: wrap;
   margin-bottom: 44px;
 }
 .prod-spec {
-  padding: 16px 20px;
-  border-right: 1px solid rgba(201,168,76,.1);
-  border-bottom: 1px solid rgba(201,168,76,.1);
+  padding: 14px 22px;
+  min-width: 96px;
+  border: 1px solid rgba(201,168,76,.1);
+  margin-right: -1px;
+  margin-bottom: -1px;
 }
 .prod-spec-label {
   font-size: 8px;
@@ -133,6 +132,40 @@
   font-size: 14px;
   color: var(--champagne);
   font-family: 'Cormorant Garamond', serif;
+}
+
+/* ── VARIANT SELECTOR ── */
+.prod-variants {
+  margin-bottom: 32px;
+}
+.prod-variants-label {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(232,224,204,.35);
+  margin-bottom: 10px;
+}
+.prod-variants-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.variant-btn {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(201,168,76,.25);
+  color: rgba(232,224,204,.7);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 9px 18px;
+  cursor: pointer;
+  transition: all .25s;
+}
+.variant-btn:hover { border-color: var(--oro); color: var(--champagne); }
+.variant-btn.active {
+  background: var(--oro);
+  border-color: var(--oro);
+  color: var(--negro);
 }
 .prod-precio {
   font-family: 'Cormorant Garamond', serif;
@@ -210,6 +243,30 @@
   white-space: nowrap;
 }
 
+/* ── GALERÍA DE MINIATURAS ── */
+.prod-thumbs {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+.prod-thumb {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 1px solid rgba(232,224,204,.15);
+  opacity: .55;
+  transition: all .25s;
+}
+.prod-thumb:hover { opacity: .85; }
+.prod-thumb.active {
+  opacity: 1;
+  border-color: var(--oro);
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
   .prod-grid { grid-template-columns: 1fr; }
@@ -266,8 +323,32 @@ function specRow(label, val) {
   return `<div class="prod-spec"><div class="prod-spec-label">${label}</div><div class="prod-spec-val">${val}</div></div>`;
 }
 
+// ── VARIANT SELECTOR ──
+function variantLabel(v) {
+  return v.variantLabel || v.largo || v.peso || v.sku;
+}
+
+function renderVariantSelector(item, variants) {
+  if (variants.length < 2) return '';
+  return `
+    <div class="prod-variants">
+      <div class="prod-variants-label">Elige tamaño</div>
+      <div class="prod-variants-row">
+        ${variants.map(v => `<button type="button" class="variant-btn ${v.sku === item.sku ? 'active' : ''}" data-sku="${v.sku}">${variantLabel(v)}</button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function selectVariant(sku, variants, cat) {
+  const next = variants.find(v => v.sku === sku);
+  if (!next) return;
+  history.replaceState({}, '', `producto.html?sku=${sku}`);
+  renderProduct(next, cat, variants);
+}
+
 // ── RENDER PRODUCT ──
-function renderProduct(item, cat) {
+function renderProduct(item, cat, variants) {
+  variants = variants || [item];
   document.title = `${item.nombre} — Señores del Oro`;
   const imgUrl = item.foto;
   const waMsg = encodeURIComponent(`Hola, me interesa la pieza: ${item.sku} - ${item.nombre}`);
@@ -288,6 +369,11 @@ function renderProduct(item, cat) {
   if (item.placa) specs += specRow('Placa', item.placa);
   if (item.peso) specs += specRow('Peso', item.peso);
 
+  const fotos = (item.fotos && item.fotos.length) ? item.fotos : (imgUrl ? [imgUrl] : []);
+  const thumbsHtml = fotos.length > 1
+    ? `<div class="prod-thumbs">${fotos.map((f, i) => `<img src="${f}" class="prod-thumb ${i === 0 ? 'active' : ''}" data-i="${i}" alt="">`).join('')}</div>`
+    : '';
+
   document.getElementById('prodContent').innerHTML = `
     <div class="prod-wrap">
       <div class="prod-grid">
@@ -302,6 +388,7 @@ function renderProduct(item, cat) {
                  <img src="${PHICON}" alt="">
                  <span>Foto próximamente</span>
                </div>`}
+          ${thumbsHtml}
           <div class="foto-nota">${item.sku}</div>
         </div>
         <div class="prod-info-col">
@@ -316,6 +403,7 @@ function renderProduct(item, cat) {
           <h1 class="prod-nombre">${item.nombre}</h1>
           <p class="prod-sku">${item.sku}</p>
           <p class="prod-desc">${item.desc}</p>
+          ${renderVariantSelector(item, variants)}
           ${specs ? `<div class="prod-specs">${specs}</div>` : ''}
           <div class="prod-precio ${formatPrecio(item.precio) ? '' : 'na'}">${formatPrecio(item.precio) || 'Consultar precio'}</div>
           <a class="prod-cta" href="https://wa.me/${WA_NUMBER}?text=${waMsg}" target="_blank">
@@ -325,17 +413,32 @@ function renderProduct(item, cat) {
         </div>
       </div>
     </div>`;
+
+  document.querySelectorAll('.variant-btn').forEach(btn => {
+    btn.onclick = () => selectVariant(btn.dataset.sku, variants, cat);
+  });
+
+  document.querySelectorAll('.prod-thumb').forEach(thumb => {
+    thumb.onclick = () => {
+      document.querySelector('.prod-img-col img.foto').src = fotos[thumb.dataset.i];
+      document.querySelectorAll('.prod-thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+    };
+  });
 }
 
 // ── RENDER RELATED ──
 function renderRelated(item, cat, catalog) {
-  const pool = (catalog[cat] || []).filter(i => i.sku !== item.sku);
+  const pool = (catalog[cat] || []).filter(i =>
+    item.variantGroup ? i.variantGroup !== item.variantGroup : i.sku !== item.sku
+  );
   const picks = pool.sort(() => Math.random() - .5).slice(0, 4);
   if (!picks.length) return;
 
   const grid = document.getElementById('relatedGrid');
   picks.forEach(p => {
     const imgUrl = p.foto;
+    const precio = formatPrecio(p.precio);
     const d = document.createElement('div');
     d.className = 'card';
     d.style.cursor = 'pointer';
@@ -349,7 +452,7 @@ function renderRelated(item, cat, catalog) {
       </div>
       <div class="card-info">
         <div class="card-nombre">${p.nombre}</div>
-        <div class="card-precio ${formatPrecio(p.precio) ? '' : 'na'}">${formatPrecio(p.precio) || 'Consultar precio'}</div>
+        <div class="card-precio ${precio ? '' : 'na'}">${precio ? (p.precioEsRango ? 'Desde ' : '') + precio : 'Consultar precio'}</div>
       </div>`;
     d.onclick = () => location.href = `producto.html?sku=${p.sku}`;
     grid.appendChild(d);
@@ -369,8 +472,8 @@ function renderRelated(item, cat, catalog) {
     return;
   }
 
-  const item = await fetchProductBySku(skuParam);
-  if (!item) {
+  const result = await fetchProductWithVariants(skuParam);
+  if (!result) {
     document.getElementById('prodContent').innerHTML = `
       <div class="prod-loading">
         <img src="${PHICON}" alt="">
@@ -379,7 +482,8 @@ function renderRelated(item, cat, catalog) {
     return;
   }
 
-  renderProduct(item, item.categoria);
+  const { item, variants } = result;
+  renderProduct(item, item.categoria, variants);
   const catalog = await fetchCatalog();
   renderRelated(item, item.categoria, catalog);
 })();
