@@ -410,6 +410,91 @@ body {
 
 /* ── HIDDEN ── */
 .hidden { display: none !important; }
+
+/* ── FORM CARDS ── */
+.form-card {
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(201,168,76,.1);
+  padding: 22px 22px 18px;
+  margin-bottom: 16px;
+}
+.form-card-title {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--oro);
+  margin-bottom: 18px;
+}
+.form-card-hint {
+  font-size: 10.5px;
+  color: rgba(232,224,204,.4);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.form-card .field:last-child,
+.form-card .field-row:last-child { margin-bottom: 0; }
+
+/* ── STATUS PILLS ── */
+.status-pills { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+.status-pill {
+  display: flex; align-items: center; gap: 9px;
+  border: 1px solid rgba(201,168,76,.18);
+  padding: 10px 16px;
+  font-size: 11px;
+  color: rgba(232,224,204,.5);
+  cursor: pointer;
+  transition: all .25s;
+  user-select: none;
+}
+.status-pill:hover { border-color: rgba(201,168,76,.4); }
+.status-pill.on { border-color: var(--oro); color: var(--champagne); background: rgba(201,168,76,.07); }
+.status-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(232,224,204,.2); flex-shrink: 0; transition: background .25s; }
+.status-pill.on .dot { background: var(--oro); }
+
+/* ── SKU ROW ── */
+.sku-row { display: flex; gap: 8px; }
+.sku-row input { flex: 1; }
+.sku-row button { flex-shrink: 0; white-space: nowrap; }
+
+/* ── DROPZONE ── */
+.dropzone {
+  border: 1.5px dashed rgba(201,168,76,.3);
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .25s;
+}
+.dropzone:hover, .dropzone.dragover {
+  border-color: var(--oro);
+  background: rgba(201,168,76,.05);
+}
+.dropzone-icon { font-size: 20px; color: var(--oro); opacity: .8; margin-bottom: 8px; }
+.dropzone-text { font-size: 11px; color: rgba(232,224,204,.45); line-height: 1.6; }
+.dropzone-text strong { color: var(--champagne); font-weight: 400; }
+.foto-gallery-hint { font-size: 10px; color: rgba(232,224,204,.35); margin-top: 12px; }
+.foto-gallery { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+/* ── TABLE WRAP (scroll horizontal en mobile) ── */
+.table-wrap { overflow-x: auto; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .admin-wrap { flex-direction: column; }
+  .sidebar {
+    width: 100%; height: auto; position: relative; top: auto;
+    flex-direction: row; align-items: center; overflow-x: auto;
+  }
+  .sidebar-header { padding: 14px 18px; border-bottom: none; border-right: 1px solid rgba(201,168,76,.08); flex-shrink: 0; }
+  .sidebar-nav { display: flex; padding: 0; flex: none; }
+  .nav-item { border-left: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .nav-item.active { border-left-color: transparent; border-bottom-color: var(--oro); }
+  .sidebar-footer { border-top: none; border-left: 1px solid rgba(201,168,76,.08); flex-shrink: 0; padding: 14px 18px; white-space: nowrap; }
+  .admin-main { padding: 24px 16px; }
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+  .drawer { width: 100%; padding: 30px 20px; }
+  .field-row { grid-template-columns: 1fr; gap: 0; }
+  .field-row .field { margin-bottom: 20px; }
+}
 </style>
 </head>
 <body>
@@ -488,21 +573,23 @@ body {
         </div>
       </div>
 
-      <table class="catalog-table">
-        <thead>
-          <tr>
-            <th>Foto</th>
-            <th>SKU</th>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Grupo</th>
-            <th>Precio</th>
-            <th>Kilate</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table class="catalog-table">
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>SKU</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Grupo</th>
+              <th>Precio</th>
+              <th>Kilate</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
 
       <div class="pagination">
         <span class="pag-info" id="pagInfo"></span>
@@ -520,49 +607,84 @@ body {
   <div class="drawer-sub" id="drawerSub">Agregar al catálogo</div>
 
   <form id="pieceForm" onsubmit="return false">
-    <div class="form-section">Identificación</div>
-    <div class="field-row">
-      <div class="field">
-        <label>SKU *</label>
-        <input type="text" id="fSku" placeholder="CAD-MEX-001" required>
-      </div>
-      <div class="field">
-        <label>Kilate *</label>
-        <select id="fKilate">
-          <option value="10K">10K</option>
-          <option value="14K">14K</option>
-          <option value="18K">18K</option>
-        </select>
-      </div>
+
+    <div class="status-pills">
+      <label class="status-pill" id="pillActivo">
+        <input type="checkbox" id="fActivo" checked style="display:none">
+        <span class="dot"></span> Visible en el sitio
+      </label>
+      <label class="status-pill" id="pillDestacado">
+        <input type="checkbox" id="fDestacado" style="display:none">
+        <span class="dot"></span> Destacada ★
+      </label>
     </div>
-    <div class="field">
-      <label>Nombre *</label>
-      <input type="text" id="fNombre" placeholder="Cadena Barbado Planchada" required>
-    </div>
-    <div class="field-row">
+
+    <div class="form-card">
+      <div class="form-card-title">Información básica</div>
       <div class="field">
-        <label>Categoría *</label>
-        <select id="fCategoria" onchange="updateCatFields()">
-          <option value="cadenas">Cadena</option>
-          <option value="pulsos">Pulso</option>
-          <option value="broqueles">Broquel</option>
-          <option value="unicas">Pieza Única</option>
-        </select>
+        <label>Nombre *</label>
+        <input type="text" id="fNombre" placeholder="Cadena Barbado Planchada" required>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Categoría *</label>
+          <select id="fCategoria" onchange="updateCatFields()">
+            <option value="cadenas">Cadena</option>
+            <option value="pulsos">Pulso</option>
+            <option value="broqueles">Broquel</option>
+            <option value="unicas">Pieza Única</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Kilate *</label>
+          <select id="fKilate">
+            <option value="10K">10K</option>
+            <option value="14K">14K</option>
+            <option value="18K">18K</option>
+          </select>
+        </div>
       </div>
       <div class="field">
-        <label>Precio MXN</label>
-        <input type="text" id="fPrecio" placeholder="$19,950">
+        <label>SKU * <span style="opacity:.5;text-transform:none;letter-spacing:0">(código interno de la pieza)</span></label>
+        <div class="sku-row">
+          <input type="text" id="fSku" placeholder="CAD-MEX-001" required>
+          <button type="button" class="btn secondary sm" onclick="generateSku()">Generar</button>
+        </div>
       </div>
     </div>
 
-    <div class="form-section">Descripción</div>
-    <div class="field">
-      <label>Descripción</label>
-      <textarea id="fDesc" placeholder="Cadena barbado en oro 10K, 65 cm de largo..."></textarea>
+    <div class="form-card">
+      <div class="form-card-title">Fotos</div>
+      <div class="dropzone" id="dropzone">
+        <input type="file" id="fFotoFiles" accept="image/*" multiple style="display:none" onchange="addPhotoFiles(this.files); this.value=''">
+        <div class="dropzone-icon">⇧</div>
+        <div class="dropzone-text"><strong>Arrastra tus fotos aquí</strong><br>o haz clic para elegir desde tu computadora o celular</div>
+      </div>
+      <div class="field" style="margin-top:14px;margin-bottom:0">
+        <label>o pega una URL (Google Drive, Imgur, etc.)</label>
+        <div class="sku-row">
+          <input type="text" id="fFotoUrlInput" placeholder="https://drive.google.com/open?id=..." onkeydown="if(event.key==='Enter'){event.preventDefault();addPhotoUrl();}">
+          <button type="button" class="btn secondary sm" onclick="addPhotoUrl()">+ Agregar</button>
+        </div>
+      </div>
+      <p class="foto-gallery-hint">La primera foto es la portada (la que se ve en tarjetas y carruseles). Haz clic en ★ sobre cualquier otra para hacerla portada.</p>
+      <div id="fotoGallery" class="foto-gallery"></div>
     </div>
 
-    <div id="cadenaFields">
-      <div class="form-section">Especificaciones — Cadena / Pulso</div>
+    <div class="form-card">
+      <div class="form-card-title">Precio y descripción</div>
+      <div class="field">
+        <label>Precio MXN <span style="opacity:.5;text-transform:none;letter-spacing:0">(vacío = "Consultar precio")</span></label>
+        <input type="text" id="fPrecio" placeholder="19950">
+      </div>
+      <div class="field">
+        <label>Descripción</label>
+        <textarea id="fDesc" placeholder="Cadena barbado en oro 10K, 65 cm de largo..."></textarea>
+      </div>
+    </div>
+
+    <div id="cadenaFields" class="form-card">
+      <div class="form-card-title">Especificaciones — Cadena / Pulso</div>
       <div class="field-row">
         <div class="field"><label>Largo (cm)</label><input type="text" id="fLargo" placeholder="65"></div>
         <div class="field"><label>Grosor (mm)</label><input type="text" id="fGrosor" placeholder="5"></div>
@@ -571,52 +693,31 @@ body {
         <div class="field"><label>Eslabón (mm)</label><input type="text" id="fEslabon" placeholder="6"></div>
         <div class="field"><label>Peso (gr)</label><input type="text" id="fPeso" placeholder="13.3"></div>
       </div>
+      <div class="field">
+        <label>Placa (mm) — solo pulsos</label>
+        <input type="text" id="fPlaca" placeholder="6">
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title">Variante (opcional)</div>
+      <p class="form-card-hint">
+        ¿Es el mismo diseño en otro tamaño? Ponle el mismo "Grupo" a todas las
+        variantes (ej. <code>cartier-3mm</code>) y aparecerán como una sola
+        publicación con selector en el sitio.
+      </p>
       <div class="field-row">
-        <div class="field"><label>Placa (mm) — solo pulsos</label><input type="text" id="fPlaca" placeholder="6"></div>
-        <div class="field"></div>
+        <div class="field"><label>Grupo de variante</label><input type="text" id="fVariantGroup" placeholder="cartier-3mm"></div>
+        <div class="field"><label>Etiqueta del selector</label><input type="text" id="fVariantLabel" placeholder="50 cm"></div>
       </div>
     </div>
 
-    <div class="form-section">Fotos</div>
-    <div class="field">
-      <label>Subir fotos (puedes elegir varias)</label>
-      <input type="file" id="fFotoFiles" accept="image/*" multiple onchange="addPhotoFiles(this.files); this.value=''">
-    </div>
-    <div class="field-row" style="align-items:flex-end">
-      <div class="field" style="margin-bottom:0">
-        <label>o pega una URL (Google Drive, Imgur, etc.)</label>
-        <input type="text" id="fFotoUrlInput" placeholder="https://drive.google.com/open?id=..." onkeydown="if(event.key==='Enter'){event.preventDefault();addPhotoUrl();}">
+    <div class="form-card">
+      <div class="form-card-title">Notas internas</div>
+      <div class="field">
+        <label>Solo las ve el equipo, no el sitio</label>
+        <input type="text" id="fNotas" placeholder="Sin placa · Destacado · etc.">
       </div>
-      <button type="button" class="btn secondary sm" onclick="addPhotoUrl()">+ Agregar</button>
-    </div>
-    <p style="font-size:10px;color:rgba(232,224,204,.35);margin-top:10px">La primera foto es la portada (la que se ve en tarjetas y carruseles). Haz clic en ★ para cambiarla.</p>
-    <div id="fotoGallery" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
-
-    <div class="form-section">Variante (opcional)</div>
-    <p style="font-size:11px;color:rgba(232,224,204,.4);margin-bottom:14px;line-height:1.6">
-      ¿Es el mismo diseño en otro tamaño? Ponle el mismo "Grupo" a todas las
-      variantes (ej. <code>cartier-3mm</code>) y aparecerán como una sola
-      publicación con selector en el sitio.
-    </p>
-    <div class="field-row">
-      <div class="field"><label>Grupo de variante</label><input type="text" id="fVariantGroup" placeholder="cartier-3mm"></div>
-      <div class="field"><label>Etiqueta del selector</label><input type="text" id="fVariantLabel" placeholder="50 cm"></div>
-    </div>
-
-    <div class="form-section">Estado</div>
-    <div class="field" style="display:flex;align-items:center;gap:10px">
-      <input type="checkbox" id="fActivo" checked style="width:auto">
-      <label style="margin:0;text-transform:none;font-size:12px;letter-spacing:0;color:var(--champagne)">Visible en el sitio</label>
-    </div>
-    <div class="field" style="display:flex;align-items:center;gap:10px">
-      <input type="checkbox" id="fDestacado" style="width:auto">
-      <label style="margin:0;text-transform:none;font-size:12px;letter-spacing:0;color:var(--champagne)">Destacada (muestra una etiqueta dorada en el sitio)</label>
-    </div>
-
-    <div class="form-section">Notas</div>
-    <div class="field">
-      <label>Notas internas</label>
-      <input type="text" id="fNotas" placeholder="Sin placa · Destacado · etc.">
     </div>
 
     <div class="drawer-footer">
@@ -828,6 +929,7 @@ function fillForm(item) {
   document.getElementById('fCategoria').value = item.categoria || 'cadenas';
   document.getElementById('deleteBtn').style.display = 'inline-block';
   updateCatFields();
+  refreshStatusPills();
   editingPhotos = (item.fotos && item.fotos.length ? item.fotos : (item.foto ? [item.foto] : []))
     .map(url => ({ url }));
   renderFotoGallery();
@@ -846,9 +948,53 @@ function clearForm() {
   document.getElementById('fDestacado').checked = false;
   document.getElementById('deleteBtn').style.display = 'none';
   updateCatFields();
+  refreshStatusPills();
   editingPhotos = [];
   renderFotoGallery();
 }
+
+// ══════════════════════════════════════
+//  STATUS PILLS
+// ══════════════════════════════════════
+function refreshStatusPills() {
+  document.getElementById('pillActivo').classList.toggle('on', document.getElementById('fActivo').checked);
+  document.getElementById('pillDestacado').classList.toggle('on', document.getElementById('fDestacado').checked);
+}
+document.getElementById('fActivo').addEventListener('change', refreshStatusPills);
+document.getElementById('fDestacado').addEventListener('change', refreshStatusPills);
+
+// ══════════════════════════════════════
+//  GENERAR SKU
+// ══════════════════════════════════════
+const SKU_PREFIXES = { cadenas: 'CAD-MEX-', pulsos: 'PUL-MEX-', broqueles: 'BRQ-', unicas: 'PU-' };
+function generateSku() {
+  const cat = document.getElementById('fCategoria').value;
+  const prefix = SKU_PREFIXES[cat] || 'SKU-';
+  const nums = allItems
+    .filter(i => i.sku && i.sku.startsWith(prefix))
+    .map(i => parseInt(i.sku.slice(prefix.length), 10))
+    .filter(n => !isNaN(n));
+  const max = nums.length ? Math.max(...nums) : 0;
+  const width = nums.length ? String(max).length : 3;
+  document.getElementById('fSku').value = prefix + String(max + 1).padStart(Math.max(width, 3), '0');
+}
+
+// ══════════════════════════════════════
+//  DROPZONE (arrastrar y soltar fotos)
+// ══════════════════════════════════════
+const dropzone = document.getElementById('dropzone');
+dropzone.addEventListener('click', () => document.getElementById('fFotoFiles').click());
+['dragenter', 'dragover'].forEach(evt => dropzone.addEventListener(evt, e => {
+  e.preventDefault();
+  dropzone.classList.add('dragover');
+}));
+['dragleave', 'drop'].forEach(evt => dropzone.addEventListener(evt, e => {
+  e.preventDefault();
+  dropzone.classList.remove('dragover');
+}));
+dropzone.addEventListener('drop', e => {
+  if (e.dataTransfer.files.length) addPhotoFiles(e.dataTransfer.files);
+});
 
 function updateCatFields() {
   const cat = document.getElementById('fCategoria').value;
