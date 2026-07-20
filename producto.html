@@ -39,6 +39,7 @@
 .prod-img-col img.foto {
   width: 100%; height: 100%;
   object-fit: cover;
+  cursor: zoom-in;
 }
 .prod-img-placeholder {
   display: flex;
@@ -267,12 +268,53 @@
   border-color: var(--oro);
 }
 
+/* ── LIGHTBOX (zoom de foto) ── */
+.lightbox {
+  position: fixed; inset: 0;
+  background: rgba(5,3,0,.96);
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s;
+}
+.lightbox.open { opacity: 1; pointer-events: all; }
+.lightbox img {
+  max-width: 88vw; max-height: 88vh;
+  object-fit: contain;
+  cursor: zoom-out;
+}
+.lightbox-close {
+  position: absolute; top: 24px; right: 32px;
+  background: none; border: none; color: var(--champagne);
+  font-size: 24px; cursor: pointer; opacity: .7; transition: opacity .3s;
+}
+.lightbox-close:hover { opacity: 1; }
+.lightbox-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(201,168,76,.25);
+  color: var(--oro); font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .3s;
+}
+.lightbox-nav:hover { background: var(--oro); color: var(--negro); }
+.lightbox-nav.prev { left: 24px; }
+.lightbox-nav.next { right: 24px; }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
   .prod-grid { grid-template-columns: 1fr; }
   .prod-img-col { height: 60vw; position: relative; top: 0; min-height: 300px; }
   .prod-info-col { padding: 48px 32px; }
   .related-grid { grid-template-columns: repeat(2,1fr); }
+  .prod-thumbs { flex-wrap: wrap; max-width: calc(100% - 40px); }
+  .prod-thumb { width: 44px; height: 44px; }
+}
+@media (max-width: 480px) {
+  .prod-info-col { padding: 40px 20px; }
+  .prod-variants-row { gap: 6px; }
+  .variant-btn { padding: 8px 14px; font-size: 10px; }
+  .related-grid { grid-template-columns: 1fr 1fr; gap: 2px; }
 }
 </style>
 </head>
@@ -297,6 +339,13 @@
 
 <div id="site-footer"></div>
 
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">✕</button>
+  <button class="lightbox-nav prev" id="lightboxPrev">←</button>
+  <img id="lightboxImg" src="" alt="">
+  <button class="lightbox-nav next" id="lightboxNext">→</button>
+</div>
+
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="assets/config.js"></script>
 <script src="assets/db.js"></script>
@@ -307,6 +356,40 @@ mountLayout({ navVariant: 'default' });
 // ── CONFIG ──
 const PHICON = 'assets/SEN_ORES_DEL_ORO_LOGO_UNICO_DORADO.png';
 const WA_NUMBER = SITE_WA_NUMBER;
+
+// ── LIGHTBOX (zoom de foto) ──
+let currentFotos = [];
+let currentFotoIndex = 0;
+
+function openLightbox(i) {
+  if (!currentFotos.length) return;
+  currentFotoIndex = i;
+  document.getElementById('lightboxImg').src = currentFotos[currentFotoIndex];
+  document.getElementById('lightboxPrev').style.display = currentFotos.length > 1 ? 'flex' : 'none';
+  document.getElementById('lightboxNext').style.display = currentFotos.length > 1 ? 'flex' : 'none';
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function lightboxStep(dir) {
+  if (currentFotos.length < 2) return;
+  currentFotoIndex = (currentFotoIndex + dir + currentFotos.length) % currentFotos.length;
+  document.getElementById('lightboxImg').src = currentFotos[currentFotoIndex];
+}
+document.getElementById('lightboxClose').onclick = closeLightbox;
+document.getElementById('lightboxPrev').onclick = () => lightboxStep(-1);
+document.getElementById('lightboxNext').onclick = () => lightboxStep(1);
+document.getElementById('lightboxImg').onclick = closeLightbox;
+document.getElementById('lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') closeLightbox(); });
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lightboxStep(-1);
+  if (e.key === 'ArrowRight') lightboxStep(1);
+});
 
 // ── GET SKU FROM URL ──
 const params = new URLSearchParams(location.search);
@@ -418,13 +501,21 @@ function renderProduct(item, cat, variants) {
     btn.onclick = () => selectVariant(btn.dataset.sku, variants, cat);
   });
 
+  currentFotos = fotos;
+  currentFotoIndex = 0;
+
   document.querySelectorAll('.prod-thumb').forEach(thumb => {
     thumb.onclick = () => {
-      document.querySelector('.prod-img-col img.foto').src = fotos[thumb.dataset.i];
+      const i = Number(thumb.dataset.i);
+      currentFotoIndex = i;
+      document.querySelector('.prod-img-col img.foto').src = fotos[i];
       document.querySelectorAll('.prod-thumb').forEach(t => t.classList.remove('active'));
       thumb.classList.add('active');
     };
   });
+
+  const mainImg = document.querySelector('.prod-img-col img.foto');
+  if (mainImg) mainImg.onclick = () => openLightbox(currentFotoIndex);
 }
 
 // ── RENDER RELATED ──
@@ -448,6 +539,7 @@ function renderRelated(item, cat, catalog) {
           ? `<img src="${imgUrl}" class="photo" alt="${p.nombre}" onerror="this.style.display='none'">`
           : `<div class="card-ph"><img src="${PHICON}" alt=""></div>`}
         ${p.kilate ? `<span class="kilate">${p.kilate}</span>` : ''}
+        ${p.destacado ? `<span class="badge-destacado">Destacada</span>` : ''}
         <div class="card-ov"><span>Ver pieza</span></div>
       </div>
       <div class="card-info">

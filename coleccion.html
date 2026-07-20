@@ -203,6 +203,7 @@ function renderGrid(items) {
           ? `<img src="${item.foto}" class="photo" alt="${item.nombre}">`
           : `<div class="card-ph"><img src="assets/SEN_ORES_DEL_ORO_LOGO_UNICO_DORADO.png" alt=""></div>`}
         ${item.kilate ? `<span class="kilate">${item.kilate}</span>` : ''}
+        ${item.destacado ? `<span class="badge-destacado">Destacada</span>` : ''}
         <div class="card-ov"><span>Ver pieza</span></div>
       </div>
       <div class="card-info">

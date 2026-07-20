@@ -475,6 +475,7 @@ function buildCarouselCard(item) {
         ? `<img src="${item.foto}" class="cimg-1" alt="${item.nombre}" loading="lazy"><img src="${item.foto}" class="cimg-2" alt="" loading="lazy">`
         : `<div class="cimg-ph"><img src="${PHICON}" alt=""></div>`}
       ${item.kilate ? `<span class="kilate">${item.kilate}</span>` : ''}
+      ${item.destacado ? `<span class="badge-destacado">Destacada</span>` : ''}
       <div class="card-ov"><span>Ver pieza</span></div>
     </div>
     <div class="cinfo">
@@ -496,6 +497,7 @@ function buildCard(item) {
         ? `<img src="${item.foto}" class="cimg-1" alt="${item.nombre}" loading="lazy">`
         : `<div class="cimg-ph"><img src="${PHICON}" alt=""></div>`}
       ${item.kilate ? `<span class="kilate">${item.kilate}</span>` : ''}
+      ${item.destacado ? `<span class="badge-destacado">Destacada</span>` : ''}
       <div class="card-ov"><span>Ver pieza</span></div>
     </div>
     <div class="cinfo">

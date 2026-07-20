@@ -608,6 +608,10 @@ body {
       <input type="checkbox" id="fActivo" checked style="width:auto">
       <label style="margin:0;text-transform:none;font-size:12px;letter-spacing:0;color:var(--champagne)">Visible en el sitio</label>
     </div>
+    <div class="field" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="fDestacado" style="width:auto">
+      <label style="margin:0;text-transform:none;font-size:12px;letter-spacing:0;color:var(--champagne)">Destacada (muestra una etiqueta dorada en el sitio)</label>
+    </div>
 
     <div class="form-section">Notas</div>
     <div class="field">
@@ -727,7 +731,7 @@ function renderTable() {
           : `<span class="foto-dot empty"></span>`}
       </td>
       <td><span class="td-sku">${item.sku}</span></td>
-      <td class="td-nombre">${item.nombre}${item.activo ? '' : ' <span style="font-size:9px;color:var(--rojo)">· oculta</span>'}</td>
+      <td class="td-nombre">${item.nombre}${item.destacado ? ' <span style="font-size:9px;color:var(--oro)">★</span>' : ''}${item.activo ? '' : ' <span style="font-size:9px;color:var(--rojo)">· oculta</span>'}</td>
       <td><span class="cat-badge">${categoriaLabel(item.categoria)}</span></td>
       <td style="font-size:10px;color:rgba(232,224,204,.4)">${item.variantGroup ? `${item.variantGroup}${item.variantLabel ? ' · ' + item.variantLabel : ''}` : '—'}</td>
       <td class="td-precio">${formatPrecio(item.precio) || '—'}</td>
@@ -820,6 +824,7 @@ function fillForm(item) {
   document.getElementById('fVariantGroup').value = item.variantGroup || '';
   document.getElementById('fVariantLabel').value = item.variantLabel || '';
   document.getElementById('fActivo').checked = item.activo !== false;
+  document.getElementById('fDestacado').checked = !!item.destacado;
   document.getElementById('fCategoria').value = item.categoria || 'cadenas';
   document.getElementById('deleteBtn').style.display = 'inline-block';
   updateCatFields();
@@ -838,6 +843,7 @@ function clearForm() {
   document.getElementById('fKilate').value = '10K';
   document.getElementById('fCategoria').value = 'cadenas';
   document.getElementById('fActivo').checked = true;
+  document.getElementById('fDestacado').checked = false;
   document.getElementById('deleteBtn').style.display = 'none';
   updateCatFields();
   editingPhotos = [];
@@ -973,6 +979,7 @@ async function savePiece() {
     peso: peso ? peso + 'g' : '',
     notas: document.getElementById('fNotas').value.trim(),
     activo: document.getElementById('fActivo').checked,
+    destacado: document.getElementById('fDestacado').checked,
     variant_group: document.getElementById('fVariantGroup').value.trim() || null,
     variant_label: document.getElementById('fVariantLabel').value.trim() || null,
   };

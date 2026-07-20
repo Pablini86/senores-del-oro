@@ -56,10 +56,14 @@ function renderNav(variant, activeKey) {
   return `
 <nav id="nav">
   <a href="index.html"><img src="assets/SEN_ORES_DEL_ORO_LOGO_DORADO.png" class="nav-logo" alt="Señores del Oro"></a>
-  <ul class="nav-links">
+  <ul class="nav-links" id="navLinks">
     ${links}
   </ul>
-</nav>`;
+  <button class="nav-hamburger" id="navHamburger" aria-label="Abrir menú" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-backdrop" id="navBackdrop"></div>`;
 }
 
 function renderFooter() {
@@ -131,4 +135,30 @@ function mountLayout({ navVariant = 'default', activeKey = null, modal = false }
   setOffset();
   window.addEventListener('resize', setOffset);
   window.addEventListener('scroll', () => nav && nav.classList.toggle('scrolled', scrollY > 70));
+
+  // Menú móvil
+  const hamburger = document.getElementById('navHamburger');
+  const navLinks = document.getElementById('navLinks');
+  const backdrop = document.getElementById('navBackdrop');
+  function closeMobileNav() {
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    navLinks.classList.remove('open');
+    backdrop.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function toggleMobileNav() {
+    const willOpen = !navLinks.classList.contains('open');
+    hamburger.classList.toggle('open', willOpen);
+    hamburger.setAttribute('aria-expanded', String(willOpen));
+    navLinks.classList.toggle('open', willOpen);
+    backdrop.classList.toggle('open', willOpen);
+    document.body.style.overflow = willOpen ? 'hidden' : '';
+  }
+  if (hamburger) {
+    hamburger.addEventListener('click', toggleMobileNav);
+    backdrop.addEventListener('click', closeMobileNav);
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileNav));
+    window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMobileNav(); });
+  }
 }
