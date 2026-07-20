@@ -10,16 +10,55 @@
 senores-del-oro/
 ├── index.html          ← Home + hero + destacados + origen
 ├── coleccion.html      ← Catálogo completo con tabs y búsqueda
+├── producto.html        ← Página de detalle de una pieza (?sku=...)
+├── encargo.html         ← Formulario "bajo pedido" → WhatsApp
+├── Admin.html            ← Panel de administración (requiere login)
 ├── assets/
-│   ├── style.css                         ← Estilos globales
-│   ├── catalog.js                        ← Datos de todos los productos
-│   ├── SEN_ORES_DEL_ORO_LOGO_DORADO_PNG.png    ← Logo wordmark dorado (nav/footer)
-│   ├── SEN_ORES_DEL_ORO_LOGO_UNICO_DORADO.png  ← Ícono dorado (hero)
-│   ├── SEN_ORES_DEL_ORO_LOGO_UNICO_BLANCO.png  ← Ícono blanco
-│   ├── SEN_ORES_DEL_ORO_LOGO_NEGRO.png         ← Wordmark negro
-│   └── SEN_ORES_DEL_ORO_NEGRO_CON_DORADO.png   ← Logo completo negro + dorado
+│   ├── style.css                        ← Estilos globales
+│   ├── config.js                        ← URL/clave de Supabase (rellenar, ver SETUP.md)
+│   ├── db.js                            ← Cliente de base de datos (Supabase)
+│   ├── partials.js                      ← Topbar/nav/footer compartidos
+│   ├── modal.js                         ← Modal de vista rápida (no usado aún)
+│   ├── catalog.js                       ← Respaldo histórico del catálogo pre-Supabase
+│   └── SEN_ORES_DEL_ORO_*.png           ← Logos
+├── supabase/
+│   ├── schema.sql                       ← Esquema de base de datos (correr una vez)
+│   └── seed.sql                         ← Carga inicial del catálogo (correr una vez)
+├── scripts/
+│   ├── generate-seed.js                 ← Regenera seed.sql desde catalog.js
+│   └── generate-sitemap.js              ← Regenera sitemap.xml desde Supabase
+├── SETUP.md              ← Guía paso a paso para conectar Supabase
 └── README.md
 ```
+
+---
+
+## Cómo funciona el catálogo
+
+El sitio lee los productos en vivo desde una base de datos en **Supabase**
+(Postgres gratis). `Admin.html` es un panel real con login — lo que se
+guarda ahí aparece de inmediato en `index.html`, `coleccion.html` y
+`producto.html`.
+
+**Si es la primera vez que configuras esto, sigue [SETUP.md](SETUP.md).**
+Ahí está el paso a paso para crear el proyecto de Supabase, cargar el
+catálogo actual y crear tu usuario de administrador.
+
+### Agregar / editar un producto
+
+Todo se hace desde `Admin.html`:
+
+1. Entra con tu correo y contraseña (creados en Supabase → Authentication → Users).
+2. **+ Nueva pieza** o **Editar** sobre una fila existente.
+3. Sube la foto directo desde tu computadora (se guarda en Supabase Storage)
+   o pega una URL.
+4. **Guardar pieza** — se escribe directo a la base de datos, no hace falta
+   tocar ningún archivo de código.
+
+### Ocultar una pieza sin borrarla
+
+En el formulario de edición, desmarca **"Visible en el sitio"**. La pieza
+sigue en el catálogo interno pero desaparece de `index.html`/`coleccion.html`.
 
 ---
 
@@ -28,40 +67,7 @@ senores-del-oro/
 1. Crear repositorio en github.com (público)
 2. Subir todos los archivos
 3. Settings → Pages → Branch: `main` → `/root`
-4. Listo en: `https://[usuario].github.io/senores-del-oro`
-
----
-
-## Actualizar productos
-
-### Agregar foto a un producto
-En `assets/catalog.js`, busca el SKU y cambia `foto: ''` por la URL de la imagen:
-
-```js
-{ sku:'CAD-MEX-001', nombre:'Barbado Planchada', ..., foto:'assets/fotos/CAD-MEX-001.jpg' }
-```
-
-Las fotos van en una carpeta `assets/fotos/` que creas tú.
-
-### Actualizar precio
-En `assets/catalog.js`, cambia el campo `precio`:
-
-```js
-precio: '$19,950'  →  precio: '$21,500'
-```
-
-### Agregar producto nuevo
-Copia una línea del array correspondiente y cambia los datos.
-
----
-
-## Conectar Shopify Buy Button
-
-Cuando tengan la tienda en Shopify (Plan Starter $9 USD/mes):
-
-1. En Shopify: Canales de venta → Buy Button → Crear
-2. Selecciona el producto → Copiar código
-3. En el modal de cada producto, reemplaza el botón de WhatsApp por el snippet de Shopify
+4. Listo en: `https://[usuario].github.io/senores-del-oro` (o el dominio de `CNAME`)
 
 ---
 

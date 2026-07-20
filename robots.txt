@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /Admin.html
+
+Sitemap: https://senoresdeloro.com/sitemap.xml

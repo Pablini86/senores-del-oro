@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Admin — Señores del Oro</title>
 <style>
 /* ── BASE ── */
@@ -417,11 +418,15 @@ body {
     <div class="login-logo">Señores del Oro</div>
     <div class="login-sub">Panel de administración</div>
     <div class="field">
+      <label>Correo</label>
+      <input type="email" id="emailInput" placeholder="tucorreo@ejemplo.com" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="field">
       <label>Contraseña</label>
       <input type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
-    <button class="btn" onclick="doLogin()">Entrar</button>
-    <p id="loginErr" style="margin-top:14px;font-size:11px;color:var(--rojo);display:none">Contraseña incorrecta</p>
+    <button class="btn" id="loginBtn" onclick="doLogin()">Entrar</button>
+    <p id="loginErr" style="margin-top:14px;font-size:11px;color:var(--rojo);display:none">Correo o contraseña incorrectos</p>
   </div>
 </div>
 
@@ -445,6 +450,7 @@ body {
     </nav>
     <div class="sidebar-footer">
       <a href="index.html" target="_blank">Ver sitio →</a>
+      <div style="margin-top:10px"><a href="#" onclick="doLogout();return false">Cerrar sesión</a></div>
     </div>
   </aside>
 
@@ -471,6 +477,7 @@ body {
             <option value="cadenas">Cadenas</option>
             <option value="pulsos">Pulsos</option>
             <option value="broqueles">Broqueles</option>
+            <option value="unicas">Piezas Únicas</option>
           </select>
         </span>
         <div class="table-actions">
@@ -536,6 +543,7 @@ body {
           <option value="cadenas">Cadena</option>
           <option value="pulsos">Pulso</option>
           <option value="broqueles">Broquel</option>
+          <option value="unicas">Pieza Única</option>
         </select>
       </div>
       <div class="field">
@@ -560,15 +568,29 @@ body {
         <div class="field"><label>Eslabón (mm)</label><input type="text" id="fEslabon" placeholder="6"></div>
         <div class="field"><label>Peso (gr)</label><input type="text" id="fPeso" placeholder="13.3"></div>
       </div>
+      <div class="field-row">
+        <div class="field"><label>Placa (mm) — solo pulsos</label><input type="text" id="fPlaca" placeholder="6"></div>
+        <div class="field"></div>
+      </div>
     </div>
 
     <div class="form-section">Foto</div>
     <div class="field">
-      <label>URL de foto (Google Drive, Imgur, etc.)</label>
+      <label>Subir foto</label>
+      <input type="file" id="fFotoFile" accept="image/*" onchange="previewFotoFile()">
+    </div>
+    <div class="field">
+      <label>o pega una URL (Google Drive, Imgur, etc.)</label>
       <input type="text" id="fFoto" placeholder="https://drive.google.com/open?id=...">
     </div>
     <div id="fotoPreview" style="margin-top:10px;display:none">
       <img id="fotoImg" style="width:100%;max-height:200px;object-fit:contain;border:1px solid rgba(201,168,76,.1)" alt="">
+    </div>
+
+    <div class="form-section">Estado</div>
+    <div class="field" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="fActivo" checked style="width:auto">
+      <label style="margin:0;text-transform:none;font-size:12px;letter-spacing:0;color:var(--champagne)">Visible en el sitio</label>
     </div>
 
     <div class="form-section">Notas</div>
@@ -580,6 +602,7 @@ body {
     <div class="drawer-footer">
       <button class="btn" style="flex:1" onclick="savePiece()">Guardar pieza</button>
       <button class="btn secondary" onclick="closeDrawer()">Cancelar</button>
+      <button class="btn danger" id="deleteBtn" style="display:none" onclick="deletePiece()">Borrar</button>
     </div>
   </form>
 </div>
@@ -587,18 +610,10 @@ body {
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script src="assets/catalog.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/db.js"></script>
 <script>
-// ══════════════════════════════════════
-//  CONFIG — ACTUALIZA ESTO
-// ══════════════════════════════════════
-const ADMIN_PASSWORD = 'señoresdeloro2025'; // ← cambia esto
-const SHEET_ID = '1HmNtzUE6KNLA641MoYCFupHoVhWe7Fz9Pp2Gtzk3XP4';
-
-// Apps Script URL para escribir al sheet
-// (Instrucciones para crear el script están al final del archivo)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/library/d/1WYgl-ABlNpgZO3hQHQ1t9RdShmZurpZ2gEhu4ZlezR-zN3UlUdyilCPs/1'; // ← pega aquí la URL de tu Apps Script desplegado
-
 // ══════════════════════════════════════
 //  ESTADO
 // ══════════════════════════════════════
@@ -609,40 +624,68 @@ const PER_PAGE = 20;
 let editingItem = null;
 
 // ══════════════════════════════════════
-//  LOGIN
+//  SESIÓN / LOGIN
 // ══════════════════════════════════════
-function doLogin() {
+async function doLogin() {
+  const email = document.getElementById('emailInput').value.trim();
   const pw = document.getElementById('pwInput').value;
-  if (pw === ADMIN_PASSWORD) {
-    document.getElementById('loginWrap').classList.add('hidden');
-    document.getElementById('adminWrap').classList.remove('hidden');
-    loadCatalog();
-  } else {
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Entrando...';
+  const { error } = await sbClient.auth.signInWithPassword({ email, password: pw });
+  btn.disabled = false; btn.textContent = 'Entrar';
+  if (error) {
     document.getElementById('loginErr').style.display = 'block';
     document.getElementById('pwInput').value = '';
+    return;
   }
+  document.getElementById('loginErr').style.display = 'none';
+  showAdmin();
 }
+
+async function doLogout() {
+  await sbClient.auth.signOut();
+  location.reload();
+}
+
+function showAdmin() {
+  document.getElementById('loginWrap').classList.add('hidden');
+  document.getElementById('adminWrap').classList.remove('hidden');
+  loadCatalog();
+}
+
+(async function initSession() {
+  const { data } = await sbClient.auth.getSession();
+  if (data.session) showAdmin();
+})();
 
 // ══════════════════════════════════════
 //  LOAD CATALOG
 // ══════════════════════════════════════
-function loadCatalog() {
-  allItems = [];
-  ['cadenas','pulsos','broqueles'].forEach(cat => {
-    CATALOG[cat].forEach(item => allItems.push({...item, _cat: cat}));
-  });
+async function loadCatalog() {
+  const { data, error } = await sbClient
+    .from('products')
+    .select('*')
+    .order('orden', { ascending: true });
+
+  if (error) {
+    showToast('Error cargando catálogo: ' + error.message, 'error');
+    return;
+  }
+
+  allItems = data.map(mapRow);
   updateStats();
   filtered = [...allItems];
   currentPage = 1;
   renderTable();
   document.getElementById('lastSync').textContent =
-    `Catálogo local · ${allItems.length} piezas · Última carga: ${new Date().toLocaleTimeString('es-MX')}`;
+    `${allItems.length} piezas · Última carga: ${new Date().toLocaleTimeString('es-MX')}`;
 }
 
 function updateStats() {
   document.getElementById('statTotal').textContent = allItems.length;
   document.getElementById('statFotos').textContent = allItems.filter(i => i.foto).length;
   document.getElementById('statPrecio').textContent = allItems.filter(i => i.precio).length;
+  document.getElementById('statCats').textContent = new Set(allItems.map(i => i.categoria)).size;
 }
 
 // ══════════════════════════════════════
@@ -661,17 +704,16 @@ function renderTable() {
   }
 
   tbody.innerHTML = page.map(item => {
-    const imgUrl = driveToImg(item.foto);
-    return `<tr>
+    return `<tr style="${item.activo ? '' : 'opacity:.4'}">
       <td class="td-foto">
-        ${imgUrl
-          ? `<img src="${imgUrl}" class="thumb" alt="" onerror="this.outerHTML='<span class=\\'foto-dot empty\\'></span>'">`
+        ${item.foto
+          ? `<img src="${item.foto}" class="thumb" alt="" onerror="this.outerHTML='<span class=\\'foto-dot empty\\'></span>'">`
           : `<span class="foto-dot empty"></span>`}
       </td>
       <td><span class="td-sku">${item.sku}</span></td>
-      <td class="td-nombre">${item.nombre}</td>
-      <td><span class="cat-badge">${catLabels[item._cat]}</span></td>
-      <td class="td-precio">${item.precio || '—'}</td>
+      <td class="td-nombre">${item.nombre}${item.activo ? '' : ' <span style="font-size:9px;color:var(--rojo)">· oculta</span>'}</td>
+      <td><span class="cat-badge">${categoriaLabel(item.categoria)}</span></td>
+      <td class="td-precio">${formatPrecio(item.precio) || '—'}</td>
       <td style="font-size:11px;color:rgba(201,168,76,.6)">${item.kilate}</td>
       <td>
         <div class="td-actions">
@@ -705,13 +747,11 @@ function goPage(p) {
 // ══════════════════════════════════════
 //  FILTER
 // ══════════════════════════════════════
-const catLabels = { cadenas:'Cadena', pulsos:'Pulso', broqueles:'Broquel' };
-
 function filterTable() {
   const q = document.getElementById('searchBox').value.toLowerCase();
   const cat = document.getElementById('catFilter').value;
   filtered = allItems.filter(i =>
-    (cat === 'all' || i._cat === cat) &&
+    (cat === 'all' || i.categoria === cat) &&
     (i.nombre.toLowerCase().includes(q) || i.sku.toLowerCase().includes(q))
   );
   currentPage = 1;
@@ -744,33 +784,41 @@ function closeDrawer() {
   document.getElementById('drawerOverlay').classList.remove('open');
 }
 
+function stripUnit(val, unit) {
+  return (val || '').replace(new RegExp('\\s*' + unit + '$'), '');
+}
+
 function fillForm(item) {
   document.getElementById('fSku').value = item.sku || '';
   document.getElementById('fNombre').value = item.nombre || '';
   document.getElementById('fDesc').value = item.desc || '';
-  document.getElementById('fPrecio').value = item.precio || '';
+  document.getElementById('fPrecio').value = item.precio != null ? item.precio : '';
   document.getElementById('fKilate').value = item.kilate || '10K';
   document.getElementById('fFoto').value = item.foto || '';
+  document.getElementById('fFotoFile').value = '';
   document.getElementById('fNotas').value = item.notas || '';
-  document.getElementById('fLargo').value = item.largo || '';
-  document.getElementById('fGrosor').value = item.grosor || '';
-  document.getElementById('fEslabon').value = item.eslabon || '';
-  document.getElementById('fPeso').value = item.peso || '';
-
-  // Map category
-  const catMap = { cadenas:'cadenas', pulsos:'pulsos', broqueles:'broqueles' };
-  document.getElementById('fCategoria').value = item._cat || 'cadenas';
+  document.getElementById('fLargo').value = stripUnit(item.largo, 'cm');
+  document.getElementById('fGrosor').value = stripUnit(item.grosor, 'mm');
+  document.getElementById('fEslabon').value = stripUnit(item.eslabon, 'mm');
+  document.getElementById('fPlaca').value = stripUnit(item.placa, 'mm');
+  document.getElementById('fPeso').value = stripUnit(item.peso, 'g');
+  document.getElementById('fActivo').checked = item.activo !== false;
+  document.getElementById('fCategoria').value = item.categoria || 'cadenas';
+  document.getElementById('deleteBtn').style.display = 'inline-block';
   updateCatFields();
   previewFoto();
 }
 
 function clearForm() {
   ['fSku','fNombre','fDesc','fPrecio','fFoto','fNotas',
-   'fLargo','fGrosor','fEslabon','fPeso'].forEach(id => {
+   'fLargo','fGrosor','fEslabon','fPlaca','fPeso'].forEach(id => {
     document.getElementById(id).value = '';
   });
+  document.getElementById('fFotoFile').value = '';
   document.getElementById('fKilate').value = '10K';
   document.getElementById('fCategoria').value = 'cadenas';
+  document.getElementById('fActivo').checked = true;
+  document.getElementById('deleteBtn').style.display = 'none';
   updateCatFields();
   document.getElementById('fotoPreview').style.display = 'none';
 }
@@ -781,7 +829,7 @@ function updateCatFields() {
     cat === 'broqueles' ? 'none' : 'block';
 }
 
-// Preview foto
+// Preview foto (URL pegada)
 document.getElementById('fFoto').addEventListener('input', previewFoto);
 function previewFoto() {
   const url = document.getElementById('fFoto').value;
@@ -794,108 +842,97 @@ function previewFoto() {
   }
 }
 
+// Preview foto (archivo subido)
+function previewFotoFile() {
+  const file = document.getElementById('fFotoFile').files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('fotoImg').src = e.target.result;
+    document.getElementById('fotoPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
 // ══════════════════════════════════════
-//  SAVE PIECE
+//  SAVE / DELETE PIECE
 // ══════════════════════════════════════
-function savePiece() {
+async function uploadPhoto(file, sku) {
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+  const path = `${sku}-${Date.now()}.${ext}`;
+  const { error } = await sbClient.storage.from('product-photos')
+    .upload(path, file, { upsert: false, cacheControl: '3600' });
+  if (error) throw error;
+  const { data } = sbClient.storage.from('product-photos').getPublicUrl(path);
+  return data.publicUrl;
+}
+
+async function savePiece() {
   const sku = document.getElementById('fSku').value.trim();
   const nombre = document.getElementById('fNombre').value.trim();
   if (!sku || !nombre) { showToast('SKU y nombre son obligatorios', 'error'); return; }
 
-  const piece = {
+  const largo = document.getElementById('fLargo').value.trim();
+  const grosor = document.getElementById('fGrosor').value.trim();
+  const eslabon = document.getElementById('fEslabon').value.trim();
+  const placa = document.getElementById('fPlaca').value.trim();
+  const peso = document.getElementById('fPeso').value.trim();
+  const precioRaw = document.getElementById('fPrecio').value.trim();
+  const precio = precioRaw ? parseFloat(precioRaw.replace(/[^0-9.]/g, '')) : null;
+
+  let foto = document.getElementById('fFoto').value.trim();
+  foto = driveToImg(foto) || foto || null;
+
+  const file = document.getElementById('fFotoFile').files[0];
+  if (file) {
+    showToast('Subiendo foto...', '');
+    try {
+      foto = await uploadPhoto(file, sku);
+    } catch (err) {
+      showToast('Error subiendo foto: ' + err.message, 'error');
+      return;
+    }
+  }
+
+  const payload = {
     sku,
     nombre,
     categoria: document.getElementById('fCategoria').value,
-    desc: document.getElementById('fDesc').value.trim(),
-    precio: document.getElementById('fPrecio').value.trim(),
+    descripcion: document.getElementById('fDesc').value.trim(),
+    precio,
     kilate: document.getElementById('fKilate').value,
-    foto: document.getElementById('fFoto').value.trim(),
-    largo: document.getElementById('fLargo').value.trim(),
-    grosor: document.getElementById('fGrosor').value.trim(),
-    eslabon: document.getElementById('fEslabon').value.trim(),
-    peso: document.getElementById('fPeso').value.trim(),
+    foto_url: foto,
+    largo: largo ? largo + ' cm' : '',
+    grosor: grosor ? grosor + ' mm' : '',
+    eslabon: eslabon ? eslabon + ' mm' : '',
+    placa: placa ? placa + ' mm' : '',
+    peso: peso ? peso + 'g' : '',
     notas: document.getElementById('fNotas').value.trim(),
+    activo: document.getElementById('fActivo').checked,
   };
 
-  if (APPS_SCRIPT_URL) {
-    // Save to Google Sheet via Apps Script
-    showToast('Guardando en Google Sheets...', '');
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: editingItem ? 'update' : 'insert', piece })
-    }).then(() => {
-      showToast(`✓ ${nombre} guardado en el sheet`, '');
-      closeDrawer();
-      // Update local CATALOG
-      updateLocalCatalog(piece, editingItem);
-      loadCatalog();
-    }).catch(() => {
-      showToast('Error al conectar con el sheet', 'error');
-    });
-  } else {
-    // No Apps Script configured — show the catalog.js line to copy
-    showToast('✓ Copia el código de abajo a tu catalog.js', '');
-    const line = buildCatalogLine(piece);
-    // Update locally anyway
-    updateLocalCatalog(piece, editingItem);
-    loadCatalog();
-    closeDrawer();
-    setTimeout(() => {
-      showCodeModal(line, piece.categoria);
-    }, 400);
+  const { error } = editingItem
+    ? await sbClient.from('products').update(payload).eq('id', editingItem.id)
+    : await sbClient.from('products').insert(payload);
+
+  if (error) {
+    showToast('Error al guardar: ' + error.message, 'error');
+    return;
   }
+
+  showToast(`✓ ${nombre} guardado`, '');
+  closeDrawer();
+  loadCatalog();
 }
 
-function updateLocalCatalog(piece, wasEditing) {
-  const cat = piece.categoria;
-  const item = {
-    sku: piece.sku,
-    nombre: piece.nombre,
-    desc: piece.desc,
-    kilate: piece.kilate,
-    precio: piece.precio,
-    foto: piece.foto,
-    largo: piece.largo ? piece.largo + ' cm' : '',
-    grosor: piece.grosor ? piece.grosor + ' mm' : '',
-    eslabon: piece.eslabon ? piece.eslabon + ' mm' : '',
-    peso: piece.peso ? piece.peso + 'g' : '',
-  };
-  if (wasEditing) {
-    const idx = CATALOG[cat].findIndex(i => i.sku === piece.sku);
-    if (idx >= 0) CATALOG[cat][idx] = item;
-  } else {
-    CATALOG[cat].push(item);
-  }
-}
-
-function buildCatalogLine(p) {
-  const cat = p.categoria;
-  if (cat === 'broqueles') {
-    return `{ sku:'${p.sku}', nombre:'${p.nombre}', desc:'${p.desc}', kilate:'${p.kilate}', precio:'${p.precio}', foto:'${p.foto}' },`;
-  } else if (cat === 'cadenas') {
-    return `{ sku:'${p.sku}', nombre:'${p.nombre}', desc:'${p.desc}', largo:'${p.largo} cm', grosor:'${p.grosor} mm', peso:'${p.peso}g', precio:'${p.precio}', kilate:'${p.kilate}', foto:'${p.foto}' },`;
-  } else {
-    return `{ sku:'${p.sku}', nombre:'${p.nombre}', desc:'${p.desc}', largo:'${p.largo} cm', eslabon:'${p.eslabon} mm', peso:'${p.peso}g', precio:'${p.precio}', kilate:'${p.kilate}', foto:'${p.foto}' },`;
-  }
-}
-
-// Code modal fallback
-function showCodeModal(line, cat) {
-  const el = document.createElement('div');
-  el.style.cssText = 'position:fixed;inset:0;background:rgba(5,3,0,.92);z-index:999;display:flex;align-items:center;justify-content:center;';
-  el.innerHTML = `
-    <div style="background:var(--carbon);padding:40px;max-width:680px;width:90%;border:1px solid rgba(201,168,76,.15)">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--champagne);margin-bottom:8px">Copia esta línea</div>
-      <div style="font-size:9px;letter-spacing:3px;color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:24px">Pégala en assets/catalog.js en la sección ${cat}</div>
-      <textarea onclick="this.select()" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(201,168,76,.2);color:var(--champagne);font-size:11px;padding:14px;font-family:monospace;min-height:80px;outline:none" readonly>${line}</textarea>
-      <div style="margin-top:20px;display:flex;gap:12px">
-        <button onclick="navigator.clipboard.writeText(\`${line.replace(/`/g,"'")}\`).then(()=>this.textContent='✓ Copiado!')" class="btn" style="background:var(--oro);color:var(--negro);border:none;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:12px 28px;cursor:pointer">Copiar</button>
-        <button onclick="this.closest('div[style]').remove()" style="background:transparent;border:1px solid rgba(201,168,76,.2);color:rgba(232,224,204,.5);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:12px 20px;cursor:pointer">Cerrar</button>
-      </div>
-    </div>`;
-  document.body.appendChild(el);
+async function deletePiece() {
+  if (!editingItem) return;
+  if (!confirm(`¿Borrar "${editingItem.nombre}" (${editingItem.sku})? Esta acción no se puede deshacer.`)) return;
+  const { error } = await sbClient.from('products').delete().eq('id', editingItem.id);
+  if (error) { showToast('Error al borrar: ' + error.message, 'error'); return; }
+  showToast('Pieza borrada', '');
+  closeDrawer();
+  loadCatalog();
 }
 
 // ══════════════════════════════════════
@@ -921,59 +958,5 @@ function showToast(msg, type) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 </script>
-
-<!--
-═══════════════════════════════════════════════════════
-  APPS SCRIPT — Para guardar directo al Google Sheet
-  
-  1. Abre tu Google Sheet
-  2. Extensiones → Apps Script
-  3. Pega este código en un archivo nuevo (ej. "WebAdmin.gs"):
-
-function doPost(e) {
-  var data = JSON.parse(e.postData.contents);
-  var ss = SpreadsheetApp.openById('1HmNtzUE6KNLA641MoYCFupHoVhWe7Fz9Pp2Gtzk3XP4');
-  var sheetName = data.piece.categoria === 'cadenas' ? 'Cadenas'
-                : data.piece.categoria === 'pulsos'  ? 'Pulsos'
-                : 'Broqueles';
-  var sheet = ss.getSheetByName(sheetName);
-  if (!sheet) sheet = ss.insertSheet(sheetName);
-  
-  var row = [
-    data.piece.sku,
-    data.piece.nombre,
-    data.piece.categoria,
-    data.piece.desc,
-    data.piece.largo,
-    data.piece.grosor || data.piece.eslabon,
-    data.piece.peso,
-    data.piece.kilate,
-    data.piece.precio,
-    data.piece.foto,
-    data.piece.notas
-  ];
-  
-  if (data.action === 'insert') {
-    sheet.appendRow(row);
-  } else {
-    // Find row by SKU in column A and update
-    var values = sheet.getDataRange().getValues();
-    for (var i = 1; i < values.length; i++) {
-      if (values[i][0] === data.piece.sku) {
-        sheet.getRange(i+1, 1, 1, row.length).setValues([row]);
-        break;
-      }
-    }
-  }
-  
-  return ContentService.createTextOutput(JSON.stringify({ok:true}))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-  4. Implementar → Nueva implementación → Aplicación web
-  5. Quién puede acceder: Cualquier usuario (Anyone)
-  6. Copia la URL y pégala en APPS_SCRIPT_URL arriba
-═══════════════════════════════════════════════════════
--->
 </body>
 </html>
