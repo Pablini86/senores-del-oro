@@ -271,6 +271,22 @@ body {
 .search-box:focus { border-color: var(--oro); }
 .search-box::placeholder { color: var(--text-faint); }
 
+/* ── BULK ACTIONS ── */
+.bulk-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--oro-tint-strong);
+  border: 1px solid var(--oro-border);
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  font-size: 11px;
+  letter-spacing: .5px;
+  color: var(--text);
+}
+.bulk-actions { display: flex; gap: 8px; }
+.catalog-table input[type=checkbox], .cat-card input[type=checkbox] {
+  width: 15px; height: 15px; cursor: pointer; accent-color: var(--oro); flex-shrink: 0;
+}
+
 .catalog-table { width: 100%; border-collapse: collapse; }
 .catalog-table th {
   text-align: left;
@@ -282,6 +298,11 @@ body {
   border-bottom: 1px solid var(--border-strong);
   white-space: nowrap;
 }
+.catalog-table th[data-sort] { cursor: pointer; transition: color .2s; }
+.catalog-table th[data-sort]:hover { color: var(--text-muted); }
+.catalog-table th.sorted { color: var(--oro-ink); }
+.catalog-table th.sorted::after { content: '  ▲'; font-size: 7px; }
+.catalog-table th.sorted.desc::after { content: '  ▼'; }
 .catalog-table td {
   padding: 12px 14px;
   font-size: 12px;
@@ -623,17 +644,27 @@ body {
         </div>
       </div>
 
+      <div class="bulk-bar hidden" id="bulkBar">
+        <span id="bulkCount">0 seleccionadas</span>
+        <div class="bulk-actions">
+          <button class="btn sm secondary" onclick="bulkSetActivo(true)">Mostrar</button>
+          <button class="btn sm secondary" onclick="bulkSetActivo(false)">Ocultar</button>
+          <button class="btn sm danger" onclick="bulkDelete()">Borrar</button>
+        </div>
+      </div>
+
       <div class="table-wrap">
         <table class="catalog-table">
           <thead>
             <tr>
+              <th style="width:34px"><input type="checkbox" id="selectAllBox"></th>
               <th>Foto</th>
-              <th>SKU</th>
-              <th>Nombre</th>
-              <th>Categoría</th>
+              <th data-sort="sku">SKU</th>
+              <th data-sort="nombre">Nombre</th>
+              <th data-sort="categoria">Categoría</th>
               <th>Grupo</th>
-              <th>Precio</th>
-              <th>Kilate</th>
+              <th data-sort="precio">Precio</th>
+              <th data-sort="kilate">Kilate</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -795,13 +826,29 @@ let filtered = [];
 let currentPage = 1;
 const PER_PAGE = 20;
 let editingItem = null;
+let selectedSkus = new Set();
+let sortField = null;
+let sortDir = 'asc';
 
 // Un solo listener delegado cubre los botones "Editar" tanto de la
 // tabla (desktop) como de las tarjetas (mobile), sin reconectarlos
-// cada vez que renderTable() vuelve a dibujar el DOM.
+// cada vez que renderTable() vuelve a dibujar el DOM. También cubre
+// los encabezados ordenables (solo existen en la tabla de escritorio).
 document.getElementById('pageCatalog').addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-edit-sku]');
-  if (btn) openDrawer(btn.dataset.editSku);
+  const editBtn = e.target.closest('[data-edit-sku]');
+  if (editBtn) { openDrawer(editBtn.dataset.editSku); return; }
+  const sortTh = e.target.closest('th[data-sort]');
+  if (sortTh) setSort(sortTh.dataset.sort);
+});
+
+// Los checkboxes de selección (tabla y tarjetas) también van por
+// delegación — se regeneran en cada renderTable().
+document.getElementById('pageCatalog').addEventListener('change', (e) => {
+  if (e.target.classList.contains('row-check')) {
+    toggleRowSelect(e.target.dataset.sku, e.target.checked);
+  } else if (e.target.id === 'selectAllBox') {
+    toggleSelectAll(e.target.checked);
+  }
 });
 
 // ══════════════════════════════════════
@@ -879,15 +926,18 @@ function renderTable() {
   const cards = document.getElementById('catalogCards');
 
   if (!page.length) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:60px;color:var(--text-faint)">Sin resultados</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:60px;color:var(--text-faint)">Sin resultados</td></tr>`;
     cards.innerHTML = `<div class="cat-card-empty">Sin resultados</div>`;
     document.getElementById('pagInfo').textContent = '';
     document.getElementById('pagBtns').innerHTML = '';
+    updateSortIndicators();
+    updateBulkBar();
     return;
   }
 
   tbody.innerHTML = page.map(item => {
     return `<tr style="${item.activo ? '' : 'opacity:.4'}">
+      <td><input type="checkbox" class="row-check" data-sku="${item.sku}" ${selectedSkus.has(item.sku) ? 'checked' : ''}></td>
       <td class="td-foto">
         ${item.foto
           ? `<img src="${item.foto}" class="thumb" alt="" onerror="this.outerHTML='<span class=\\'foto-dot empty\\'></span>'">`
@@ -910,6 +960,7 @@ function renderTable() {
 
   cards.innerHTML = page.map(item => {
     return `<div class="cat-card ${item.activo ? '' : 'inactive'}">
+      <input type="checkbox" class="row-check" data-sku="${item.sku}" ${selectedSkus.has(item.sku) ? 'checked' : ''}>
       ${item.foto
         ? `<img src="${item.foto}" class="cat-card-thumb" alt="" onerror="this.outerHTML='<span class=\\'foto-dot empty\\'></span>'">`
         : `<span class="foto-dot empty"></span>`}
@@ -924,6 +975,9 @@ function renderTable() {
       </div>
     </div>`;
   }).join('');
+
+  updateSortIndicators();
+  updateBulkBar();
 
   // Pagination
   const total = filtered.length;
@@ -951,20 +1005,109 @@ function goPage(p) {
 function filterTable() {
   const q = document.getElementById('searchBox').value.toLowerCase();
   const cat = document.getElementById('catFilter').value;
-  filtered = allItems.filter(i =>
+  const items = allItems.filter(i =>
     (cat === 'all' || i.categoria === cat) &&
     (i.nombre.toLowerCase().includes(q) || i.sku.toLowerCase().includes(q))
   );
+  filtered = sortItems(items);
   currentPage = 1;
+  selectedSkus.clear();
   renderTable();
 }
 
 function filterCat() { filterTable(); }
 
 // ══════════════════════════════════════
+//  ORDENAR POR COLUMNA
+// ══════════════════════════════════════
+function setSort(field) {
+  if (sortField === field) {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortField = field;
+    sortDir = 'asc';
+  }
+  filtered = sortItems(filtered);
+  currentPage = 1;
+  renderTable();
+}
+
+function sortItems(items) {
+  if (!sortField) return items;
+  const dir = sortDir === 'asc' ? 1 : -1;
+  return [...items].sort((a, b) => {
+    if (sortField === 'precio') {
+      const aEmpty = a.precio == null, bEmpty = b.precio == null;
+      if (aEmpty && bEmpty) return 0;
+      if (aEmpty) return 1;   // sin precio siempre al final, en ambas direcciones
+      if (bEmpty) return -1;
+      return (a.precio - b.precio) * dir;
+    }
+    const av = String(a[sortField] || '').toLowerCase();
+    const bv = String(b[sortField] || '').toLowerCase();
+    return av.localeCompare(bv) * dir;
+  });
+}
+
+function updateSortIndicators() {
+  document.querySelectorAll('.catalog-table th[data-sort]').forEach(th => {
+    const active = th.dataset.sort === sortField;
+    th.classList.toggle('sorted', active);
+    th.classList.toggle('desc', active && sortDir === 'desc');
+  });
+}
+
+// ══════════════════════════════════════
+//  SELECCIÓN Y ACCIONES EN BLOQUE
+// ══════════════════════════════════════
+function toggleRowSelect(sku, checked) {
+  if (checked) selectedSkus.add(sku); else selectedSkus.delete(sku);
+  updateBulkBar();
+}
+
+function toggleSelectAll(checked) {
+  const start = (currentPage - 1) * PER_PAGE;
+  const page = filtered.slice(start, start + PER_PAGE);
+  page.forEach(i => checked ? selectedSkus.add(i.sku) : selectedSkus.delete(i.sku));
+  renderTable();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulkBar');
+  const n = selectedSkus.size;
+  bar.classList.toggle('hidden', n === 0);
+  document.getElementById('bulkCount').textContent = `${n} pieza${n === 1 ? '' : 's'} seleccionada${n === 1 ? '' : 's'}`;
+}
+
+async function bulkSetActivo(activo) {
+  const skus = [...selectedSkus];
+  if (!skus.length) return;
+  const { error } = await sbClient.from('products').update({ activo }).in('sku', skus);
+  if (error) { showToast('Error al actualizar: ' + error.message, 'error'); return; }
+  showToast(`${skus.length} pieza${skus.length === 1 ? '' : 's'} ${activo ? 'visible' : 'oculta'}${skus.length === 1 ? '' : 's'}`, '');
+  selectedSkus.clear();
+  loadCatalog();
+}
+
+async function bulkDelete() {
+  const skus = [...selectedSkus];
+  if (!skus.length) return;
+  if (!confirm(`¿Borrar ${skus.length} pieza${skus.length === 1 ? '' : 's'}? Esta acción no se puede deshacer.`)) return;
+  const { error } = await sbClient.from('products').delete().in('sku', skus);
+  if (error) { showToast('Error al borrar: ' + error.message, 'error'); return; }
+  showToast(`${skus.length} pieza${skus.length === 1 ? '' : 's'} borrada${skus.length === 1 ? '' : 's'}`, '');
+  selectedSkus.clear();
+  loadCatalog();
+}
+
+// ══════════════════════════════════════
 //  DRAWER
 // ══════════════════════════════════════
 function openDrawer(sku) {
+  const alreadyOpen = document.getElementById('drawer').classList.contains('open');
+  if (alreadyOpen && formDirty && !confirm('Tienes cambios sin guardar en esta pieza. ¿Descartarlos y abrir otra?')) {
+    return;
+  }
   if (sku) {
     editingItem = allItems.find(i => i.sku === sku);
     document.getElementById('drawerTitle').textContent = 'Editar pieza';
@@ -976,14 +1119,25 @@ function openDrawer(sku) {
     document.getElementById('drawerSub').textContent = 'Agregar al catálogo';
     clearForm();
   }
+  formDirty = false;
   document.getElementById('drawer').classList.add('open');
   document.getElementById('drawerOverlay').classList.add('open');
 }
 
-function closeDrawer() {
+function closeDrawer(force) {
+  if (!force && formDirty && !confirm('Tienes cambios sin guardar. ¿Cerrar de todas formas?')) {
+    return;
+  }
   document.getElementById('drawer').classList.remove('open');
   document.getElementById('drawerOverlay').classList.remove('open');
+  formDirty = false;
 }
+
+// Marca el formulario como modificado ante cualquier tecleo o cambio
+// de campo — así closeDrawer() sabe cuándo hace falta confirmar.
+let formDirty = false;
+document.getElementById('pieceForm').addEventListener('input', () => { formDirty = true; });
+document.getElementById('pieceForm').addEventListener('change', () => { formDirty = true; });
 
 function stripUnit(val, unit) {
   return (val || '').replace(new RegExp('\\s*' + unit + '$'), '');
@@ -1087,6 +1241,7 @@ function updateCatFields() {
 let editingPhotos = []; // [{ url, file? }] — file presente si aún no se ha subido
 
 function addPhotoFiles(fileList) {
+  formDirty = true;
   Array.from(fileList).forEach(file => {
     editingPhotos.push({ url: URL.createObjectURL(file), file });
   });
@@ -1097,17 +1252,20 @@ function addPhotoUrl() {
   const input = document.getElementById('fFotoUrlInput');
   const raw = input.value.trim();
   if (!raw) return;
+  formDirty = true;
   editingPhotos.push({ url: driveToImg(raw) || raw });
   input.value = '';
   renderFotoGallery();
 }
 
 function removePhoto(i) {
+  formDirty = true;
   editingPhotos.splice(i, 1);
   renderFotoGallery();
 }
 
 function setPortada(i) {
+  formDirty = true;
   const [chosen] = editingPhotos.splice(i, 1);
   editingPhotos.unshift(chosen);
   renderFotoGallery();
@@ -1219,7 +1377,7 @@ async function savePiece() {
   }
 
   showToast(`✓ ${nombre} guardado`, '');
-  closeDrawer();
+  closeDrawer(true);
   loadCatalog();
 }
 
@@ -1229,7 +1387,7 @@ async function deletePiece() {
   const { error } = await sbClient.from('products').delete().eq('id', editingItem.id);
   if (error) { showToast('Error al borrar: ' + error.message, 'error'); return; }
   showToast('Pieza borrada', '');
-  closeDrawer();
+  closeDrawer(true);
   loadCatalog();
 }
 
