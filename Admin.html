@@ -79,8 +79,17 @@ body {
 .field input:focus, .field select:focus, .field textarea:focus {
   border-color: rgba(201,168,76,.5);
 }
+.field input::placeholder, .field textarea::placeholder { color: rgba(232,224,204,.28); }
 .field textarea { min-height: 80px; resize: vertical; }
-.field select { appearance: none; cursor: pointer; }
+.field select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C9A84C' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+}
 .btn {
   background: var(--oro);
   color: var(--negro);
@@ -474,8 +483,31 @@ body {
 .foto-gallery-hint { font-size: 10px; color: rgba(232,224,204,.35); margin-top: 12px; }
 .foto-gallery { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 
-/* ── TABLE WRAP (scroll horizontal en mobile) ── */
+/* ── TABLE WRAP (desktop) ── */
 .table-wrap { overflow-x: auto; }
+
+/* ── CATALOG CARDS (mobile, reemplaza la tabla) ── */
+.catalog-cards { display: none; flex-direction: column; gap: 10px; }
+.cat-card {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--carbon); padding: 12px;
+  border: 1px solid rgba(201,168,76,.08);
+}
+.cat-card.inactive { opacity: .5; }
+.cat-card-thumb { width: 52px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(201,168,76,.15); }
+.cat-card .foto-dot { flex-shrink: 0; }
+.cat-card-body { flex: 1; min-width: 0; }
+.cat-card-name {
+  font-size: 13px; color: var(--champagne);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.cat-card-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.cat-card-price { font-size: 12px; color: var(--oro); }
+.cat-card-price span { color: rgba(232,224,204,.4); }
+.cat-card-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+.cat-card-actions .btn { padding: 8px 14px; }
+.cat-card-empty { text-align: center; padding: 60px 20px; color: rgba(232,224,204,.2); font-size: 12px; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
@@ -494,6 +526,8 @@ body {
   .drawer { width: 100%; padding: 30px 20px; }
   .field-row { grid-template-columns: 1fr; gap: 0; }
   .field-row .field { margin-bottom: 20px; }
+  .table-wrap { display: none; }
+  .catalog-cards { display: flex; }
 }
 </style>
 </head>
@@ -590,6 +624,8 @@ body {
           <tbody id="tableBody"></tbody>
         </table>
       </div>
+
+      <div class="catalog-cards" id="catalogCards"></div>
 
       <div class="pagination">
         <span class="pag-info" id="pagInfo"></span>
@@ -744,6 +780,14 @@ let currentPage = 1;
 const PER_PAGE = 20;
 let editingItem = null;
 
+// Un solo listener delegado cubre los botones "Editar" tanto de la
+// tabla (desktop) como de las tarjetas (mobile), sin reconectarlos
+// cada vez que renderTable() vuelve a dibujar el DOM.
+document.getElementById('pageCatalog').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-edit-sku]');
+  if (btn) openDrawer(btn.dataset.editSku);
+});
+
 // ══════════════════════════════════════
 //  SESIÓN / LOGIN
 // ══════════════════════════════════════
@@ -816,9 +860,11 @@ function renderTable() {
   const start = (currentPage - 1) * PER_PAGE;
   const page = filtered.slice(start, start + PER_PAGE);
   const tbody = document.getElementById('tableBody');
+  const cards = document.getElementById('catalogCards');
 
   if (!page.length) {
     tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:60px;color:rgba(232,224,204,.2)">Sin resultados</td></tr>`;
+    cards.innerHTML = `<div class="cat-card-empty">Sin resultados</div>`;
     document.getElementById('pagInfo').textContent = '';
     document.getElementById('pagBtns').innerHTML = '';
     return;
@@ -846,9 +892,22 @@ function renderTable() {
     </tr>`;
   }).join('');
 
-  tbody.querySelectorAll('[data-edit-sku]').forEach(btn => {
-    btn.onclick = () => openDrawer(btn.dataset.editSku);
-  });
+  cards.innerHTML = page.map(item => {
+    return `<div class="cat-card ${item.activo ? '' : 'inactive'}">
+      ${item.foto
+        ? `<img src="${item.foto}" class="cat-card-thumb" alt="" onerror="this.outerHTML='<span class=\\'foto-dot empty\\'></span>'">`
+        : `<span class="foto-dot empty"></span>`}
+      <div class="cat-card-body">
+        <div class="cat-card-name">${item.nombre}${item.destacado ? ' <span style="color:var(--oro)">★</span>' : ''}${item.activo ? '' : ' <span style="color:var(--rojo);font-size:10px"> · oculta</span>'}</div>
+        <div class="cat-card-meta"><span class="td-sku">${item.sku}</span><span class="cat-badge">${categoriaLabel(item.categoria)}</span></div>
+        <div class="cat-card-price">${formatPrecio(item.precio) || 'Sin precio'} <span>· ${item.kilate}</span></div>
+      </div>
+      <div class="cat-card-actions">
+        <button class="btn sm secondary" data-edit-sku="${item.sku}">Editar</button>
+        <a class="btn sm secondary" href="producto.html?sku=${encodeURIComponent(item.sku)}" target="_blank" style="text-decoration:none;text-align:center">Ver</a>
+      </div>
+    </div>`;
+  }).join('');
 
   // Pagination
   const total = filtered.length;
