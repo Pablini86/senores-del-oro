@@ -100,30 +100,13 @@ function renderFooter() {
 </footer>`;
 }
 
-function renderModal() {
-  return `
-<div class="modal" id="modal">
-  <button class="m-close" id="mClose">✕</button>
-  <div class="modal-box">
-    <div class="modal-img" id="mImg">
-      <img src="assets/SEN_ORES_DEL_ORO_LOGO_UNICO_DORADO.png" class="ph" alt="">
-    </div>
-    <div class="modal-body" id="mBody"></div>
-  </div>
-</div>`;
-}
-
-// Monta topbar+nav+footer(+modal opcional) en los placeholders de la página
+// Monta topbar+nav+footer en los placeholders de la página
 // y activa el ajuste de offset del topbar + el efecto scroll del nav.
-function mountLayout({ navVariant = 'default', activeKey = null, modal = false } = {}) {
+function mountLayout({ navVariant = 'default', activeKey = null } = {}) {
   const header = document.getElementById('site-header');
   const footer = document.getElementById('site-footer');
   if (header) header.innerHTML = renderTopbar() + renderNav(navVariant, activeKey);
   if (footer) footer.innerHTML = renderFooter();
-  if (modal) {
-    const modalHost = document.getElementById('site-modal');
-    if (modalHost) modalHost.innerHTML = renderModal();
-  }
 
   const tb = document.querySelector('.topbar');
   const nav = document.getElementById('nav');

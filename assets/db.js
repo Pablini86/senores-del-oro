@@ -89,13 +89,17 @@ function buildGroupCard(variants) {
   };
 }
 
+// Columnas públicas — deja fuera `notas` (uso interno, no debe llegar
+// al navegador de un visitante ni verse en la pestaña Red).
+const PUBLIC_COLUMNS = 'id, sku, categoria, nombre, descripcion, kilate, precio, largo, grosor, eslabon, placa, peso, foto_url, fotos, destacado, activo, orden, variant_group, variant_label';
+
 // Trae TODO el catálogo público, agrupado por categoría —
 // equivalente al viejo objeto CATALOG de assets/catalog.js,
 // pero armado dinámicamente (soporta categorías nuevas sin tocar código).
 async function fetchCatalog() {
   const { data, error } = await sbClient
     .from('products')
-    .select('*')
+    .select(PUBLIC_COLUMNS)
     .order('orden', { ascending: true });
   if (error) {
     console.error('Error cargando catálogo:', error);
@@ -117,7 +121,7 @@ async function fetchCatalog() {
 async function fetchProductBySku(sku) {
   const { data, error } = await sbClient
     .from('products')
-    .select('*')
+    .select(PUBLIC_COLUMNS)
     .eq('sku', sku)
     .maybeSingle();
   if (error || !data) return null;
@@ -133,7 +137,7 @@ async function fetchProductWithVariants(sku) {
 
   const { data, error } = await sbClient
     .from('products')
-    .select('*')
+    .select(PUBLIC_COLUMNS)
     .eq('variant_group', item.variantGroup)
     .eq('categoria', item.categoria)
     .order('orden', { ascending: true });

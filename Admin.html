@@ -839,12 +839,16 @@ function renderTable() {
       <td style="font-size:11px;color:rgba(201,168,76,.6)">${item.kilate}</td>
       <td>
         <div class="td-actions">
-          <button class="btn sm secondary" onclick="openDrawer('${item.sku}')">Editar</button>
-          <a class="btn sm secondary" href="producto.html?sku=${item.sku}" target="_blank" style="text-decoration:none;padding:8px 12px">Ver</a>
+          <button class="btn sm secondary" data-edit-sku="${item.sku}">Editar</button>
+          <a class="btn sm secondary" href="producto.html?sku=${encodeURIComponent(item.sku)}" target="_blank" style="text-decoration:none;padding:8px 12px">Ver</a>
         </div>
       </td>
     </tr>`;
   }).join('');
+
+  tbody.querySelectorAll('[data-edit-sku]').forEach(btn => {
+    btn.onclick = () => openDrawer(btn.dataset.editSku);
+  });
 
   // Pagination
   const total = filtered.length;

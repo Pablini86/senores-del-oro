@@ -132,10 +132,10 @@
 
 <section class="catalog-section">
   <div class="tabs">
-    <div class="tab active" data-cat="cadenas">Cadenas <span class="tab-count">13</span></div>
-    <div class="tab" data-cat="pulsos">Pulsos <span class="tab-count">9</span></div>
-    <div class="tab" data-cat="broqueles">Broqueles <span class="tab-count">130</span></div>
-    <div class="tab" data-cat="unicas">Piezas Únicas <span class="tab-count" id="tabUnicas">—</span></div>
+    <div class="tab active" data-cat="cadenas">Cadenas <span class="tab-count">—</span></div>
+    <div class="tab" data-cat="pulsos">Pulsos <span class="tab-count">—</span></div>
+    <div class="tab" data-cat="broqueles">Broqueles <span class="tab-count">—</span></div>
+    <div class="tab" data-cat="unicas">Piezas Únicas <span class="tab-count">—</span></div>
   </div>
   <div class="search-bar">
     <input type="text" class="search-input" id="searchInput" placeholder="Buscar pieza...">
@@ -166,16 +166,13 @@
 </section>
 
 <div id="site-footer"></div>
-<div id="site-modal"></div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="assets/config.js"></script>
 <script src="assets/db.js"></script>
 <script src="assets/partials.js"></script>
-<script src="assets/modal.js"></script>
 <script>
-mountLayout({ navVariant: 'coleccion', activeKey: 'coleccion', modal: true });
-setupModal();
+mountLayout({ navVariant: 'coleccion', activeKey: 'coleccion' });
 
 let CATALOG = {};
 let activeCat = 'cadenas';
@@ -188,10 +185,6 @@ function renderGrid(items) {
   const grid = document.getElementById('catGrid');
   grid.innerHTML = '';
   grid.className = activeCat === 'broqueles' ? 'cat-grid cols5' : 'cat-grid';
-  if (activeCat === 'unicas') {
-    const el = document.getElementById('tabUnicas');
-    if (el) el.textContent = items.length;
-  }
   document.getElementById('resultsCount').textContent = `${items.length} piezas`;
 
   items.forEach(item => {
@@ -287,7 +280,7 @@ document.getElementById('clearFilters').addEventListener('click', () => {
   CATALOG = await fetchCatalog();
   document.querySelectorAll('.tab').forEach(t => {
     const cat = t.dataset.cat;
-    if (CATALOG[cat]) t.querySelector('.tab-count').textContent = CATALOG[cat].length;
+    t.querySelector('.tab-count').textContent = (CATALOG[cat] || []).length;
   });
   setTab(activeCat);
 })();
