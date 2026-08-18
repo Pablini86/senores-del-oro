@@ -9,6 +9,7 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - run: curl -sf "https://gsncaioyfgoompidstay.supabase.co/rest/v1/products?select=id&limit=1" -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY"
-        env:
+      - env:
           SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzbmNhaW95Zmdvb21waWRzdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1Njk2NjYsImV4cCI6MjEwMDE0NTY2Nn0.dGjxtJbJmnvpKNy7-i-CZXE4VMqmL8Hoo8gJtRGjsWk
+        run: |
+          curl -sf "https://gsncaioyfgoompidstay.supabase.co/rest/v1/products?select=id&limit=1" -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY"
