@@ -412,8 +412,31 @@ body {
   padding-top: 28px;
   border-top: 1px solid var(--border-strong);
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+
+/* ── VISIBILITY SWITCH ── */
+.switch { position: relative; display: inline-block; width: 32px; height: 18px; flex-shrink: 0; }
+.switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.switch .slider {
+  position: absolute; inset: 0;
+  background: var(--border-strong);
+  border-radius: 999px;
+  transition: background .2s;
+  pointer-events: none;
+}
+.switch .slider::before {
+  content: '';
+  position: absolute; width: 14px; height: 14px; left: 2px; top: 2px;
+  background: #fff; border-radius: 50%;
+  transition: transform .2s;
+  box-shadow: 0 1px 2px rgba(30,20,5,.25);
+}
+.switch input:checked + .slider { background: var(--verde); }
+.switch input:checked + .slider::before { transform: translateX(14px); }
+.switch input:focus-visible + .slider { box-shadow: 0 0 0 3px var(--oro-tint); }
 
 /* ── TOAST ── */
 .toast {
@@ -430,9 +453,16 @@ body {
   transition: all .35s;
   min-width: 240px;
   box-shadow: 0 4px 16px rgba(30,20,5,.1);
+  display: flex; align-items: center; gap: 16px; justify-content: space-between;
 }
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast.error { border-left-color: var(--rojo); }
+.toast-undo {
+  background: none; border: none; cursor: pointer;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--oro-ink); text-decoration: underline; text-underline-offset: 3px;
+  flex-shrink: 0; padding: 0;
+}
 
 /* ── EMPTY ── */
 .empty-state {
@@ -665,6 +695,7 @@ body {
               <th>Grupo</th>
               <th data-sort="precio">Precio</th>
               <th data-sort="kilate">Kilate</th>
+              <th>Visible</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -804,8 +835,9 @@ body {
     </div>
 
     <div class="drawer-footer">
-      <button class="btn" style="flex:1" onclick="savePiece()">Guardar pieza</button>
+      <button class="btn" id="saveBtn" style="flex:1" onclick="savePiece()">Guardar pieza</button>
       <button class="btn secondary" onclick="closeDrawer()">Cancelar</button>
+      <button class="btn secondary" id="duplicateBtn" style="display:none" onclick="duplicatePiece()">Duplicar</button>
       <button class="btn danger" id="deleteBtn" style="display:none" onclick="deletePiece()">Borrar</button>
     </div>
   </form>
@@ -848,6 +880,8 @@ document.getElementById('pageCatalog').addEventListener('change', (e) => {
     toggleRowSelect(e.target.dataset.sku, e.target.checked);
   } else if (e.target.id === 'selectAllBox') {
     toggleSelectAll(e.target.checked);
+  } else if (e.target.classList.contains('visible-toggle')) {
+    toggleVisible(e.target.dataset.sku, e.target.checked, e.target);
   }
 });
 
@@ -926,7 +960,7 @@ function renderTable() {
   const cards = document.getElementById('catalogCards');
 
   if (!page.length) {
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:60px;color:var(--text-faint)">Sin resultados</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:60px;color:var(--text-faint)">Sin resultados</td></tr>`;
     cards.innerHTML = `<div class="cat-card-empty">Sin resultados</div>`;
     document.getElementById('pagInfo').textContent = '';
     document.getElementById('pagBtns').innerHTML = '';
@@ -950,6 +984,12 @@ function renderTable() {
       <td class="td-precio">${formatPrecio(item.precio) || '—'}</td>
       <td style="font-size:11px;color:var(--oro-ink)">${item.kilate}</td>
       <td>
+        <label class="switch" title="${item.activo ? 'Visible en el sitio' : 'Oculta del sitio'}">
+          <input type="checkbox" class="visible-toggle" data-sku="${item.sku}" ${item.activo ? 'checked' : ''}>
+          <span class="slider"></span>
+        </label>
+      </td>
+      <td>
         <div class="td-actions">
           <button class="btn sm secondary" data-edit-sku="${item.sku}">Editar</button>
           <a class="btn sm secondary" href="producto.html?sku=${encodeURIComponent(item.sku)}" target="_blank" style="text-decoration:none;padding:8px 12px">Ver</a>
@@ -970,6 +1010,10 @@ function renderTable() {
         <div class="cat-card-price">${formatPrecio(item.precio) || 'Sin precio'} <span>· ${item.kilate}</span></div>
       </div>
       <div class="cat-card-actions">
+        <label class="switch" style="align-self:center" title="${item.activo ? 'Visible en el sitio' : 'Oculta del sitio'}">
+          <input type="checkbox" class="visible-toggle" data-sku="${item.sku}" ${item.activo ? 'checked' : ''}>
+          <span class="slider"></span>
+        </label>
         <button class="btn sm secondary" data-edit-sku="${item.sku}">Editar</button>
         <a class="btn sm secondary" href="producto.html?sku=${encodeURIComponent(item.sku)}" target="_blank" style="text-decoration:none;text-align:center">Ver</a>
       </div>
@@ -1072,6 +1116,21 @@ function toggleSelectAll(checked) {
   renderTable();
 }
 
+// Interruptor de "Visible" directo en la fila/tarjeta — no hace falta
+// abrir el formulario completo solo para ocultar o mostrar una pieza.
+async function toggleVisible(sku, activo, checkboxEl) {
+  const { error } = await sbClient.from('products').update({ activo }).eq('sku', sku);
+  if (error) {
+    showToast('Error al actualizar: ' + error.message, 'error');
+    checkboxEl.checked = !activo;
+    return;
+  }
+  const item = allItems.find(i => i.sku === sku);
+  if (item) item.activo = activo;
+  showToast(activo ? 'Pieza visible en el sitio' : 'Pieza oculta del sitio', '');
+  renderTable();
+}
+
 function updateBulkBar() {
   const bar = document.getElementById('bulkBar');
   const n = selectedSkus.size;
@@ -1089,13 +1148,49 @@ async function bulkSetActivo(activo) {
   loadCatalog();
 }
 
+// Convierte un item ya mapeado (mapRow) de vuelta a columnas de la
+// tabla, para poder reinsertarlo si el usuario deshace un borrado.
+// El registro restaurado queda con un id nuevo — no hay nada más que
+// referencie ese id en el esquema, así que es seguro.
+function itemToPayload(item) {
+  return {
+    sku: item.sku,
+    nombre: item.nombre,
+    categoria: item.categoria,
+    descripcion: item.desc,
+    precio: item.precio,
+    kilate: item.kilate,
+    foto_url: item.foto || null,
+    fotos: item.fotos,
+    largo: item.largo,
+    grosor: item.grosor,
+    eslabon: item.eslabon,
+    placa: item.placa,
+    peso: item.peso,
+    notas: item.notas,
+    activo: item.activo,
+    destacado: item.destacado,
+    variant_group: item.variantGroup || null,
+    variant_label: item.variantLabel || null,
+  };
+}
+
 async function bulkDelete() {
   const skus = [...selectedSkus];
   if (!skus.length) return;
-  if (!confirm(`¿Borrar ${skus.length} pieza${skus.length === 1 ? '' : 's'}? Esta acción no se puede deshacer.`)) return;
+  if (!confirm(`¿Borrar ${skus.length} pieza${skus.length === 1 ? '' : 's'}?`)) return;
+  const snapshots = allItems.filter(i => skus.includes(i.sku)).map(itemToPayload);
   const { error } = await sbClient.from('products').delete().in('sku', skus);
   if (error) { showToast('Error al borrar: ' + error.message, 'error'); return; }
-  showToast(`${skus.length} pieza${skus.length === 1 ? '' : 's'} borrada${skus.length === 1 ? '' : 's'}`, '');
+  showToast(`${skus.length} pieza${skus.length === 1 ? '' : 's'} borrada${skus.length === 1 ? '' : 's'}`, '', {
+    label: 'Deshacer',
+    onClick: async () => {
+      const { error: undoErr } = await sbClient.from('products').insert(snapshots);
+      if (undoErr) { showToast('No se pudo deshacer: ' + undoErr.message, 'error'); return; }
+      showToast(`${snapshots.length} pieza${snapshots.length === 1 ? '' : 's'} restaurada${snapshots.length === 1 ? '' : 's'}`, '');
+      loadCatalog();
+    },
+  });
   selectedSkus.clear();
   loadCatalog();
 }
@@ -1161,6 +1256,7 @@ function fillForm(item) {
   document.getElementById('fDestacado').checked = !!item.destacado;
   document.getElementById('fCategoria').value = item.categoria || 'cadenas';
   document.getElementById('deleteBtn').style.display = 'inline-block';
+  document.getElementById('duplicateBtn').style.display = 'inline-block';
   updateCatFields();
   refreshStatusPills();
   editingPhotos = (item.fotos && item.fotos.length ? item.fotos : (item.foto ? [item.foto] : []))
@@ -1180,10 +1276,25 @@ function clearForm() {
   document.getElementById('fActivo').checked = true;
   document.getElementById('fDestacado').checked = false;
   document.getElementById('deleteBtn').style.display = 'none';
+  document.getElementById('duplicateBtn').style.display = 'none';
   updateCatFields();
   refreshStatusPills();
   editingPhotos = [];
   renderFotoGallery();
+}
+
+// Copia la pieza que se está editando a un formulario de "Nueva pieza"
+// — deja todo igual salvo el SKU, para que captures una variante
+// (mismo diseño, otro tamaño) sin volver a escribir todo desde cero.
+function duplicatePiece() {
+  editingItem = null;
+  document.getElementById('drawerTitle').textContent = 'Nueva pieza';
+  document.getElementById('drawerSub').textContent = 'Copia — asigna un SKU nuevo';
+  document.getElementById('fSku').value = '';
+  document.getElementById('deleteBtn').style.display = 'none';
+  document.getElementById('duplicateBtn').style.display = 'none';
+  formDirty = true;
+  document.getElementById('fSku').focus();
 }
 
 // ══════════════════════════════════════
@@ -1323,70 +1434,97 @@ async function uploadPhoto(file, sku, i) {
   return data.publicUrl;
 }
 
+let isSaving = false;
 async function savePiece() {
+  // Guarda de doble clic: variable JS plana, no depende de que el
+  // navegador reevalúe el estado "disabled" del botón a tiempo entre
+  // dos clics muy rápidos (algunos entornos de automatización/trackpads
+  // disparan el segundo click antes de que el DOM refleje el primero).
+  if (isSaving) return;
+
   const sku = document.getElementById('fSku').value.trim();
   const nombre = document.getElementById('fNombre').value.trim();
   if (!sku || !nombre) { showToast('SKU y nombre son obligatorios', 'error'); return; }
 
-  const largo = document.getElementById('fLargo').value.trim();
-  const grosor = document.getElementById('fGrosor').value.trim();
-  const eslabon = document.getElementById('fEslabon').value.trim();
-  const placa = document.getElementById('fPlaca').value.trim();
-  const peso = document.getElementById('fPeso').value.trim();
-  const precioRaw = document.getElementById('fPrecio').value.trim();
-  const precio = precioRaw ? parseFloat(precioRaw.replace(/[^0-9.]/g, '')) : null;
+  isSaving = true;
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
 
-  const pending = editingPhotos.filter(p => p.file).length;
-  if (pending) showToast(`Optimizando y subiendo ${pending} foto(s)...`, '');
-  let fotos;
   try {
-    fotos = await Promise.all(editingPhotos.map((p, i) => p.file ? uploadPhoto(p.file, sku, i) : Promise.resolve(p.url)));
-  } catch (err) {
-    showToast('Error subiendo foto: ' + err.message, 'error');
-    return;
+    const largo = document.getElementById('fLargo').value.trim();
+    const grosor = document.getElementById('fGrosor').value.trim();
+    const eslabon = document.getElementById('fEslabon').value.trim();
+    const placa = document.getElementById('fPlaca').value.trim();
+    const peso = document.getElementById('fPeso').value.trim();
+    const precioRaw = document.getElementById('fPrecio').value.trim();
+    const precio = precioRaw ? parseFloat(precioRaw.replace(/[^0-9.]/g, '')) : null;
+
+    const pending = editingPhotos.filter(p => p.file).length;
+    if (pending) showToast(`Optimizando y subiendo ${pending} foto(s)...`, '');
+    let fotos;
+    try {
+      fotos = await Promise.all(editingPhotos.map((p, i) => p.file ? uploadPhoto(p.file, sku, i) : Promise.resolve(p.url)));
+    } catch (err) {
+      showToast('Error subiendo foto: ' + err.message, 'error');
+      return;
+    }
+
+    const payload = {
+      sku,
+      nombre,
+      categoria: document.getElementById('fCategoria').value,
+      descripcion: document.getElementById('fDesc').value.trim(),
+      precio,
+      kilate: document.getElementById('fKilate').value,
+      foto_url: fotos[0] || null,
+      fotos,
+      largo: largo ? largo + ' cm' : '',
+      grosor: grosor ? grosor + ' mm' : '',
+      eslabon: eslabon ? eslabon + ' mm' : '',
+      placa: placa ? placa + ' mm' : '',
+      peso: peso ? peso + 'g' : '',
+      notas: document.getElementById('fNotas').value.trim(),
+      activo: document.getElementById('fActivo').checked,
+      destacado: document.getElementById('fDestacado').checked,
+      variant_group: document.getElementById('fVariantGroup').value.trim() || null,
+      variant_label: document.getElementById('fVariantLabel').value.trim() || null,
+    };
+
+    const { error } = editingItem
+      ? await sbClient.from('products').update(payload).eq('id', editingItem.id)
+      : await sbClient.from('products').insert(payload);
+
+    if (error) {
+      showToast('Error al guardar: ' + error.message, 'error');
+      return;
+    }
+
+    showToast(`✓ ${nombre} guardado`, '');
+    closeDrawer(true);
+    loadCatalog();
+  } finally {
+    isSaving = false;
+    btn.disabled = false;
+    btn.textContent = 'Guardar pieza';
   }
-
-  const payload = {
-    sku,
-    nombre,
-    categoria: document.getElementById('fCategoria').value,
-    descripcion: document.getElementById('fDesc').value.trim(),
-    precio,
-    kilate: document.getElementById('fKilate').value,
-    foto_url: fotos[0] || null,
-    fotos,
-    largo: largo ? largo + ' cm' : '',
-    grosor: grosor ? grosor + ' mm' : '',
-    eslabon: eslabon ? eslabon + ' mm' : '',
-    placa: placa ? placa + ' mm' : '',
-    peso: peso ? peso + 'g' : '',
-    notas: document.getElementById('fNotas').value.trim(),
-    activo: document.getElementById('fActivo').checked,
-    destacado: document.getElementById('fDestacado').checked,
-    variant_group: document.getElementById('fVariantGroup').value.trim() || null,
-    variant_label: document.getElementById('fVariantLabel').value.trim() || null,
-  };
-
-  const { error } = editingItem
-    ? await sbClient.from('products').update(payload).eq('id', editingItem.id)
-    : await sbClient.from('products').insert(payload);
-
-  if (error) {
-    showToast('Error al guardar: ' + error.message, 'error');
-    return;
-  }
-
-  showToast(`✓ ${nombre} guardado`, '');
-  closeDrawer(true);
-  loadCatalog();
 }
 
 async function deletePiece() {
   if (!editingItem) return;
-  if (!confirm(`¿Borrar "${editingItem.nombre}" (${editingItem.sku})? Esta acción no se puede deshacer.`)) return;
+  if (!confirm(`¿Borrar "${editingItem.nombre}" (${editingItem.sku})?`)) return;
+  const snapshot = itemToPayload(editingItem);
   const { error } = await sbClient.from('products').delete().eq('id', editingItem.id);
   if (error) { showToast('Error al borrar: ' + error.message, 'error'); return; }
-  showToast('Pieza borrada', '');
+  showToast('Pieza borrada', '', {
+    label: 'Deshacer',
+    onClick: async () => {
+      const { error: undoErr } = await sbClient.from('products').insert(snapshot);
+      if (undoErr) { showToast('No se pudo deshacer: ' + undoErr.message, 'error'); return; }
+      showToast('Pieza restaurada', '');
+      loadCatalog();
+    },
+  });
   closeDrawer(true);
   loadCatalog();
 }
@@ -1407,11 +1545,21 @@ function showPage(page) {
     n.classList.toggle('active', n.dataset.page === page));
 }
 
-function showToast(msg, type) {
+let toastTimer = null;
+// `undo`, si se pasa, es { label, onClick } — agrega un botón de acción
+// al toast y lo deja visible más tiempo para dar tiempo de reaccionar.
+function showToast(msg, type, undo) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
+  t.innerHTML = `<span>${msg}</span>` + (undo ? `<button type="button" class="toast-undo" id="toastUndoBtn">${undo.label}</button>` : '');
   t.className = `toast ${type === 'error' ? 'error' : ''} show`;
-  setTimeout(() => t.classList.remove('show'), 3500);
+  if (undo) {
+    document.getElementById('toastUndoBtn').onclick = () => {
+      t.classList.remove('show');
+      undo.onClick();
+    };
+  }
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), undo ? 6000 : 3500);
 }
 </script>
 </body>
