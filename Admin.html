@@ -923,7 +923,10 @@ function showAdmin() {
 // ══════════════════════════════════════
 //  LOAD CATALOG
 // ══════════════════════════════════════
-async function loadCatalog() {
+// preserveView = true cuando recargamos después de guardar/borrar y
+// queremos quedarnos en la misma página, filtro, búsqueda y orden en
+// los que estaba el usuario — en vez de saltar de vuelta a la página 1.
+async function loadCatalog(preserveView = false) {
   const { data, error } = await sbClient
     .from('products')
     .select('*')
@@ -936,9 +939,8 @@ async function loadCatalog() {
 
   allItems = data.map(mapRow);
   updateStats();
-  filtered = [...allItems];
-  currentPage = 1;
-  renderTable();
+  if (!preserveView) selectedSkus.clear();
+  applyFilters({ resetPage: !preserveView });
   document.getElementById('lastSync').textContent =
     `${allItems.length} piezas · Última carga: ${new Date().toLocaleTimeString('es-MX')}`;
 }
@@ -1046,7 +1048,10 @@ function goPage(p) {
 // ══════════════════════════════════════
 //  FILTER
 // ══════════════════════════════════════
-function filterTable() {
+// Aplica filtro de categoría + búsqueda + orden sobre allItems y
+// redibuja. resetPage=false conserva la página actual (solo la ajusta
+// si quedó fuera de rango porque ahora hay menos resultados).
+function applyFilters({ resetPage = true } = {}) {
   const q = document.getElementById('searchBox').value.toLowerCase();
   const cat = document.getElementById('catFilter').value;
   const items = allItems.filter(i =>
@@ -1054,9 +1059,14 @@ function filterTable() {
     (i.nombre.toLowerCase().includes(q) || i.sku.toLowerCase().includes(q))
   );
   filtered = sortItems(items);
-  currentPage = 1;
-  selectedSkus.clear();
+  const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  currentPage = resetPage ? 1 : Math.min(currentPage, pages);
   renderTable();
+}
+
+function filterTable() {
+  selectedSkus.clear();
+  applyFilters({ resetPage: true });
 }
 
 function filterCat() { filterTable(); }
@@ -1145,7 +1155,7 @@ async function bulkSetActivo(activo) {
   if (error) { showToast('Error al actualizar: ' + error.message, 'error'); return; }
   showToast(`${skus.length} pieza${skus.length === 1 ? '' : 's'} ${activo ? 'visible' : 'oculta'}${skus.length === 1 ? '' : 's'}`, '');
   selectedSkus.clear();
-  loadCatalog();
+  loadCatalog(true);
 }
 
 // Convierte un item ya mapeado (mapRow) de vuelta a columnas de la
@@ -1188,11 +1198,11 @@ async function bulkDelete() {
       const { error: undoErr } = await sbClient.from('products').insert(snapshots);
       if (undoErr) { showToast('No se pudo deshacer: ' + undoErr.message, 'error'); return; }
       showToast(`${snapshots.length} pieza${snapshots.length === 1 ? '' : 's'} restaurada${snapshots.length === 1 ? '' : 's'}`, '');
-      loadCatalog();
+      loadCatalog(true);
     },
   });
   selectedSkus.clear();
-  loadCatalog();
+  loadCatalog(true);
 }
 
 // ══════════════════════════════════════
@@ -1502,7 +1512,7 @@ async function savePiece() {
 
     showToast(`✓ ${nombre} guardado`, '');
     closeDrawer(true);
-    loadCatalog();
+    loadCatalog(true);
   } finally {
     isSaving = false;
     btn.disabled = false;
@@ -1522,11 +1532,11 @@ async function deletePiece() {
       const { error: undoErr } = await sbClient.from('products').insert(snapshot);
       if (undoErr) { showToast('No se pudo deshacer: ' + undoErr.message, 'error'); return; }
       showToast('Pieza restaurada', '');
-      loadCatalog();
+      loadCatalog(true);
     },
   });
   closeDrawer(true);
-  loadCatalog();
+  loadCatalog(true);
 }
 
 // ══════════════════════════════════════
