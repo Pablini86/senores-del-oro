@@ -9,23 +9,15 @@
 --  CÓMO CORRERLO: Supabase → SQL Editor → New snippet → pega TODO → Run.
 --  Es idempotente: puedes correrlo las veces que quieras. NO borra productos.
 --
---  ANTES DE CORRER: en el paso 1, pon tu(s) correo(s) EXACTOS de Admin.html.
---  Si te equivocas de correo, el Admin dejará de mostrar piezas —
---  no se pierde nada: corrige el correo aquí y vuelve a correr este archivo.
+--  Ya trae los dos correos admin (Pablo y Guillermo). No hay que editar nada,
+--  solo copiar todo y darle Run. Para sumar/quitar un admin más adelante,
+--  edita SOLO la lista del paso 1 (una línea por correo, entre comillas
+--  simples y con coma al final, menos el último) y vuelve a correr el archivo.
 -- ═══════════════════════════════════════════════════════════
 
 
 -- ─────────────────────────────────────────────
---  PASO 0 — Corre SOLO esta línea primero, en un snippet aparte,
---  y copia el correo EXACTO que salga (así no lo escribes de memoria):
--- ─────────────────────────────────────────────
---   select email, created_at from auth.users order by created_at;
-
-
--- ─────────────────────────────────────────────
 --  1. CORREOS QUE PUEDEN ADMINISTRAR
---     Pega aquí el/los correo(s) del PASO 0, en minúsculas.
---     Deja las comillas y las comas.
 -- ─────────────────────────────────────────────
 create or replace function public.is_admin()
 returns boolean
@@ -33,8 +25,8 @@ language sql
 stable
 as $$
   select lower(coalesce(auth.jwt() ->> 'email', '')) = any (array[
-    'pon_aqui_tu_correo@ejemplo.com'       -- <<< CAMBIA ESTO (en minúsculas)
-    -- , 'segundo-admin@ejemplo.com'         -- quita los -- para sumar otro
+    'pablolc20111@gmail.com',
+    'guillermourquidy07@gmail.com'
   ]::text[]);
 $$;
 
