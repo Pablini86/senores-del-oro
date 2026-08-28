@@ -100,6 +100,7 @@ async function fetchCatalog() {
   const { data, error } = await sbClient
     .from('products')
     .select(PUBLIC_COLUMNS)
+    .eq('activo', true)   // piezas dadas de baja en el Admin no salen en el sitio
     .order('orden', { ascending: true });
   if (error) {
     console.error('Error cargando catálogo:', error);
@@ -123,6 +124,7 @@ async function fetchProductBySku(sku) {
     .from('products')
     .select(PUBLIC_COLUMNS)
     .eq('sku', sku)
+    .eq('activo', true)   // una pieza oculta no debe abrirse ni por link directo
     .maybeSingle();
   if (error || !data) return null;
   return mapRow(data);
@@ -140,6 +142,7 @@ async function fetchProductWithVariants(sku) {
     .select(PUBLIC_COLUMNS)
     .eq('variant_group', item.variantGroup)
     .eq('categoria', item.categoria)
+    .eq('activo', true)   // no ofrecer como talla/variante una pieza oculta
     .order('orden', { ascending: true });
 
   if (error || !data || !data.length) return { item, variants: [item] };
