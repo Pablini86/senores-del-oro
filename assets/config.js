@@ -9,3 +9,21 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // La "anon key" es pública por diseño (así funciona Supabase) —
 // la seguridad real la dan las políticas RLS en supabase/schema.sql,
 // NO el secreto de esta clave. Nunca pongas aquí el "service_role key".
+
+// ═══════════════════════════════════════════════════════════
+//  TIENDA EN LÍNEA — Envío y pago
+// ═══════════════════════════════════════════════════════════
+
+// Envío asegurado GRATIS a partir de este monto (en pesos).
+// Debajo de este monto se cobra ENVIO_COSTO.
+const ENVIO_GRATIS_DESDE = 3000;
+const ENVIO_COSTO = 150;
+
+// Días hábiles de entrega que se muestran en el sitio.
+const ENTREGA_DIAS = '4 a 5 días hábiles';
+
+// ── Pago con tarjeta (Mercado Pago) — FASE 2, apagado por ahora ──
+// Cuando tengas lista la función de Vercel (ver MERCADOPAGO-SETUP.md),
+// pega aquí su URL. Mientras esté vacío, el botón "Pagar con tarjeta"
+// NO aparece y el sitio funciona 100% con pedido por WhatsApp.
+const MP_CHECKOUT_ENDPOINT = '';

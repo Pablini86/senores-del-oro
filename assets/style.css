@@ -542,3 +542,181 @@ body { padding-top: 0; }
   .proceso-grid { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr; }
 }
+
+/* ══════════════════════════════════════
+   CARRITO / TIENDA EN LÍNEA
+   ══════════════════════════════════════ */
+
+.nav-actions { display: flex; align-items: center; gap: 16px; }
+
+/* Interruptor "comprar en línea": todo lo del carrito queda oculto
+   mientras <html> no tenga data-tienda="on". */
+html:not([data-tienda="on"]) .nav-cart,
+html:not([data-tienda="on"]) .card-add,
+html:not([data-tienda="on"]) #addCartBtn,
+html:not([data-tienda="on"]) .cart-drawer,
+html:not([data-tienda="on"]) .cart-backdrop { display: none !important; }
+
+.nav-cart {
+  position: relative; background: none; border: none; cursor: pointer;
+  color: var(--champagne); opacity: .7; padding: 4px;
+  display: flex; align-items: center; transition: opacity .3s, color .3s;
+}
+.nav-cart:hover, .nav-cart.has-items { opacity: 1; color: var(--oro); }
+.nav-cart-count {
+  position: absolute; top: -4px; right: -6px;
+  min-width: 16px; height: 16px; padding: 0 4px;
+  background: var(--oro); color: var(--negro);
+  font-size: 9px; font-weight: 600; letter-spacing: 0;
+  border-radius: 9px; display: flex; align-items: center; justify-content: center;
+}
+
+/* ── Backdrop + panel ── */
+.cart-backdrop {
+  position: fixed; inset: 0; background: rgba(5,3,0,.72);
+  z-index: 299; opacity: 0; pointer-events: none; transition: opacity .35s;
+}
+.cart-backdrop.open { opacity: 1; pointer-events: all; }
+.cart-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: min(440px, 92vw); background: var(--carbon2);
+  border-left: 1px solid rgba(201,168,76,.18);
+  z-index: 300; display: flex; flex-direction: column;
+  transform: translateX(100%); transition: transform .4s cubic-bezier(.16,1,.3,1);
+}
+.cart-drawer.open { transform: translateX(0); }
+.cart-head {
+  flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 24px; border-bottom: 1px solid rgba(201,168,76,.12);
+}
+.cart-head-title {
+  font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--oro);
+}
+.cart-close {
+  background: none; border: none; color: rgba(232,224,204,.5);
+  font-size: 18px; cursor: pointer; transition: color .3s;
+}
+.cart-close:hover { color: var(--champagne); }
+.cart-body { flex: 1; overflow-y: auto; padding: 24px; }
+
+.cart-loading, .cart-empty, .cart-done {
+  text-align: center; color: rgba(232,224,204,.5);
+  font-size: 12px; padding: 40px 12px; line-height: 1.8;
+}
+.cart-done-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 24px;
+  color: var(--champagne); margin-bottom: 10px;
+}
+.cart-note { font-size: 10px; color: rgba(232,224,204,.35); letter-spacing: .5px; margin-top: 10px; }
+.cart-note.warn { color: var(--oro); text-align: left; margin-bottom: 16px; }
+
+/* ── Líneas ── */
+.cart-lines { list-style: none; display: flex; flex-direction: column; gap: 20px; }
+.cart-line { display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; }
+.cart-line-img {
+  width: 64px; height: 64px; background: #1c1409; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.cart-line-img img { width: 100%; height: 100%; object-fit: cover; }
+.cart-line-ph { width: 20px; height: 20px; background: rgba(201,168,76,.15); border-radius: 50%; }
+.cart-line-name {
+  font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--champagne); line-height: 1.2;
+}
+.cart-line-sku { font-size: 8px; letter-spacing: 2px; color: rgba(232,224,204,.3); margin: 3px 0 6px; text-transform: uppercase; }
+.cart-line-price { font-size: 10px; color: rgba(232,224,204,.45); margin-bottom: 8px; }
+.cart-line-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.cart-qty { display: flex; align-items: center; border: 1px solid rgba(201,168,76,.25); }
+.cart-qty button {
+  background: none; border: none; color: var(--champagne); width: 26px; height: 26px;
+  cursor: pointer; font-size: 13px; transition: background .2s;
+}
+.cart-qty button:hover { background: rgba(201,168,76,.15); }
+.cart-qty span { min-width: 26px; text-align: center; font-size: 11px; }
+.cart-qty-fixed { font-size: 9px; letter-spacing: 1px; color: var(--oro); text-transform: uppercase; }
+.cart-line-remove {
+  background: none; border: none; color: rgba(232,224,204,.35); cursor: pointer;
+  font-size: 10px; letter-spacing: 1px; text-decoration: underline; text-underline-offset: 2px;
+}
+.cart-line-remove:hover { color: var(--oro); }
+.cart-line-total { font-size: 12px; color: var(--oro); white-space: nowrap; }
+
+/* ── Resumen ── */
+.cart-summary, .cart-co-summary {
+  border-top: 1px solid rgba(201,168,76,.12);
+  margin-top: 24px; padding-top: 18px;
+}
+.cart-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 12px; color: rgba(232,224,204,.6); margin-bottom: 8px;
+}
+.cart-row.total {
+  font-family: 'Cormorant Garamond', serif; font-size: 20px;
+  color: var(--champagne); margin-top: 8px;
+}
+.cart-row.total span:last-child { color: var(--oro); }
+.cart-ship-hint { font-size: 10px; color: var(--oro); letter-spacing: .5px; margin: -2px 0 10px; }
+
+/* ── Confianza ── */
+.trust-badges {
+  list-style: none; margin: 22px 0 8px; display: flex; flex-direction: column; gap: 12px;
+  border-top: 1px solid rgba(201,168,76,.1); padding-top: 20px;
+}
+.trust-badges li {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 10.5px; line-height: 1.5; color: rgba(232,224,204,.5);
+}
+.trust-badges li strong { color: rgba(232,224,204,.8); font-weight: 400; }
+.trust-badges svg { color: var(--oro); flex-shrink: 0; margin-top: 1px; }
+.trust-terms {
+  display: inline-block; font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--oro); text-decoration: none; border-bottom: 1px solid rgba(201,168,76,.3);
+  padding-bottom: 2px; margin-top: 8px;
+}
+.trust-terms:hover { opacity: .7; }
+
+/* ── Botones del carrito ── */
+.cart-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
+.cart-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--oro); color: var(--negro); border: none; cursor: pointer;
+  font-family: 'Montserrat', sans-serif; font-weight: 500; font-size: 10px;
+  letter-spacing: 3px; text-transform: uppercase; padding: 15px 24px; transition: all .3s;
+  text-decoration: none;
+}
+.cart-btn:hover { background: var(--champagne); transform: translateY(-1px); }
+.cart-btn.ghost {
+  background: none; border: 1px solid rgba(232,224,204,.25); color: var(--champagne);
+}
+.cart-btn.ghost:hover { background: rgba(201,168,76,.12); border-color: var(--oro); transform: none; }
+.cart-btn.wa { background: #25D366; color: #05300f; }
+.cart-btn.wa:hover { background: #4be584; }
+.cart-btn.card { background: none; border: 1px solid var(--oro); color: var(--oro); }
+.cart-btn.card:hover { background: var(--oro); color: var(--negro); }
+.cart-btn[disabled] { opacity: .6; cursor: default; transform: none; }
+
+/* ── Checkout ── */
+.cart-back {
+  background: none; border: none; color: rgba(232,224,204,.5); cursor: pointer;
+  font-size: 10px; letter-spacing: 1px; margin-bottom: 16px; padding: 0;
+}
+.cart-back:hover { color: var(--oro); }
+.cart-co-intro { font-size: 11px; line-height: 1.7; color: rgba(232,224,204,.5); margin-bottom: 20px; }
+.cart-form { display: flex; flex-direction: column; gap: 14px; }
+.cart-field { display: flex; flex-direction: column; gap: 5px; }
+.cart-field span {
+  font-size: 8px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(201,168,76,.6);
+}
+.cart-field input, .cart-field textarea {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(201,168,76,.15);
+  color: var(--champagne); font-family: 'Montserrat', sans-serif; font-size: 12px;
+  padding: 10px 12px; outline: none; transition: border-color .3s; width: 100%; resize: vertical;
+}
+.cart-field input:focus, .cart-field textarea:focus { border-color: rgba(201,168,76,.5); }
+.cart-err {
+  font-size: 10px; color: #e5915b; letter-spacing: .3px; line-height: 1.5;
+  border-left: 2px solid #e5915b; padding-left: 10px;
+}
+
+@media (max-width: 768px) {
+  .nav-actions { gap: 12px; }
+}

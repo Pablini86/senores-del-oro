@@ -223,6 +223,29 @@ body {
   margin-bottom: 36px;
 }
 
+/* ── INTERRUPTOR TIENDA ── */
+.tienda-toggle {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 2px solid var(--oro);
+  padding: 18px 24px; margin-bottom: 24px;
+}
+.tienda-toggle-title { font-size: 14px; color: var(--text); margin-bottom: 4px; }
+.tienda-toggle-sub { font-size: 11px; color: var(--text-faint); letter-spacing: .3px; }
+.tienda-toggle.on .tienda-toggle-sub { color: var(--verde); }
+.switch {
+  flex-shrink: 0; width: 48px; height: 27px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--border);
+  position: relative; cursor: pointer; transition: background .2s, border-color .2s; padding: 0;
+}
+.switch[aria-checked="true"] { background: var(--verde); border-color: var(--verde); }
+.switch-knob {
+  position: absolute; top: 2px; left: 2px; width: 21px; height: 21px;
+  border-radius: 50%; background: #fff; transition: transform .2s;
+}
+.switch[aria-checked="true"] .switch-knob { transform: translateX(21px); }
+.switch[disabled] { opacity: .5; cursor: default; }
+
 /* ── STATS ── */
 .stats-row {
   display: grid;
@@ -735,6 +758,17 @@ body {
       <h1 class="page-title">Catálogo</h1>
       <p class="page-sub" id="lastSync">Cargando...</p>
 
+      <!-- Interruptor: comprar en línea -->
+      <div class="tienda-toggle" id="tiendaToggle">
+        <div class="tienda-toggle-txt">
+          <div class="tienda-toggle-title">Comprar en línea</div>
+          <div class="tienda-toggle-sub" id="tiendaToggleSub">Cargando…</div>
+        </div>
+        <button type="button" class="switch" id="tiendaSwitch" role="switch" aria-checked="false" onclick="toggleTienda()">
+          <span class="switch-knob"></span>
+        </button>
+      </div>
+
       <!-- Stats -->
       <div class="stats-row">
         <div class="stat-card"><div class="stat-n" id="statTotal">—</div><div class="stat-l">Piezas total</div></div>
@@ -1007,6 +1041,56 @@ function showAdmin() {
   document.getElementById('loginWrap').classList.add('hidden');
   document.getElementById('adminWrap').classList.remove('hidden');
   loadCatalog();
+  loadTiendaConfig();
+}
+
+// ══════════════════════════════════════
+//  INTERRUPTOR "COMPRAR EN LÍNEA"
+// ══════════════════════════════════════
+let tiendaActivaState = false;
+
+function paintTiendaSwitch(on, loading) {
+  const wrap = document.getElementById('tiendaToggle');
+  const sw = document.getElementById('tiendaSwitch');
+  const sub = document.getElementById('tiendaToggleSub');
+  sw.setAttribute('aria-checked', on ? 'true' : 'false');
+  sw.disabled = !!loading;
+  wrap.classList.toggle('on', on);
+  sub.textContent = loading
+    ? 'Cargando…'
+    : (on
+        ? 'ACTIVO — los clientes ven el carrito y pueden hacer pedidos.'
+        : 'Apagado — el sitio muestra sólo "Consultar por WhatsApp".');
+}
+
+async function loadTiendaConfig() {
+  paintTiendaSwitch(false, true);
+  const { data, error } = await sbClient
+    .from('site_config').select('tienda_activa').eq('id', 1).maybeSingle();
+  if (error) {
+    document.getElementById('tiendaToggleSub').textContent =
+      'No se pudo leer la config. ¿Corriste supabase/tienda-config.sql?';
+    document.getElementById('tiendaSwitch').disabled = true;
+    return;
+  }
+  tiendaActivaState = data ? data.tienda_activa === true : false;
+  paintTiendaSwitch(tiendaActivaState, false);
+}
+
+async function toggleTienda() {
+  const next = !tiendaActivaState;
+  if (next && !confirm('¿Prender la tienda en línea? Los clientes van a poder agregar al carrito y mandar pedidos.')) return;
+  paintTiendaSwitch(next, true);
+  const { error } = await sbClient
+    .from('site_config').update({ tienda_activa: next }).eq('id', 1);
+  if (error) {
+    showToast('No se pudo cambiar: ' + error.message, 'error');
+    paintTiendaSwitch(tiendaActivaState, false);
+    return;
+  }
+  tiendaActivaState = next;
+  paintTiendaSwitch(next, false);
+  showToast(next ? 'Tienda en línea PRENDIDA' : 'Tienda en línea apagada', '');
 }
 
 (async function initSession() {

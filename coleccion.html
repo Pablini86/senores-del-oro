@@ -105,6 +105,16 @@
   padding: 0; text-decoration: underline; text-underline-offset: 3px;
 }
 
+.card-add {
+  margin-top: 10px; width: 100%;
+  background: none; border: 1px solid rgba(201,168,76,.3);
+  color: var(--oro); font-family: 'Montserrat', sans-serif;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  padding: 8px 10px; cursor: pointer; transition: all .25s;
+}
+.card-add:hover { background: var(--oro); color: var(--negro); }
+.card-add.added { background: #2a2a2a; color: var(--oro); border-color: #2a2a2a; pointer-events: none; }
+
   @media (max-width: 768px) {
   .page-hero { padding: 120px 24px 60px; }
   .page-hero-bg { font-size: 72px; }
@@ -170,12 +180,14 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="assets/config.js"></script>
 <script src="assets/db.js"></script>
+<script src="assets/cart.js"></script>
 <script src="assets/partials.js"></script>
 <script>
 mountLayout({ navVariant: 'coleccion', activeKey: 'coleccion' });
 
 let CATALOG = {};
 let activeCat = 'cadenas';
+let TIENDA_ON = false;   // se resuelve en init()
 
 // Read URL param
 const params = new URLSearchParams(location.search);
@@ -190,6 +202,12 @@ function renderGrid(items) {
   items.forEach(item => {
     const c = document.createElement('div');
     c.className = 'card';
+    // Compra rápida sólo en piezas con precio fijo y sin variantes de tamaño
+    // (un grupo de variantes muestra "Desde $X" — hay que elegir en la ficha).
+    const singleVariant = !item.variants || item.variants.length < 2;
+    const quickAdd = TIENDA_ON && typeof Cart !== 'undefined'
+      && typeof item.precio === 'number' && item.precio > 0
+      && singleVariant && !item.precioEsRango;
     c.innerHTML = `
       <div class="card-img">
         ${item.foto
@@ -202,8 +220,17 @@ function renderGrid(items) {
       <div class="card-info">
         <div class="card-nombre">${item.nombre}</div>
         <div class="card-precio ${formatPrecio(item.precio) ? '' : 'na'}">${precioDisplay(item)}</div>
+        ${quickAdd ? `<button type="button" class="card-add" data-sku="${item.sku}" data-cat="${item.categoria}">+ Carrito</button>` : ''}
       </div>`;
     c.onclick = () => location.href = `producto.html?sku=${item.sku}`;
+    const addBtn = c.querySelector('.card-add');
+    if (addBtn) addBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      Cart.add(addBtn.dataset.sku, 1, addBtn.dataset.cat === 'unicas' ? 1 : null);
+      addBtn.textContent = 'Agregado ✓';
+      addBtn.classList.add('added');
+      setTimeout(() => { if (window.openCart) window.openCart(); }, 250);
+    });
     grid.appendChild(c);
   });
 }
@@ -277,6 +304,7 @@ document.getElementById('clearFilters').addEventListener('click', () => {
 });
 
 (async function init() {
+  TIENDA_ON = await tiendaActiva();
   CATALOG = await fetchCatalog();
   document.querySelectorAll('.tab').forEach(t => {
     const cat = t.dataset.cat;

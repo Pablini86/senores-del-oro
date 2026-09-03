@@ -119,6 +119,50 @@ async function fetchCatalog() {
   return catalog;
 }
 
+// ── Interruptor "comprar en línea" (tabla site_config, fila única id=1) ──
+// El Admin lo prende/apaga. Si está apagado, el sitio se comporta como
+// antes: sólo "Consultar por WhatsApp", sin carrito. Ante cualquier duda
+// o error de red, se asume APAGADO (más seguro).
+let _tiendaPromise = null;
+async function fetchTiendaActiva() {
+  try {
+    const { data, error } = await sbClient
+      .from('site_config')
+      .select('tienda_activa')
+      .eq('id', 1)
+      .maybeSingle();
+    if (error || !data) return false;
+    return data.tienda_activa === true;
+  } catch (_) {
+    return false;
+  }
+}
+// Cachea la consulta: una sola por carga de página.
+function tiendaActiva() {
+  if (!_tiendaPromise) _tiendaPromise = fetchTiendaActiva();
+  return _tiendaPromise;
+}
+
+// Trae varias piezas por SKU en una sola consulta — lo usa el carrito
+// para RE-COTIZAR precios en cada render (nunca confía en un precio
+// guardado en el navegador) y para detectar piezas ya ocultas/agotadas.
+async function fetchProductsBySkus(skus) {
+  const list = (skus || []).filter(Boolean);
+  if (!list.length) return {};
+  const { data, error } = await sbClient
+    .from('products')
+    .select(PUBLIC_COLUMNS)
+    .in('sku', list)
+    .eq('activo', true);
+  if (error) {
+    console.error('Error re-cotizando carrito:', error);
+    return {};
+  }
+  const bySku = {};
+  for (const row of data) bySku[row.sku] = mapRow(row);
+  return bySku;
+}
+
 async function fetchProductBySku(sku) {
   const { data, error } = await sbClient
     .from('products')
