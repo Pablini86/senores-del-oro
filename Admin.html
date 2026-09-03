@@ -247,15 +247,6 @@ body {
 .stat-l { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
 
 /* ── TABLE ── */
-.table-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-.table-title { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--oro-ink); }
 .table-actions { display: flex; gap: 10px; align-items: center; }
 .search-box {
   background: var(--surface);
@@ -270,6 +261,68 @@ body {
 }
 .search-box:focus { border-color: var(--oro); }
 .search-box::placeholder { color: var(--text-faint); }
+
+/* ── FILTROS (pestañas por categoría + chips de estado, estilo Shopify) ── */
+.filter-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border-strong);
+  margin-bottom: 14px;
+  overflow-x: auto;
+}
+.filter-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 10px 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .2s, border-color .2s;
+}
+.filter-tab:hover { color: var(--text); }
+.filter-tab.active { color: var(--oro-ink); border-bottom-color: var(--oro); }
+.tab-count {
+  display: inline-block;
+  min-width: 16px;
+  padding: 1px 5px;
+  margin-left: 4px;
+  background: var(--surface-alt);
+  border-radius: 999px;
+  font-size: 9px;
+  letter-spacing: 0;
+  color: var(--text-muted);
+}
+.filter-tab.active .tab-count { background: var(--oro-tint-strong); color: var(--oro-ink); }
+
+.filter-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all .2s;
+}
+.chip:hover { border-color: var(--oro); }
+.chip.active { background: var(--oro-tint); border-color: var(--oro); color: var(--text); }
 
 /* ── BULK ACTIONS ── */
 .bulk-bar {
@@ -690,17 +743,17 @@ body {
         <div class="stat-card"><div class="stat-n" id="statCats">—</div><div class="stat-l">Categorías</div></div>
       </div>
 
-      <!-- Table -->
-      <div class="table-header">
-        <span class="table-title">
-          <select id="catFilter" onchange="filterCat()" style="background:var(--surface);border:1px solid var(--border-strong);color:var(--text);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;padding:6px 10px;outline:none;text-transform:uppercase;">
-            <option value="all">Todas las piezas</option>
-            <option value="cadenas">Cadenas</option>
-            <option value="pulsos">Pulsos</option>
-            <option value="broqueles">Broqueles</option>
-            <option value="unicas">Piezas Únicas</option>
-          </select>
-        </span>
+      <!-- Filtros -->
+      <div class="filter-tabs" id="filterTabs"></div>
+
+      <div class="filter-sub">
+        <div class="filter-chips" id="statusChips">
+          <button type="button" class="chip active" data-status="all" onclick="setStatusFilter('all')">Todas</button>
+          <button type="button" class="chip" data-status="visible" onclick="setStatusFilter('visible')">Visibles</button>
+          <button type="button" class="chip" data-status="hidden" onclick="setStatusFilter('hidden')">Ocultas</button>
+          <button type="button" class="chip" data-status="nofoto" onclick="setStatusFilter('nofoto')">Sin foto</button>
+          <button type="button" class="chip" data-status="noprecio" onclick="setStatusFilter('noprecio')">Sin precio</button>
+        </div>
         <div class="table-actions">
           <input type="text" class="search-box" id="searchBox" placeholder="Buscar SKU o nombre..." oninput="filterTable()">
           <button class="btn secondary sm" onclick="openDrawer(null)">+ Nueva pieza</button>
@@ -900,6 +953,8 @@ let editingItem = null;
 let selectedSkus = new Set();
 let sortField = null;
 let sortDir = 'asc';
+let catFilterVal = 'all';       // pestaña de categoría activa
+let statusFilterVal = 'all';    // chip de estado activo (all / visible / hidden / nofoto / noprecio)
 
 // Un solo listener delegado cubre los botones "Editar" tanto de la
 // tabla (desktop) como de las tarjetas (mobile), sin reconectarlos
@@ -978,6 +1033,7 @@ async function loadCatalog(preserveView = false) {
 
   allItems = data.map(mapRow);
   updateStats();
+  renderFilterTabs();
   if (!preserveView) selectedSkus.clear();
   applyFilters({ resetPage: !preserveView });
   document.getElementById('lastSync').textContent =
@@ -989,6 +1045,42 @@ function updateStats() {
   document.getElementById('statFotos').textContent = allItems.filter(i => i.foto).length;
   document.getElementById('statPrecio').textContent = allItems.filter(i => i.precio).length;
   document.getElementById('statCats').textContent = new Set(allItems.map(i => i.categoria)).size;
+}
+
+// ══════════════════════════════════════
+//  PESTAÑAS DE CATEGORÍA (con contador)
+// ══════════════════════════════════════
+const CAT_TABS = [
+  { val: 'all',       label: 'Todas' },
+  { val: 'cadenas',   label: 'Cadenas' },
+  { val: 'pulsos',    label: 'Pulsos' },
+  { val: 'broqueles', label: 'Broqueles' },
+  { val: 'unicas',    label: 'Únicas' },
+];
+// El contador de cada pestaña es el total de esa categoría en todo el
+// catálogo (no cambia con la búsqueda ni con el chip de estado) para que
+// sean números de referencia estables.
+function renderFilterTabs() {
+  document.getElementById('filterTabs').innerHTML = CAT_TABS.map(t => {
+    const n = t.val === 'all'
+      ? allItems.length
+      : allItems.filter(i => i.categoria === t.val).length;
+    return `<button type="button" class="filter-tab ${t.val === catFilterVal ? 'active' : ''}"
+      onclick="setCatFilter('${t.val}')">${t.label}<span class="tab-count">${n}</span></button>`;
+  }).join('');
+}
+
+function setCatFilter(val) {
+  catFilterVal = val;
+  renderFilterTabs();
+  filterTable();
+}
+
+function setStatusFilter(val) {
+  statusFilterVal = val;
+  document.querySelectorAll('#statusChips .chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.status === val));
+  filterTable();
 }
 
 // ══════════════════════════════════════
@@ -1092,9 +1184,15 @@ function goPage(p) {
 // si quedó fuera de rango porque ahora hay menos resultados).
 function applyFilters({ resetPage = true } = {}) {
   const q = document.getElementById('searchBox').value.toLowerCase();
-  const cat = document.getElementById('catFilter').value;
+  const cat = catFilterVal;
+  const st = statusFilterVal;
   const items = allItems.filter(i =>
     (cat === 'all' || i.categoria === cat) &&
+    (st === 'all'
+      || (st === 'visible'  && !!i.activo)
+      || (st === 'hidden'   && !i.activo)
+      || (st === 'nofoto'   && !i.foto)
+      || (st === 'noprecio' && i.precio == null)) &&
     (i.nombre.toLowerCase().includes(q) || i.sku.toLowerCase().includes(q))
   );
   filtered = sortItems(items);
@@ -1107,8 +1205,6 @@ function filterTable() {
   selectedSkus.clear();
   applyFilters({ resetPage: true });
 }
-
-function filterCat() { filterTable(); }
 
 // ══════════════════════════════════════
 //  ORDENAR POR COLUMNA
