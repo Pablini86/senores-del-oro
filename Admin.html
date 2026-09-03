@@ -448,6 +448,10 @@ body {
   font-size: 12px;
   color: var(--text);
   z-index: 999;
+  /* El toast nunca debe interceptar clics: aun con opacity:0 sigue en su
+     sitio (esquina inferior derecha) y tapaba los botones de paginación.
+     Solo el botón "Deshacer" vuelve a activar pointer-events. */
+  pointer-events: none;
   transform: translateY(20px);
   opacity: 0;
   transition: all .35s;
@@ -462,6 +466,7 @@ body {
   font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--oro-ink); text-decoration: underline; text-underline-offset: 3px;
   flex-shrink: 0; padding: 0;
+  pointer-events: auto;
 }
 
 /* ── EMPTY ── */
