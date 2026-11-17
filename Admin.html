@@ -1081,10 +1081,13 @@ async function toggleTienda() {
   const next = !tiendaActivaState;
   if (next && !confirm('¿Prender la tienda en línea? Los clientes van a poder agregar al carrito y mandar pedidos.')) return;
   paintTiendaSwitch(next, true);
-  const { error } = await sbClient
-    .from('site_config').update({ tienda_activa: next }).eq('id', 1);
-  if (error) {
-    showToast('No se pudo cambiar: ' + error.message, 'error');
+  // .select() para saber si de verdad se actualizó: con RLS, un usuario sin
+  // permiso NO recibe error, sólo 0 filas — antes eso se veía como "PRENDIDA".
+  const { data, error } = await sbClient
+    .from('site_config').update({ tienda_activa: next }).eq('id', 1).select('tienda_activa');
+  if (error || !data || !data.length) {
+    showToast(error ? 'No se pudo cambiar: ' + error.message
+      : 'No se guardó: esta cuenta no tiene permiso de administrador.', 'error');
     paintTiendaSwitch(tiendaActivaState, false);
     return;
   }
