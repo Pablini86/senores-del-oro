@@ -34,3 +34,14 @@ const ENTREGA_GENERAL = `${ENTREGA_BROQUELES} en broqueles y ${ENTREGA_OTRAS} en
 // Mientras esté vacío, el botón "Pagar con tarjeta" NO aparece y el sitio
 // funciona 100% con pedido por WhatsApp.
 const CHECKOUT_ENDPOINT = 'https://senores-del-oro-pagos.vercel.app/api/checkout';
+
+// ¿Stripe ya cobra de verdad (clave sk_live_ en Vercel)? Mientras sea false,
+// el botón "Pagar con tarjeta" sólo aparece abriendo el sitio con ?pruebas=1
+// (para probar con tarjetas ficticias). Los clientes ven sólo WhatsApp.
+const STRIPE_LIVE = false;
+const CARD_ENABLED = !!CHECKOUT_ENDPOINT && (STRIPE_LIVE || (() => {
+  try {
+    if (new URLSearchParams(location.search).has('pruebas')) sessionStorage.setItem('sdo_pruebas', '1');
+    return sessionStorage.getItem('sdo_pruebas') === '1';
+  } catch (_) { return false; }
+})());

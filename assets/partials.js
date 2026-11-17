@@ -277,7 +277,7 @@ function initCart() {
     lastSummary = s;
     // Pago con tarjeta: sólo si hay endpoint y no hay piezas únicas (ésas van por WhatsApp)
     const hasUnica = lines.some(l => l.item.categoria === 'unicas');
-    const cardOK = !!CHECKOUT_ENDPOINT && !hasUnica;
+    const cardOK = CARD_ENABLED && !hasUnica;
     const falta = ENVIO_GRATIS_DESDE - s.subtotal;
 
     body.innerHTML = `
@@ -317,7 +317,7 @@ function initCart() {
 
       ${renderTrustBadges(entregaCarrito(lines))}
 
-      ${cardOK ? '' : (CHECKOUT_ENDPOINT && hasUnica ? `<p class="cart-note">Las piezas únicas se piden por WhatsApp.</p>` : '')}
+      ${cardOK ? '' : (CARD_ENABLED && hasUnica ? `<p class="cart-note">Las piezas únicas se piden por WhatsApp.</p>` : '')}
       <p class="cart-err" id="cartErr" hidden></p>
       <div class="cart-actions">
         ${cardOK ? `<button type="button" class="cart-btn" id="cartCard">Pagar con tarjeta</button>` : ''}
