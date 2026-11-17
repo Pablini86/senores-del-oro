@@ -22,8 +22,9 @@ const ENVIO_COSTO = 150;
 // Días hábiles de entrega que se muestran en el sitio.
 const ENTREGA_DIAS = '4 a 5 días hábiles';
 
-// ── Pago con tarjeta (Mercado Pago) — FASE 2, apagado por ahora ──
-// Cuando tengas lista la función de Vercel (ver MERCADOPAGO-SETUP.md),
-// pega aquí su URL. Mientras esté vacío, el botón "Pagar con tarjeta"
-// NO aparece y el sitio funciona 100% con pedido por WhatsApp.
-const MP_CHECKOUT_ENDPOINT = '';
+// ── Pago con tarjeta (Stripe) ──
+// URL de la función de Vercel (proyecto senores-del-oro-pagos), p. ej.
+// 'https://senores-del-oro-pagos.vercel.app/api/checkout'.
+// Mientras esté vacío, el botón "Pagar con tarjeta" NO aparece y el sitio
+// funciona 100% con pedido por WhatsApp.
+const CHECKOUT_ENDPOINT = '';

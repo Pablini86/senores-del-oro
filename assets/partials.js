@@ -274,6 +274,9 @@ function initCart() {
 
     const s = Cart.summary(lines);
     lastSummary = s;
+    // Pago con tarjeta: sólo si hay endpoint y no hay piezas únicas (ésas van por WhatsApp)
+    const hasUnica = lines.some(l => l.item.categoria === 'unicas');
+    const cardOK = !!CHECKOUT_ENDPOINT && !hasUnica;
     const falta = ENVIO_GRATIS_DESDE - s.subtotal;
 
     body.innerHTML = `
@@ -313,8 +316,11 @@ function initCart() {
 
       ${renderTrustBadges()}
 
+      ${cardOK ? '' : (CHECKOUT_ENDPOINT && hasUnica ? `<p class="cart-note">Las piezas únicas se piden por WhatsApp.</p>` : '')}
+      <p class="cart-err" id="cartErr" hidden></p>
       <div class="cart-actions">
-        <button type="button" class="cart-btn" id="cartToCheckout">Continuar con el pedido</button>
+        ${cardOK ? `<button type="button" class="cart-btn" id="cartCard">Pagar con tarjeta</button>` : ''}
+        <button type="button" class="cart-btn${cardOK ? ' ghost' : ''}" id="cartToCheckout">${cardOK ? 'Pedir por WhatsApp' : 'Continuar con el pedido'}</button>
         <button type="button" class="cart-btn ghost" id="cartKeep">Seguir viendo</button>
       </div>`;
 
@@ -332,6 +338,8 @@ function initCart() {
     });
     body.querySelector('#cartToCheckout').addEventListener('click', () => { view = 'checkout'; renderCheckout(); });
     body.querySelector('#cartKeep').addEventListener('click', closeDrawer);
+    const card = body.querySelector('#cartCard');
+    if (card) card.addEventListener('click', startCardCheckout);
   }
 
   // ── Checkout ──
@@ -375,7 +383,6 @@ function initCart() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
           Enviar pedido por WhatsApp
         </button>
-        ${MP_CHECKOUT_ENDPOINT ? `<button type="button" class="cart-btn card" id="cartMP">Pagar con tarjeta</button>` : ''}
       </form>`;
 
     const form = body.querySelector('#cartForm');
@@ -402,10 +409,6 @@ function initCart() {
       openWhatsAppOrder(data);
     });
 
-    if (MP_CHECKOUT_ENDPOINT) {
-      const mp = body.querySelector('#cartMP');
-      if (mp) mp.addEventListener('click', () => startCardCheckout());
-    }
   }
 
   function orderText(data) {
@@ -444,24 +447,33 @@ function initCart() {
     body.querySelector('#cartVacia').addEventListener('click', () => { Cart.clear(); view = 'cart'; render(); });
   }
 
-  // Fase 2 — pago con tarjeta (sólo si MP_CHECKOUT_ENDPOINT está configurado)
+  // Pago con tarjeta (Stripe Checkout) — sólo si CHECKOUT_ENDPOINT está configurado.
+  // El navegador manda sólo sku + qty; el servidor re-cotiza y arma el cobro.
+  const CARD_ERRORS = {
+    tienda_apagada: 'La tienda en línea no está disponible en este momento. Pide por WhatsApp.',
+    solo_whatsapp: 'Las piezas únicas se piden por WhatsApp.',
+    pieza_no_disponible: 'Una pieza de tu carrito ya no está disponible. Actualiza el carrito.',
+  };
   async function startCardCheckout() {
-    const mp = body.querySelector('#cartMP');
-    if (mp) { mp.disabled = true; mp.textContent = 'Redirigiendo…'; }
+    const btn = body.querySelector('#cartCard');
+    const err = body.querySelector('#cartErr');
+    if (btn) { btn.disabled = true; btn.textContent = 'Redirigiendo…'; }
+    if (err) err.hidden = true;
+    let msg = 'No se pudo iniciar el pago con tarjeta. Intenta de nuevo o pide por WhatsApp.';
     try {
-      const res = await fetch(MP_CHECKOUT_ENDPOINT, {
+      const res = await fetch(CHECKOUT_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: Cart.get() }),   // el servidor re-cotiza por SKU
+        body: JSON.stringify({ items: Cart.get() }),
       });
-      const json = await res.json();
-      if (json && json.init_point) { window.location.href = json.init_point; return; }
-      throw new Error('respuesta inválida');
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.url) { window.location.href = json.url; return; }
+      if (json.error && CARD_ERRORS[json.error]) msg = CARD_ERRORS[json.error];
     } catch (e) {
       console.error(e);
-      if (mp) { mp.disabled = false; mp.textContent = 'Pagar con tarjeta'; }
-      const err = body.querySelector('#cartErr');
-      if (err) { err.textContent = 'No se pudo iniciar el pago con tarjeta. Usa el pedido por WhatsApp.'; err.hidden = false; }
     }
+    if (btn) { btn.disabled = false; btn.textContent = 'Pagar con tarjeta'; }
+    if (err) { err.textContent = msg; err.hidden = false; }
   }
+
 }
