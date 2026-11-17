@@ -27,4 +27,4 @@ const ENTREGA_DIAS = '4 a 5 días hábiles';
 // 'https://senores-del-oro-pagos.vercel.app/api/checkout'.
 // Mientras esté vacío, el botón "Pagar con tarjeta" NO aparece y el sitio
 // funciona 100% con pedido por WhatsApp.
-const CHECKOUT_ENDPOINT = '';
+const CHECKOUT_ENDPOINT = 'https://senores-del-oro-pagos.vercel.app/api/checkout';
