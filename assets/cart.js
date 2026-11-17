@@ -113,7 +113,8 @@ const Cart = (function () {
         const item = bySku[l.sku];
         // Sin item = pieza oculta/eliminada. Sin precio numérico =
         // "Consultar precio": tampoco puede ir en un carrito con total.
-        if (!item || typeof item.precio !== 'number' || !(item.precio > 0)) {
+        // Sin venta en línea (switch del Admin apagado) tampoco puede ir en el carrito.
+        if (!item || item.ventaOnline === false || typeof item.precio !== 'number' || !(item.precio > 0)) {
           dropped.push(l.sku);
           continue;
         }

@@ -206,7 +206,7 @@ function renderGrid(items) {
     // Compra rápida sólo en piezas con precio fijo y sin variantes de tamaño
     // (un grupo de variantes muestra "Desde $X" — hay que elegir en la ficha).
     const singleVariant = !item.variants || item.variants.length < 2;
-    const quickAdd = TIENDA_ON && typeof Cart !== 'undefined'
+    const quickAdd = TIENDA_ON && item.ventaOnline && typeof Cart !== 'undefined'
       && typeof item.precio === 'number' && item.precio > 0
       && singleVariant && !item.precioEsRango;
     c.innerHTML = `

@@ -275,9 +275,8 @@ function initCart() {
 
     const s = Cart.summary(lines);
     lastSummary = s;
-    // Pago con tarjeta: sólo si hay endpoint y no hay piezas únicas (ésas van por WhatsApp)
-    const hasUnica = lines.some(l => l.item.categoria === 'unicas');
-    const cardOK = CARD_ENABLED && !hasUnica;
+    // Pago con tarjeta: el carrito sólo tiene piezas con venta en línea (cart.resolve descarta las demás)
+    const cardOK = CARD_ENABLED;
     const falta = ENVIO_GRATIS_DESDE - s.subtotal;
 
     body.innerHTML = `
@@ -317,7 +316,6 @@ function initCart() {
 
       ${renderTrustBadges(entregaCarrito(lines))}
 
-      ${cardOK ? '' : (CARD_ENABLED && hasUnica ? `<p class="cart-note">Las piezas únicas se piden por WhatsApp.</p>` : '')}
       <p class="cart-err" id="cartErr" hidden></p>
       <div class="cart-actions">
         ${cardOK ? `<button type="button" class="cart-btn" id="cartCard">Pagar con tarjeta</button>` : ''}
@@ -470,7 +468,7 @@ function initCart() {
   // El navegador manda sólo sku + qty; el servidor re-cotiza y arma el cobro.
   const CARD_ERRORS = {
     tienda_apagada: 'La tienda en línea no está disponible en este momento. Pide por WhatsApp.',
-    solo_whatsapp: 'Las piezas únicas se piden por WhatsApp.',
+    solo_whatsapp: 'Una pieza de tu carrito se vende sólo por WhatsApp. Quítala o pide por WhatsApp.',
     pieza_no_disponible: 'Una pieza de tu carrito ya no está disponible. Actualiza el carrito.',
   };
   async function startCardCheckout() {

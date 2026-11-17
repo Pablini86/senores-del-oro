@@ -816,6 +816,7 @@ body {
               <th data-sort="precio">Precio</th>
               <th data-sort="kilate">Kilate</th>
               <th>Visible</th>
+              <th title="Se puede comprar en línea">En línea</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -853,6 +854,10 @@ body {
       <label class="status-pill" id="pillDestacado">
         <input type="checkbox" id="fDestacado" style="display:none">
         <span class="dot"></span> Destacada ★
+      </label>
+      <label class="status-pill" id="pillOnline">
+        <input type="checkbox" id="fOnline" checked style="display:none">
+        <span class="dot"></span> Se vende en línea
       </label>
     </div>
 
@@ -1010,6 +1015,8 @@ document.getElementById('pageCatalog').addEventListener('change', (e) => {
     toggleSelectAll(e.target.checked);
   } else if (e.target.classList.contains('visible-toggle')) {
     toggleVisible(e.target.dataset.sku, e.target.checked, e.target);
+  } else if (e.target.classList.contains('online-toggle')) {
+    toggleOnline(e.target.dataset.sku, e.target.checked, e.target);
   }
 });
 
@@ -1180,7 +1187,7 @@ function renderTable() {
   const cards = document.getElementById('catalogCards');
 
   if (!page.length) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:60px;color:var(--text-faint)">Sin resultados</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:60px;color:var(--text-faint)">Sin resultados</td></tr>`;
     cards.innerHTML = `<div class="cat-card-empty">Sin resultados</div>`;
     document.getElementById('pagInfo').textContent = '';
     document.getElementById('pagBtns').innerHTML = '';
@@ -1210,6 +1217,12 @@ function renderTable() {
         </label>
       </td>
       <td>
+        <label class="switch" title="${item.ventaOnline ? 'Se compra en línea' : 'Sólo por WhatsApp'}">
+          <input type="checkbox" class="online-toggle" data-sku="${item.sku}" ${item.ventaOnline ? 'checked' : ''}>
+          <span class="slider"></span>
+        </label>
+      </td>
+      <td>
         <div class="td-actions">
           <button class="btn sm secondary" data-edit-sku="${item.sku}">Editar</button>
           <a class="btn sm secondary" href="producto.html?sku=${encodeURIComponent(item.sku)}" target="_blank" style="text-decoration:none;padding:8px 12px">Ver</a>
@@ -1232,6 +1245,10 @@ function renderTable() {
       <div class="cat-card-actions">
         <label class="switch" style="align-self:center" title="${item.activo ? 'Visible en el sitio' : 'Oculta del sitio'}">
           <input type="checkbox" class="visible-toggle" data-sku="${item.sku}" ${item.activo ? 'checked' : ''}>
+          <span class="slider"></span>
+        </label>
+        <label class="switch" style="align-self:center" title="${item.ventaOnline ? 'Se compra en línea' : 'Sólo por WhatsApp'}">
+          <input type="checkbox" class="online-toggle" data-sku="${item.sku}" ${item.ventaOnline ? 'checked' : ''}>
           <span class="slider"></span>
         </label>
         <button class="btn sm secondary" data-edit-sku="${item.sku}">Editar</button>
@@ -1363,6 +1380,22 @@ async function toggleVisible(sku, activo, checkboxEl) {
   renderTable();
 }
 
+// Interruptor "En línea" por pieza: prendido = Comprar ahora / Agregar al
+// carrito en el sitio; apagado = sólo "Consultar por WhatsApp".
+async function toggleOnline(sku, ventaOnline, checkboxEl) {
+  const { data, error } = await sbClient.from('products')
+    .update({ venta_online: ventaOnline }).eq('sku', sku).select('sku');
+  if (error || !data || !data.length) {
+    showToast(error ? 'Error al actualizar: ' + error.message : 'No se guardó (¿sesión de administrador?)', 'error');
+    checkboxEl.checked = !ventaOnline;
+    return;
+  }
+  const item = allItems.find(i => i.sku === sku);
+  if (item) item.ventaOnline = ventaOnline;
+  showToast(ventaOnline ? 'Se vende en línea' : 'Sólo por WhatsApp', '');
+  renderTable();
+}
+
 function updateBulkBar() {
   const bar = document.getElementById('bulkBar');
   const n = selectedSkus.size;
@@ -1402,6 +1435,7 @@ function itemToPayload(item) {
     notas: item.notas,
     activo: item.activo,
     destacado: item.destacado,
+    venta_online: item.ventaOnline !== false,
     orden: item.orden,   // conservar la posición en el catálogo al deshacer un borrado
     variant_group: item.variantGroup || null,
     variant_label: item.variantLabel || null,
@@ -1508,6 +1542,7 @@ function fillForm(item) {
   document.getElementById('fVariantLabel').value = item.variantLabel || '';
   document.getElementById('fActivo').checked = item.activo !== false;
   document.getElementById('fDestacado').checked = !!item.destacado;
+  document.getElementById('fOnline').checked = item.ventaOnline !== false;
   document.getElementById('fCategoria').value = item.categoria || 'cadenas';
   document.getElementById('deleteBtn').style.display = 'inline-block';
   document.getElementById('duplicateBtn').style.display = 'inline-block';
@@ -1529,6 +1564,7 @@ function clearForm() {
   document.getElementById('fCategoria').value = 'cadenas';
   document.getElementById('fActivo').checked = true;
   document.getElementById('fDestacado').checked = false;
+  document.getElementById('fOnline').checked = true;
   document.getElementById('deleteBtn').style.display = 'none';
   document.getElementById('duplicateBtn').style.display = 'none';
   updateCatFields();
@@ -1557,9 +1593,11 @@ function duplicatePiece() {
 function refreshStatusPills() {
   document.getElementById('pillActivo').classList.toggle('on', document.getElementById('fActivo').checked);
   document.getElementById('pillDestacado').classList.toggle('on', document.getElementById('fDestacado').checked);
+  document.getElementById('pillOnline').classList.toggle('on', document.getElementById('fOnline').checked);
 }
 document.getElementById('fActivo').addEventListener('change', refreshStatusPills);
 document.getElementById('fDestacado').addEventListener('change', refreshStatusPills);
+document.getElementById('fOnline').addEventListener('change', refreshStatusPills);
 
 // ══════════════════════════════════════
 //  GENERAR SKU
@@ -1741,6 +1779,7 @@ async function savePiece() {
       notas: document.getElementById('fNotas').value.trim(),
       activo: document.getElementById('fActivo').checked,
       destacado: document.getElementById('fDestacado').checked,
+      venta_online: document.getElementById('fOnline').checked,
       variant_group: document.getElementById('fVariantGroup').value.trim() || null,
       variant_label: document.getElementById('fVariantLabel').value.trim() || null,
     };

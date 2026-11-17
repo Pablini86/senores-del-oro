@@ -50,6 +50,8 @@ function mapRow(row) {
     notas: row.notas || '',
     destacado: row.destacado,
     activo: row.activo,
+    // Switch por pieza: true = se compra en línea; false = sólo WhatsApp
+    ventaOnline: row.venta_online !== false,
     orden: row.orden,
     variantGroup: row.variant_group || '',
     variantLabel: row.variant_label || '',
@@ -91,7 +93,7 @@ function buildGroupCard(variants) {
 
 // Columnas públicas — deja fuera `notas` (uso interno, no debe llegar
 // al navegador de un visitante ni verse en la pestaña Red).
-const PUBLIC_COLUMNS = 'id, sku, categoria, nombre, descripcion, kilate, precio, largo, grosor, eslabon, placa, peso, foto_url, fotos, destacado, activo, orden, variant_group, variant_label';
+const PUBLIC_COLUMNS = 'id, sku, categoria, nombre, descripcion, kilate, precio, largo, grosor, eslabon, placa, peso, foto_url, fotos, destacado, activo, orden, variant_group, variant_label, venta_online';
 
 // Trae TODO el catálogo público, agrupado por categoría —
 // equivalente al viejo objeto CATALOG de assets/catalog.js,
