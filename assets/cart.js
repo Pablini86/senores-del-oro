@@ -48,8 +48,15 @@ const Cart = (function () {
     },
 
     // maxQty: tope de unidades (1 para piezas únicas). null = sin tope.
-    add(sku, qty, maxQty) {
+    // precio: opcional, sólo para el evento AddToCart del Pixel.
+    add(sku, qty, maxQty, precio) {
       qty = Math.max(1, parseInt(qty, 10) || 1);
+      if (typeof trackPixel === 'function') {
+        trackPixel('AddToCart', {
+          content_ids: [sku], content_type: 'product', currency: 'MXN',
+          ...(typeof precio === 'number' && precio > 0 ? { value: precio * qty } : {}),
+        });
+      }
       const lines = read();
       const existing = lines.find(l => l.sku === sku);
       if (existing) {

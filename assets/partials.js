@@ -336,7 +336,10 @@ function initCart() {
         if (act === 'rm') Cart.remove(sku);
       });
     });
-    body.querySelector('#cartToCheckout').addEventListener('click', () => { view = 'checkout'; renderCheckout(); });
+    body.querySelector('#cartToCheckout').addEventListener('click', () => {
+      if (typeof trackPixel === 'function') trackPixel('InitiateCheckout', pixelCart());
+      view = 'checkout'; renderCheckout();
+    });
     body.querySelector('#cartKeep').addEventListener('click', closeDrawer);
     const card = body.querySelector('#cartCard');
     if (card) card.addEventListener('click', startCardCheckout);
@@ -406,6 +409,7 @@ function initCart() {
         return;
       }
       err.hidden = true;
+      if (typeof trackPixel === 'function') trackPixel('Lead', pixelCart());
       openWhatsAppOrder(data);
     });
 
@@ -447,6 +451,15 @@ function initCart() {
     body.querySelector('#cartVacia').addEventListener('click', () => { Cart.clear(); view = 'cart'; render(); });
   }
 
+  function pixelCart() {
+    const s = lastSummary || Cart.summary(lastLines);
+    return {
+      content_ids: lastLines.map(l => l.sku), content_type: 'product',
+      num_items: lastLines.reduce((n, l) => n + l.qty, 0),
+      value: s.total, currency: 'MXN',
+    };
+  }
+
   // Pago con tarjeta (Stripe Checkout) — sólo si CHECKOUT_ENDPOINT está configurado.
   // El navegador manda sólo sku + qty; el servidor re-cotiza y arma el cobro.
   const CARD_ERRORS = {
@@ -458,6 +471,7 @@ function initCart() {
     const btn = body.querySelector('#cartCard');
     const err = body.querySelector('#cartErr');
     if (btn) { btn.disabled = true; btn.textContent = 'Redirigiendo…'; }
+    if (typeof trackPixel === 'function') trackPixel('InitiateCheckout', pixelCart());
     if (err) err.hidden = true;
     let msg = 'No se pudo iniciar el pago con tarjeta. Intenta de nuevo o pide por WhatsApp.';
     try {

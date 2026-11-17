@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://senoresdeloro.com/coleccion.html">
 <link rel="stylesheet" href="assets/style.css">
+<script src="assets/pixel.js"></script>
 <link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="icon" type="image/png" href="assets/favicon.png">
   
@@ -220,13 +221,13 @@ function renderGrid(items) {
       <div class="card-info">
         <div class="card-nombre">${item.nombre}</div>
         <div class="card-precio ${formatPrecio(item.precio) ? '' : 'na'}">${precioDisplay(item)}</div>
-        ${quickAdd ? `<button type="button" class="card-add" data-sku="${item.sku}" data-cat="${item.categoria}">+ Carrito</button>` : ''}
+        ${quickAdd ? `<button type="button" class="card-add" data-sku="${item.sku}" data-cat="${item.categoria}" data-precio="${typeof item.precio === 'number' ? item.precio : ''}">+ Carrito</button>` : ''}
       </div>`;
     c.onclick = () => location.href = `producto.html?sku=${item.sku}`;
     const addBtn = c.querySelector('.card-add');
     if (addBtn) addBtn.addEventListener('click', e => {
       e.stopPropagation();
-      Cart.add(addBtn.dataset.sku, 1, addBtn.dataset.cat === 'unicas' ? 1 : null);
+      Cart.add(addBtn.dataset.sku, 1, addBtn.dataset.cat === 'unicas' ? 1 : null, Number(addBtn.dataset.precio) || undefined);
       addBtn.textContent = 'Agregado ✓';
       addBtn.classList.add('added');
       setTimeout(() => { if (window.openCart) window.openCart(); }, 250);
