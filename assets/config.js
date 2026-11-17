@@ -38,7 +38,7 @@ const CHECKOUT_ENDPOINT = 'https://senores-del-oro-pagos.vercel.app/api/checkout
 // ¿Stripe ya cobra de verdad (clave sk_live_ en Vercel)? Mientras sea false,
 // el botón "Pagar con tarjeta" sólo aparece abriendo el sitio con ?pruebas=1
 // (para probar con tarjetas ficticias). Los clientes ven sólo WhatsApp.
-const STRIPE_LIVE = false;
+const STRIPE_LIVE = true;
 const CARD_ENABLED = !!CHECKOUT_ENDPOINT && (STRIPE_LIVE || (() => {
   try {
     if (new URLSearchParams(location.search).has('pruebas')) sessionStorage.setItem('sdo_pruebas', '1');
