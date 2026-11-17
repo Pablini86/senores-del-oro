@@ -521,8 +521,8 @@ function renderProduct(item, cat, variants) {
               Consultar por WhatsApp
             </a>
           </div>
-          <p class="prod-trust">${cat === 'unicas' ? 'Pieza única — cuando se va, no regresa.' : (TIENDA_ON ? `Envío asegurado · entrega en ${ENTREGA_DIAS}` : 'Hecho en Guadalajara')}</p>
-          ${TIENDA_ON ? renderTrustBadges() : ''}
+          <p class="prod-trust">${cat === 'unicas' ? 'Pieza única — cuando se va, no regresa.' : (TIENDA_ON ? `Envío asegurado · entrega en ${entregaPara(cat)}` : 'Hecho en Guadalajara')}</p>
+          ${TIENDA_ON ? renderTrustBadges(entregaPara(cat)) : ''}
         </div>
       </div>
     </div>`;

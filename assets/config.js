@@ -19,8 +19,14 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const ENVIO_GRATIS_DESDE = 3000;
 const ENVIO_COSTO = 150;
 
-// Días hábiles de entrega que se muestran en el sitio.
-const ENTREGA_DIAS = '4 a 5 días hábiles';
+// Tiempos de entrega que se muestran en el sitio (por tipo de pieza).
+const ENTREGA_BROQUELES = '2 a 3 días';
+const ENTREGA_OTRAS     = '1 semana';
+function entregaPara(categoria) {
+  return categoria === 'broqueles' ? ENTREGA_BROQUELES : ENTREGA_OTRAS;
+}
+// Texto general (cuando no se sabe la pieza)
+const ENTREGA_GENERAL = `${ENTREGA_BROQUELES} en broqueles y ${ENTREGA_OTRAS} en las demás piezas`;
 
 // ── Pago con tarjeta (Stripe) ──
 // URL de la función de Vercel (proyecto senores-del-oro-pagos), p. ej.

@@ -88,7 +88,7 @@
   <ul>
     <li>Hacemos envíos a toda la República Mexicana.</li>
     <li>Todo paquete viaja <strong>asegurado contra robo o extravío</strong>.</li>
-    <li><strong>Entrega garantizada en <span data-cfg="dias">4 a 5 días hábiles</span></strong>
+    <li><strong>Entrega en <span data-cfg="dias">2 a 3 días en broqueles y 1 semana en las demás piezas</span></strong>
       una vez confirmado el pago, salvo casos de fuerza mayor ajenos a la paquetería.</li>
     <li>Envío asegurado <strong>gratuito</strong> en compras de
       <strong>$<span data-cfg="gratis">3,000</span> MXN o más</strong>. En pedidos menores,
@@ -174,7 +174,7 @@ mountLayout({ navVariant: 'coleccion' });
 // Mantener los montos de envío en sync con assets/config.js
 document.querySelectorAll('[data-cfg]').forEach(el => {
   const k = el.getAttribute('data-cfg');
-  if (k === 'dias'   && typeof ENTREGA_DIAS !== 'undefined') el.textContent = ENTREGA_DIAS;
+  if (k === 'dias'   && typeof ENTREGA_GENERAL !== 'undefined') el.textContent = ENTREGA_GENERAL;
   if (k === 'gratis' && typeof ENVIO_GRATIS_DESDE !== 'undefined') el.textContent = ENVIO_GRATIS_DESDE.toLocaleString('es-MX');
   if (k === 'costo'  && typeof ENVIO_COSTO !== 'undefined') el.textContent = ENVIO_COSTO.toLocaleString('es-MX');
 });

@@ -69,13 +69,14 @@ function renderNav(variant, activeKey) {
 
 // Bloque de confianza (envío asegurado + entrega + garantía).
 // Se usa en la ficha de producto y en el carrito — un solo lugar.
-function renderTrustBadges() {
+// entrega: texto de tiempo de entrega (default: el general por tipo de pieza)
+function renderTrustBadges(entrega = ENTREGA_GENERAL) {
   return `
 <ul class="trust-badges">
   <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
     Tu paquete viaja <strong>asegurado contra robo o extravío</strong>.</li>
   <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="6" width="15" height="12" rx="1"/><path d="M16 9h4l3 3v6h-7"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
-    Entrega garantizada en <strong>${ENTREGA_DIAS}</strong>.</li>
+    Entrega en <strong>${entrega}</strong>.</li>
   <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
     <strong>30 días de garantía</strong> contra defectos de fábrica. Envía tu ticket a ${SITE_EMAIL}.</li>
 </ul>
@@ -314,7 +315,7 @@ function initCart() {
         <div class="cart-row total"><span>Total</span><span>${money(s.total)}</span></div>
       </div>
 
-      ${renderTrustBadges()}
+      ${renderTrustBadges(entregaCarrito(lines))}
 
       ${cardOK ? '' : (CHECKOUT_ENDPOINT && hasUnica ? `<p class="cart-note">Las piezas únicas se piden por WhatsApp.</p>` : '')}
       <p class="cart-err" id="cartErr" hidden></p>
@@ -445,10 +446,15 @@ function initCart() {
       <div class="cart-done">
         <p class="cart-done-title">Tu pedido está listo</p>
         <p>Se abrió WhatsApp con el detalle. Si no se abrió, <a href="${url}" target="_blank">toca aquí</a>.</p>
-        <p class="cart-note">Cuando confirmemos el pago, tu pieza sale en ${ENTREGA_DIAS}.</p>
+        <p class="cart-note">Cuando confirmemos el pago, tu pedido llega en ${entregaCarrito(lastLines)}.</p>
         <button type="button" class="cart-btn ghost" id="cartVacia">Vaciar carrito</button>
       </div>`;
     body.querySelector('#cartVacia').addEventListener('click', () => { Cart.clear(); view = 'cart'; render(); });
+  }
+
+  // Si todo el carrito son broqueles: 2 a 3 días; si hay otra pieza, manda la más lenta.
+  function entregaCarrito(lines) {
+    return lines.length && lines.every(l => l.item.categoria === 'broqueles') ? ENTREGA_BROQUELES : ENTREGA_OTRAS;
   }
 
   function pixelCart() {
