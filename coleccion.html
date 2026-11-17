@@ -12,8 +12,8 @@
 <meta property="og:url" content="https://senoresdeloro.com/coleccion.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://senoresdeloro.com/coleccion.html">
-<link rel="stylesheet" href="assets/style.css">
-<script src="assets/pixel.js"></script>
+<link rel="stylesheet" href="assets/style.css?v=20261117c">
+<script src="assets/pixel.js?v=20261117c"></script>
 <link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="icon" type="image/png" href="assets/favicon.png">
   
@@ -179,10 +179,10 @@
 <div id="site-footer"></div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/config.js"></script>
-<script src="assets/db.js"></script>
-<script src="assets/cart.js"></script>
-<script src="assets/partials.js"></script>
+<script src="assets/config.js?v=20261117c"></script>
+<script src="assets/db.js?v=20261117c"></script>
+<script src="assets/cart.js?v=20261117c"></script>
+<script src="assets/partials.js?v=20261117c"></script>
 <script>
 mountLayout({ navVariant: 'coleccion', activeKey: 'coleccion' });
 
@@ -206,7 +206,7 @@ function renderGrid(items) {
     // Compra rápida sólo en piezas con precio fijo y sin variantes de tamaño
     // (un grupo de variantes muestra "Desde $X" — hay que elegir en la ficha).
     const singleVariant = !item.variants || item.variants.length < 2;
-    const quickAdd = TIENDA_ON && item.ventaOnline && typeof Cart !== 'undefined'
+    const quickAdd = TIENDA_ON && item.ventaOnline !== false && typeof Cart !== 'undefined'
       && typeof item.precio === 'number' && item.precio > 0
       && singleVariant && !item.precioEsRango;
     c.innerHTML = `

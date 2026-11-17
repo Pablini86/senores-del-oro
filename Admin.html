@@ -978,8 +978,8 @@ body {
 <div class="toast" id="toast"></div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/config.js"></script>
-<script src="assets/db.js"></script>
+<script src="assets/config.js?v=20261117c"></script>
+<script src="assets/db.js?v=20261117c"></script>
 <script>
 // ══════════════════════════════════════
 //  ESTADO
@@ -1217,8 +1217,8 @@ function renderTable() {
         </label>
       </td>
       <td>
-        <label class="switch" title="${item.ventaOnline ? 'Se compra en línea' : 'Sólo por WhatsApp'}">
-          <input type="checkbox" class="online-toggle" data-sku="${item.sku}" ${item.ventaOnline ? 'checked' : ''}>
+        <label class="switch" title="${item.ventaOnline !== false ? 'Se compra en línea' : 'Sólo por WhatsApp'}">
+          <input type="checkbox" class="online-toggle" data-sku="${item.sku}" ${item.ventaOnline !== false ? 'checked' : ''}>
           <span class="slider"></span>
         </label>
       </td>
@@ -1247,8 +1247,8 @@ function renderTable() {
           <input type="checkbox" class="visible-toggle" data-sku="${item.sku}" ${item.activo ? 'checked' : ''}>
           <span class="slider"></span>
         </label>
-        <label class="switch" style="align-self:center" title="${item.ventaOnline ? 'Se compra en línea' : 'Sólo por WhatsApp'}">
-          <input type="checkbox" class="online-toggle" data-sku="${item.sku}" ${item.ventaOnline ? 'checked' : ''}>
+        <label class="switch" style="align-self:center" title="${item.ventaOnline !== false ? 'Se compra en línea' : 'Sólo por WhatsApp'}">
+          <input type="checkbox" class="online-toggle" data-sku="${item.sku}" ${item.ventaOnline !== false ? 'checked' : ''}>
           <span class="slider"></span>
         </label>
         <button class="btn sm secondary" data-edit-sku="${item.sku}">Editar</button>
