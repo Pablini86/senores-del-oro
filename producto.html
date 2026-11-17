@@ -450,11 +450,37 @@ function selectVariant(sku, variants, cat) {
 }
 
 // ── RENDER PRODUCT ──
+async function buyNowCheckout(item, btn) {
+  const err = document.getElementById('buyNowErr');
+  btn.disabled = true; btn.textContent = 'Redirigiendo…';
+  if (err) err.hidden = true;
+  if (typeof trackPixel === 'function') {
+    trackPixel('InitiateCheckout', { content_ids: [item.sku], content_type: 'product', num_items: 1, value: item.precio, currency: 'MXN' });
+  }
+  let msg = 'No se pudo iniciar el pago. Intenta de nuevo o pregunta por WhatsApp.';
+  try {
+    const res = await fetch(CHECKOUT_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: [{ sku: item.sku, qty: 1 }] }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (res.ok && json.url) { location.href = json.url; return; }
+    if (json.error === 'pieza_no_disponible') msg = 'Esta pieza ya no está disponible. Pregunta por WhatsApp.';
+    if (json.error === 'tienda_apagada') msg = 'La tienda en línea no está disponible en este momento. Pregunta por WhatsApp.';
+  } catch (e) { console.error(e); }
+  btn.disabled = false; btn.textContent = 'Comprar ahora';
+  if (err) { err.textContent = msg; err.hidden = false; }
+}
+
 function renderProduct(item, cat, variants) {
   variants = variants || [item];
   document.title = `${item.nombre} — Señores del Oro`;
   const imgUrl = item.foto;
   const hasPrice = typeof item.precio === 'number' && item.precio > 0;
+  // Comprar ahora = pago directo con tarjeta de ESTA pieza (sin carrito).
+  // Sólo con tienda prendida, tarjeta habilitada y nunca en piezas únicas.
+  const buyNow = hasPrice && TIENDA_ON && typeof CARD_ENABLED !== 'undefined' && CARD_ENABLED && cat !== 'unicas';
   const waMsg = encodeURIComponent(`Hola, me interesa la pieza: ${item.sku} - ${item.nombre}`);
 
   const ogDescText = item.desc || `${item.nombre} · ${item.kilate} · Señores del Oro`;
@@ -511,8 +537,10 @@ function renderProduct(item, cat, variants) {
           ${specs ? `<div class="prod-specs">${specs}</div>` : ''}
           <div class="prod-precio ${hasPrice ? '' : 'na'}">${formatPrecio(item.precio) || 'Consultar precio'}</div>
           <div class="prod-actions">
+            ${buyNow ? `
+            <button type="button" class="prod-cta" id="buyNowBtn">Comprar ahora</button>` : ''}
             ${hasPrice && TIENDA_ON ? `
-            <button type="button" class="prod-cta" id="addCartBtn">
+            <button type="button" class="prod-cta ${buyNow ? 'ghost' : ''}" id="addCartBtn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
               Agregar al carrito
             </button>` : ''}
@@ -521,6 +549,7 @@ function renderProduct(item, cat, variants) {
               Consultar por WhatsApp
             </a>
           </div>
+          <p class="cart-err" id="buyNowErr" style="margin-top:14px;max-width:420px" hidden></p>
           <p class="prod-trust">${cat === 'unicas' ? 'Pieza única — cuando se va, no regresa.' : (TIENDA_ON ? `Envío asegurado · entrega en ${entregaPara(cat)}` : 'Hecho en Guadalajara')}</p>
           ${TIENDA_ON ? renderTrustBadges(entregaPara(cat)) : ''}
         </div>
@@ -530,6 +559,9 @@ function renderProduct(item, cat, variants) {
   document.querySelectorAll('.variant-btn').forEach(btn => {
     btn.onclick = () => selectVariant(btn.dataset.sku, variants, cat);
   });
+
+  const buyBtn = document.getElementById('buyNowBtn');
+  if (buyBtn) buyBtn.onclick = () => buyNowCheckout(item, buyBtn);
 
   const addBtn = document.getElementById('addCartBtn');
   if (addBtn && typeof Cart !== 'undefined') {

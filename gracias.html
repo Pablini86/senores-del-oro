@@ -80,7 +80,8 @@ mountLayout({ navVariant: 'coleccion' });
     let first = true;
     try { first = !localStorage.getItem(DONE_KEY); localStorage.setItem(DONE_KEY, '1'); } catch (_) {}
     if (first) {
-      Cart.clear();
+      // Quitar del carrito SÓLO lo que se pagó (con "Comprar ahora" el carrito puede tener otras piezas)
+      (s.skus || []).forEach(sku => Cart.remove(sku));
       if (typeof window.fbq === 'function') {
         fbq('track', 'Purchase', {
           value: s.amount_total, currency: s.currency,
