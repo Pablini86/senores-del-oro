@@ -31,6 +31,13 @@ function precioDisplay(item) {
   return (item.precioEsRango ? 'Desde ' : '') + p;
 }
 
+// Fotos de Google (lh3): pedirlas al tamaño en que se muestran, no el original
+// (los originales pesan hasta 1.5 MB cada uno). =w600 → 600px de ancho.
+function fotoSized(url, w) {
+  if (!url || !/^https:\/\/lh3\.googleusercontent\.com\//.test(url)) return url;
+  return url.replace(/=[^/]*$/, '') + '=w' + w;
+}
+
 function mapRow(row) {
   return {
     id: row.id,

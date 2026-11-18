@@ -1040,8 +1040,9 @@ body {
 <div class="toast" id="toast"></div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/config.js?v=20261118a"></script>
-<script src="assets/db.js?v=20261118a"></script>
+<script>/* El Admin no se puede mostrar dentro de otra página (anti-clickjacking) */ if (window.top !== window.self) { window.top.location = window.self.location; }</script>
+<script src="assets/config.js?v=20261118b"></script>
+<script src="assets/db.js?v=20261118b"></script>
 <script>
 // ══════════════════════════════════════
 //  ESTADO

@@ -11,8 +11,8 @@
 <meta property="og:image" id="ogImage" content="https://senoresdeloro.com/assets/SEN_ORES_DEL_ORO_NEGRO_CON_DORADO.png">
 <meta property="og:url" id="ogUrl" content="https://senoresdeloro.com/producto.html">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="assets/style.css?v=20261118a">
-<script src="assets/pixel.js?v=20261118a"></script>
+<link rel="stylesheet" href="assets/style.css?v=20261118b">
+<script src="assets/pixel.js?v=20261118b"></script>
 <link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <style>
@@ -77,7 +77,7 @@
   margin-bottom: 40px;
 }
 .prod-breadcrumb a {
-  color: rgba(232,224,204,.28);
+  color: rgba(232,224,204,.5);
   text-decoration: none;
   transition: color .3s;
 }
@@ -101,13 +101,13 @@
 .prod-sku {
   font-size: 9px;
   letter-spacing: 3px;
-  color: rgba(232,224,204,.2);
+  color: rgba(232,224,204,.45);
   margin-bottom: 28px;
 }
 .prod-desc {
   font-size: 13px;
   line-height: 1.9;
-  color: rgba(232,224,204,.5);
+  color: rgba(232,224,204,.72);
   max-width: 420px;
   margin-bottom: 40px;
 }
@@ -365,10 +365,10 @@
 </div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/config.js?v=20261118a"></script>
-<script src="assets/db.js?v=20261118a"></script>
-<script src="assets/cart.js?v=20261118a"></script>
-<script src="assets/partials.js?v=20261118a"></script>
+<script src="assets/config.js?v=20261118b"></script>
+<script src="assets/db.js?v=20261118b"></script>
+<script src="assets/cart.js?v=20261118b"></script>
+<script src="assets/partials.js?v=20261118b"></script>
 <script>
 mountLayout({ navVariant: 'default' });
 
@@ -504,7 +504,7 @@ function renderProduct(item, cat, variants) {
 
   const fotos = (item.fotos && item.fotos.length) ? item.fotos : (imgUrl ? [imgUrl] : []);
   const thumbsHtml = fotos.length > 1
-    ? `<div class="prod-thumbs">${fotos.map((f, i) => `<img src="${f}" class="prod-thumb ${i === 0 ? 'active' : ''}" data-i="${i}" alt="">`).join('')}</div>`
+    ? `<div class="prod-thumbs">${fotos.map((f, i) => `<img src="${fotoSized(f, 200)}" class="prod-thumb ${i === 0 ? 'active' : ''}" data-i="${i}" alt="">`).join('')}</div>`
     : '';
 
   document.getElementById('prodContent').innerHTML = `
@@ -512,7 +512,7 @@ function renderProduct(item, cat, variants) {
       <div class="prod-grid">
         <div class="prod-img-col">
           ${imgUrl
-            ? `<img src="${imgUrl}" class="foto" alt="${item.nombre}" onerror="this.style.display='none';document.querySelector('.prod-img-placeholder').style.display='flex'">
+            ? `<img src="${fotoSized(imgUrl, 1400)}" class="foto" alt="${item.nombre}" onerror="this.style.display='none';document.querySelector('.prod-img-placeholder').style.display='flex'">
                <div class="prod-img-placeholder" style="display:none;position:absolute;inset:0">
                  <img src="${PHICON}" alt="">
                  <span>Foto próximamente</span>
@@ -583,7 +583,7 @@ function renderProduct(item, cat, variants) {
     thumb.onclick = () => {
       const i = Number(thumb.dataset.i);
       currentFotoIndex = i;
-      document.querySelector('.prod-img-col img.foto').src = fotos[i];
+      document.querySelector('.prod-img-col img.foto').src = fotoSized(fotos[i], 1400);
       document.querySelectorAll('.prod-thumb').forEach(t => t.classList.remove('active'));
       thumb.classList.add('active');
     };
@@ -611,7 +611,7 @@ function renderRelated(item, cat, catalog) {
     d.innerHTML = `
       <div class="card-img">
         ${imgUrl
-          ? `<img src="${imgUrl}" class="photo" alt="${p.nombre}" onerror="this.style.display='none'">`
+          ? `<img src="${fotoSized(imgUrl, 600)}" class="photo" alt="${p.nombre}" loading="lazy" onerror="this.style.display='none'">`
           : `<div class="card-ph"><img src="${PHICON}" alt=""></div>`}
         ${p.kilate ? `<span class="kilate">${p.kilate}</span>` : ''}
         ${p.destacado ? `<span class="badge-destacado">Destacada</span>` : ''}

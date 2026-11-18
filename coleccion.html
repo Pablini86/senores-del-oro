@@ -12,8 +12,8 @@
 <meta property="og:url" content="https://senoresdeloro.com/coleccion.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://senoresdeloro.com/coleccion.html">
-<link rel="stylesheet" href="assets/style.css?v=20261118a">
-<script src="assets/pixel.js?v=20261118a"></script>
+<link rel="stylesheet" href="assets/style.css?v=20261118b">
+<script src="assets/pixel.js?v=20261118b"></script>
 <link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="icon" type="image/png" href="assets/favicon.png">
   
@@ -179,10 +179,10 @@
 <div id="site-footer"></div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/config.js?v=20261118a"></script>
-<script src="assets/db.js?v=20261118a"></script>
-<script src="assets/cart.js?v=20261118a"></script>
-<script src="assets/partials.js?v=20261118a"></script>
+<script src="assets/config.js?v=20261118b"></script>
+<script src="assets/db.js?v=20261118b"></script>
+<script src="assets/cart.js?v=20261118b"></script>
+<script src="assets/partials.js?v=20261118b"></script>
 <script>
 mountLayout({ navVariant: 'coleccion', activeKey: 'coleccion' });
 
@@ -212,7 +212,7 @@ function renderGrid(items) {
     c.innerHTML = `
       <div class="card-img">
         ${item.foto
-          ? `<img src="${item.foto}" class="photo" alt="${item.nombre}">`
+          ? `<img src="${fotoSized(item.foto, 600)}" class="photo" alt="${item.nombre}" loading="lazy" decoding="async">`
           : `<div class="card-ph"><img src="assets/SEN_ORES_DEL_ORO_LOGO_UNICO_DORADO.png" alt=""></div>`}
         ${item.kilate ? `<span class="kilate">${item.kilate}</span>` : ''}
         ${item.destacado ? `<span class="badge-destacado">Destacada</span>` : ''}

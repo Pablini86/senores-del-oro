@@ -74,11 +74,11 @@ function renderTrustBadges(entrega = ENTREGA_GENERAL) {
   return `
 <ul class="trust-badges">
   <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
-    Tu paquete viaja <strong>asegurado contra robo o extravío</strong>.</li>
+    <span>Tu paquete viaja <strong>asegurado contra robo o extravío</strong>.</span></li>
   <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="6" width="15" height="12" rx="1"/><path d="M16 9h4l3 3v6h-7"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
-    Entrega en <strong>${entrega}</strong>.</li>
+    <span>Entrega en <strong>${entrega}</strong>.</span></li>
   <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
-    <strong>30 días de garantía</strong> contra defectos de fábrica. Envía tu ticket a ${SITE_EMAIL}.</li>
+    <span><strong>30 días de garantía</strong> contra defectos de fábrica. Envía tu ticket a ${SITE_EMAIL}.</span></li>
 </ul>
 <a class="trust-terms" href="terminos.html">Ver términos y condiciones</a>`;
 }
@@ -285,7 +285,7 @@ function initCart() {
         ${lines.map(l => `
           <li class="cart-line" data-sku="${esc(l.sku)}">
             <div class="cart-line-img">
-              ${l.item.foto ? `<img src="${esc(l.item.foto)}" alt="">` : `<span class="cart-line-ph"></span>`}
+              ${l.item.foto ? `<img src="${esc(fotoSized(l.item.foto, 200))}" alt="">` : `<span class="cart-line-ph"></span>`}
             </div>
             <div class="cart-line-info">
               <div class="cart-line-name">${esc(l.item.nombre)}</div>

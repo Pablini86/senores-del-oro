@@ -663,7 +663,7 @@ html:not([data-tienda="on"]) .cart-backdrop { display: none !important; }
 }
 .trust-badges li {
   display: flex; gap: 10px; align-items: flex-start;
-  font-size: 10.5px; line-height: 1.5; color: rgba(232,224,204,.5);
+  font-size: 11px; line-height: 1.5; color: rgba(232,224,204,.66);
 }
 .trust-badges li strong { color: rgba(232,224,204,.8); font-weight: 400; }
 .trust-badges svg { color: var(--oro); flex-shrink: 0; margin-top: 1px; }
@@ -720,3 +720,7 @@ html:not([data-tienda="on"]) .cart-backdrop { display: none !important; }
 @media (max-width: 768px) {
   .nav-actions { gap: 12px; }
 }
+
+/* Evita que algo más ancho que la pantalla mueva la página de lado en celular.
+   clip (no hidden) para no romper las pestañas sticky. */
+html, body { overflow-x: clip; }
