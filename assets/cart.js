@@ -108,23 +108,26 @@ const Cart = (function () {
       const bySku = await fetchProductsBySkus(stored.map(l => l.sku));
       const lines = [];
       const dropped = [];
+      const capped = [];   // líneas recortadas a las existencias disponibles
 
       for (const l of stored) {
         const item = bySku[l.sku];
         // Sin item = pieza oculta/eliminada. Sin precio numérico =
         // "Consultar precio": tampoco puede ir en un carrito con total.
         // Sin venta en línea (switch del Admin apagado) tampoco puede ir en el carrito.
-        if (!item || item.ventaOnline === false || typeof item.precio !== 'number' || !(item.precio > 0)) {
+        if (!item || item.ventaOnline === false || item.agotado || typeof item.precio !== 'number' || !(item.precio > 0)) {
           dropped.push(l.sku);
           continue;
         }
         let qty = l.qty;
         if (item.categoria === 'unicas') qty = 1; // stock de 1
+        if (typeof item.existencias === 'number' && qty > item.existencias) { qty = item.existencias; capped.push({ sku: l.sku, qty }); }
         lines.push({ sku: l.sku, qty, item, lineTotal: item.precio * qty });
       }
 
-      if (dropped.length) {
-        const clean = stored.filter(l => !dropped.includes(l.sku));
+      if (dropped.length || capped.length) {
+        const clean = stored.filter(l => !dropped.includes(l.sku))
+          .map(l => { const c = capped.find(x => x.sku === l.sku); return c ? { sku: l.sku, qty: c.qty } : l; });
         // no emitimos aquí para no re-renderizar en mitad del resolve;
         // el llamador refresca la vista y el badge con lo que devolvemos.
         try { localStorage.setItem(KEY, JSON.stringify(clean)); } catch (_) {}

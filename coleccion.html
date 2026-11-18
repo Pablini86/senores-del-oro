@@ -12,8 +12,8 @@
 <meta property="og:url" content="https://senoresdeloro.com/coleccion.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://senoresdeloro.com/coleccion.html">
-<link rel="stylesheet" href="assets/style.css?v=20261118b">
-<script src="assets/pixel.js?v=20261118b"></script>
+<link rel="stylesheet" href="assets/style.css?v=20261118c">
+<script src="assets/pixel.js?v=20261118c"></script>
 <link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="icon" type="image/png" href="assets/favicon.png">
   
@@ -179,10 +179,10 @@
 <div id="site-footer"></div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/config.js?v=20261118b"></script>
-<script src="assets/db.js?v=20261118b"></script>
-<script src="assets/cart.js?v=20261118b"></script>
-<script src="assets/partials.js?v=20261118b"></script>
+<script src="assets/config.js?v=20261118c"></script>
+<script src="assets/db.js?v=20261118c"></script>
+<script src="assets/cart.js?v=20261118c"></script>
+<script src="assets/partials.js?v=20261118c"></script>
 <script>
 mountLayout({ navVariant: 'coleccion', activeKey: 'coleccion' });
 
@@ -208,26 +208,26 @@ function renderGrid(items) {
     const singleVariant = !item.variants || item.variants.length < 2;
     const quickAdd = TIENDA_ON && item.ventaOnline !== false && typeof Cart !== 'undefined'
       && typeof item.precio === 'number' && item.precio > 0
-      && singleVariant && !item.precioEsRango;
+      && singleVariant && !item.precioEsRango && !item.agotado;
     c.innerHTML = `
       <div class="card-img">
         ${item.foto
           ? `<img src="${fotoSized(item.foto, 600)}" class="photo" alt="${item.nombre}" loading="lazy" decoding="async">`
           : `<div class="card-ph"><img src="assets/SEN_ORES_DEL_ORO_LOGO_UNICO_DORADO.png" alt=""></div>`}
         ${item.kilate ? `<span class="kilate">${item.kilate}</span>` : ''}
-        ${item.destacado ? `<span class="badge-destacado">Destacada</span>` : ''}
+        ${item.agotado ? `<span class="badge-destacado">Agotado</span>` : (item.destacado ? `<span class="badge-destacado">Destacada</span>` : '')}
         <div class="card-ov"><span>Ver pieza</span></div>
       </div>
       <div class="card-info">
         <div class="card-nombre">${item.nombre}</div>
         <div class="card-precio ${formatPrecio(item.precio) ? '' : 'na'}">${precioDisplay(item)}</div>
-        ${quickAdd ? `<button type="button" class="card-add" data-sku="${item.sku}" data-cat="${item.categoria}" data-precio="${typeof item.precio === 'number' ? item.precio : ''}">+ Carrito</button>` : ''}
+        ${quickAdd ? `<button type="button" class="card-add" data-sku="${item.sku}" data-cat="${item.categoria}" data-precio="${typeof item.precio === 'number' ? item.precio : ''}" data-stock="${item.existencias ?? ''}">+ Carrito</button>` : ''}
       </div>`;
     c.onclick = () => location.href = `producto.html?sku=${item.sku}`;
     const addBtn = c.querySelector('.card-add');
     if (addBtn) addBtn.addEventListener('click', e => {
       e.stopPropagation();
-      Cart.add(addBtn.dataset.sku, 1, addBtn.dataset.cat === 'unicas' ? 1 : null, Number(addBtn.dataset.precio) || undefined);
+      Cart.add(addBtn.dataset.sku, 1, addBtn.dataset.cat === 'unicas' ? 1 : (addBtn.dataset.stock !== '' ? Number(addBtn.dataset.stock) : null), Number(addBtn.dataset.precio) || undefined);
       addBtn.textContent = 'Agregado ✓';
       addBtn.classList.add('added');
       setTimeout(() => { if (window.openCart) window.openCart(); }, 250);
@@ -238,7 +238,9 @@ function renderGrid(items) {
 
 // ── ORDEN Y FILTROS ──
 function applyFilters() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
+  // Búsqueda sin acentos: "corazon" encuentra "Corazón"
+  const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const q = norm(document.getElementById('searchInput').value);
   const sortBy = document.getElementById('sortSelect').value;
   const priceMinRaw = document.getElementById('priceMin').value;
   const priceMaxRaw = document.getElementById('priceMax').value;
@@ -250,9 +252,9 @@ function applyFilters() {
 
   if (q) {
     items = items.filter(i =>
-      i.nombre.toLowerCase().includes(q) ||
-      i.sku.toLowerCase().includes(q) ||
-      i.desc.toLowerCase().includes(q)
+      norm(i.nombre).includes(q) ||
+      norm(i.sku).includes(q) ||
+      norm(i.desc).includes(q)
     );
   }
 
@@ -312,6 +314,11 @@ document.getElementById('clearFilters').addEventListener('click', () => {
     t.querySelector('.tab-count').textContent = (CATALOG[cat] || []).length;
   });
   setTab(activeCat);
+  // ?q=corazon → abre la colección ya filtrada (lo usan los anuncios)
+  if (params.get('q')) {
+    document.getElementById('searchInput').value = params.get('q');
+    applyFilters();
+  }
 })();
 </script>
 </body>

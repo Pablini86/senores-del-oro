@@ -485,6 +485,7 @@ function initCart() {
     tienda_apagada: 'La tienda en línea no está disponible en este momento. Pide por WhatsApp.',
     solo_whatsapp: 'Una pieza de tu carrito se vende sólo por WhatsApp. Quítala o pide por WhatsApp.',
     pieza_no_disponible: 'Una pieza de tu carrito ya no está disponible. Actualiza el carrito.',
+    sin_existencias: 'No hay suficientes piezas de un modelo de tu carrito. Ajusta la cantidad.',
   };
   async function startCardCheckout() {
     const btn = body.querySelector('#cartCard');

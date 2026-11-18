@@ -347,6 +347,11 @@ body {
 .chip:hover { border-color: var(--oro); }
 .chip.active { background: var(--oro-tint); border-color: var(--oro); color: var(--text); }
 
+/* ── EXISTENCIAS ── */
+.stock-input { width: 64px; padding: 6px 8px; border: 1px solid var(--border-strong); background: var(--surface); font-size: 12px; text-align: center; color: var(--text); }
+.stock-input:focus { outline: none; border-color: var(--oro); }
+.stock-input.out { border-color: var(--rojo); color: var(--rojo); background: #FBEDED; }
+
 /* ── PEDIDOS ── */
 .nav-badge { margin-left: auto; background: var(--rojo); color: #fff; border-radius: 999px; font-size: 9px; letter-spacing: 0; padding: 2px 7px; }
 .order-list { display: flex; flex-direction: column; gap: 8px; }
@@ -823,6 +828,7 @@ body {
           <button type="button" class="chip" data-status="hidden" onclick="setStatusFilter('hidden')">Ocultas</button>
           <button type="button" class="chip" data-status="nofoto" onclick="setStatusFilter('nofoto')">Sin foto</button>
           <button type="button" class="chip" data-status="noprecio" onclick="setStatusFilter('noprecio')">Sin precio</button>
+          <button type="button" class="chip" data-status="agotadas" onclick="setStatusFilter('agotadas')">Agotadas</button>
         </div>
         <div class="table-actions">
           <input type="text" class="search-box" id="searchBox" placeholder="Buscar SKU o nombre..." oninput="filterTable()">
@@ -853,6 +859,7 @@ body {
               <th data-sort="kilate">Kilate</th>
               <th>Visible</th>
               <th title="Se puede comprar en línea">En línea</th>
+              <th data-sort="existencias" title="Vacío = sin control">Existencias</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -982,6 +989,10 @@ body {
         <input type="text" id="fPrecio" placeholder="19950">
       </div>
       <div class="field">
+        <label>Existencias <span style="opacity:.5;text-transform:none;letter-spacing:0">(vacío = sin control · 0 = agotado)</span></label>
+        <input type="number" min="0" step="1" id="fExistencias" placeholder="10">
+      </div>
+      <div class="field">
         <label>Descripción</label>
         <textarea id="fDesc" placeholder="Cadena barbado en oro 10K, 65 cm de largo..."></textarea>
       </div>
@@ -1041,8 +1052,8 @@ body {
 
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>/* El Admin no se puede mostrar dentro de otra página (anti-clickjacking) */ if (window.top !== window.self) { window.top.location = window.self.location; }</script>
-<script src="assets/config.js?v=20261118b"></script>
-<script src="assets/db.js?v=20261118b"></script>
+<script src="assets/config.js?v=20261118c"></script>
+<script src="assets/db.js?v=20261118c"></script>
 <script>
 // ══════════════════════════════════════
 //  ESTADO
@@ -1080,6 +1091,8 @@ document.getElementById('pageCatalog').addEventListener('change', (e) => {
     toggleVisible(e.target.dataset.sku, e.target.checked, e.target);
   } else if (e.target.classList.contains('online-toggle')) {
     toggleOnline(e.target.dataset.sku, e.target.checked, e.target);
+  } else if (e.target.classList.contains('stock-input')) {
+    saveStock(e.target.dataset.sku, e.target);
   }
 });
 
@@ -1251,7 +1264,7 @@ function renderTable() {
   const cards = document.getElementById('catalogCards');
 
   if (!page.length) {
-    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:60px;color:var(--text-faint)">Sin resultados</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center;padding:60px;color:var(--text-faint)">Sin resultados</td></tr>`;
     cards.innerHTML = `<div class="cat-card-empty">Sin resultados</div>`;
     document.getElementById('pagInfo').textContent = '';
     document.getElementById('pagBtns').innerHTML = '';
@@ -1287,6 +1300,9 @@ function renderTable() {
         </label>
       </td>
       <td>
+        <input type="number" min="0" step="1" class="stock-input ${item.agotado ? 'out' : ''}" data-sku="${item.sku}" value="${item.existencias ?? ''}" placeholder="—" title="Existencias (vacío = sin control)">
+      </td>
+      <td>
         <div class="td-actions">
           <button class="btn sm secondary" data-edit-sku="${item.sku}">Editar</button>
           <a class="btn sm secondary" href="producto.html?sku=${encodeURIComponent(item.sku)}" target="_blank" style="text-decoration:none;padding:8px 12px">Ver</a>
@@ -1315,6 +1331,7 @@ function renderTable() {
           <input type="checkbox" class="online-toggle" data-sku="${item.sku}" ${item.ventaOnline !== false ? 'checked' : ''}>
           <span class="slider"></span>
         </label>
+        <input type="number" min="0" step="1" class="stock-input ${item.agotado ? 'out' : ''}" data-sku="${item.sku}" value="${item.existencias ?? ''}" placeholder="—" title="Existencias">
         <button class="btn sm secondary" data-edit-sku="${item.sku}">Editar</button>
         <a class="btn sm secondary" href="producto.html?sku=${encodeURIComponent(item.sku)}" target="_blank" style="text-decoration:none;text-align:center">Ver</a>
       </div>
@@ -1360,7 +1377,8 @@ function applyFilters({ resetPage = true } = {}) {
       || (st === 'visible'  && !!i.activo)
       || (st === 'hidden'   && !i.activo)
       || (st === 'nofoto'   && !i.foto)
-      || (st === 'noprecio' && i.precio == null)) &&
+      || (st === 'noprecio' && i.precio == null)
+      || (st === 'agotadas' && i.agotado)) &&
     (i.nombre.toLowerCase().includes(q) || i.sku.toLowerCase().includes(q))
   );
   filtered = sortItems(items);
@@ -1393,6 +1411,10 @@ function sortItems(items) {
   if (!sortField) return items;
   const dir = sortDir === 'asc' ? 1 : -1;
   return [...items].sort((a, b) => {
+    if (sortField === 'existencias') {
+      const ae = a.existencias ?? Infinity, be = b.existencias ?? Infinity;   // sin control al final
+      return (ae - be) * dir;
+    }
     if (sortField === 'precio') {
       const aEmpty = a.precio == null, bEmpty = b.precio == null;
       if (aEmpty && bEmpty) return 0;
@@ -1460,6 +1482,21 @@ async function toggleOnline(sku, ventaOnline, checkboxEl) {
   renderTable();
 }
 
+// Existencias directo en la fila: al salir del campo (change) se guarda.
+async function saveStock(sku, el) {
+  const raw = el.value.trim();
+  const existencias = raw === '' ? null : Math.max(0, parseInt(raw, 10) || 0);
+  const { data, error } = await sbClient.from('products').update({ existencias }).eq('sku', sku).select('sku');
+  if (error || !data || !data.length) {
+    showToast(error ? 'Error al guardar existencias: ' + error.message : 'No se guardó (¿sesión de administrador?)', 'error');
+    return;
+  }
+  const item = allItems.find(i => i.sku === sku);
+  if (item) { item.existencias = existencias; item.agotado = existencias === 0; }
+  el.classList.toggle('out', existencias === 0);
+  showToast(existencias === null ? `${sku}: sin control de existencias` : `${sku}: ${existencias} en existencia`, '');
+}
+
 function updateBulkBar() {
   const bar = document.getElementById('bulkBar');
   const n = selectedSkus.size;
@@ -1500,6 +1537,7 @@ function itemToPayload(item) {
     activo: item.activo,
     destacado: item.destacado,
     venta_online: item.ventaOnline !== false,
+    existencias: item.existencias ?? null,
     orden: item.orden,   // conservar la posición en el catálogo al deshacer un borrado
     variant_group: item.variantGroup || null,
     variant_label: item.variantLabel || null,
@@ -1595,6 +1633,7 @@ function fillForm(item) {
   document.getElementById('fNombre').value = item.nombre || '';
   document.getElementById('fDesc').value = item.desc || '';
   document.getElementById('fPrecio').value = item.precio != null ? item.precio : '';
+  document.getElementById('fExistencias').value = item.existencias ?? '';
   document.getElementById('fKilate').value = item.kilate || '10K';
   document.getElementById('fNotas').value = item.notas || '';
   document.getElementById('fLargo').value = stripUnit(item.largo, 'cm');
@@ -1618,7 +1657,7 @@ function fillForm(item) {
 }
 
 function clearForm() {
-  ['fSku','fNombre','fDesc','fPrecio','fNotas',
+  ['fSku','fNombre','fDesc','fPrecio','fExistencias','fNotas',
    'fLargo','fGrosor','fEslabon','fPlaca','fPeso',
    'fVariantGroup','fVariantLabel','fFotoUrlInput'].forEach(id => {
     document.getElementById(id).value = '';
@@ -1832,6 +1871,7 @@ async function savePiece() {
       categoria: document.getElementById('fCategoria').value,
       descripcion: document.getElementById('fDesc').value.trim(),
       precio,
+      existencias: document.getElementById('fExistencias').value.trim() === '' ? null : Math.max(0, parseInt(document.getElementById('fExistencias').value, 10) || 0),
       kilate: document.getElementById('fKilate').value,
       foto_url: fotos[0] || null,
       fotos,
