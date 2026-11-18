@@ -347,6 +347,38 @@ body {
 .chip:hover { border-color: var(--oro); }
 .chip.active { background: var(--oro-tint); border-color: var(--oro); color: var(--text); }
 
+/* ── PEDIDOS ── */
+.nav-badge { margin-left: auto; background: var(--rojo); color: #fff; border-radius: 999px; font-size: 9px; letter-spacing: 0; padding: 2px 7px; }
+.order-list { display: flex; flex-direction: column; gap: 8px; }
+.order-row {
+  display: grid; grid-template-columns: 90px 1fr 110px 110px 130px; gap: 14px; align-items: center;
+  background: var(--surface); border: 1px solid var(--border); padding: 14px 18px; cursor: pointer; transition: border-color .2s;
+}
+.order-row:hover { border-color: var(--oro); }
+.order-id { font-size: 11px; color: var(--text-faint); }
+.order-id b { display: block; color: var(--text); font-weight: 500; font-size: 13px; }
+.order-cli { font-size: 13px; color: var(--text); }
+.order-cli small { display: block; font-size: 11px; color: var(--text-faint); margin-top: 2px; }
+.order-total { font-size: 14px; color: var(--text); text-align: right; }
+.order-origen { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+.estado-badge { display: inline-block; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--text-muted); text-align: center; }
+.estado-badge.por-confirmar { background: #FFF4D6; border-color: #E8C76A; color: #7A5A00; }
+.estado-badge.pagado { background: #E3F2E5; border-color: #8CC59A; color: #1F6B33; }
+.estado-badge.enviado { background: #E4EEF8; border-color: #8FB2DA; color: #1E4F86; }
+.estado-badge.entregado { background: var(--surface-alt); color: var(--text-muted); }
+.estado-badge.cancelado, .estado-badge.reembolsado { background: #F8E4E4; border-color: #DA9A9A; color: #8A2B2B; }
+.order-items { width: 100%; border-collapse: collapse; font-size: 12px; }
+.order-items td { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.order-items td:last-child { text-align: right; }
+.order-kv { font-size: 12px; line-height: 1.8; color: var(--text-muted); }
+.order-kv b { color: var(--text); font-weight: 500; }
+.order-kv a { color: var(--oro-ink); }
+.order-empty { padding: 60px; text-align: center; color: var(--text-faint); background: var(--surface); border: 1px solid var(--border); }
+@media (max-width: 768px) {
+  .order-row { grid-template-columns: 1fr auto; }
+  .order-row .order-origen, .order-row .order-id { display: none; }
+}
+
 /* ── BULK ACTIONS ── */
 .bulk-bar {
   display: flex; align-items: center; justify-content: space-between;
@@ -740,6 +772,10 @@ body {
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Catálogo
       </div>
+      <div class="nav-item" data-page="orders" onclick="showPage('orders')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Pedidos <span class="nav-badge" id="ordersBadge" hidden></span>
+      </div>
       <div class="nav-item" data-page="add" onclick="openDrawer(null)">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         Nueva pieza
@@ -831,10 +867,36 @@ body {
         <div class="pag-btns" id="pagBtns"></div>
       </div>
     </div>
+      <!-- ORDERS PAGE -->
+    <div id="pageOrders" style="display:none">
+      <h1 class="page-title">Pedidos</h1>
+      <p class="page-sub" id="ordersSub">Cargando...</p>
+      <div class="filter-sub">
+        <div class="filter-chips" id="orderChips"></div>
+        <div class="table-actions">
+          <input type="text" class="search-box" id="orderSearch" placeholder="Buscar cliente, teléfono o SKU..." oninput="renderOrders()">
+          <button class="btn secondary sm" onclick="loadOrders()">Actualizar</button>
+        </div>
+      </div>
+      <div class="order-list" id="orderList"></div>
+    </div>
   </main>
 </div>
 
 <!-- DRAWER -->
+<div class="drawer-overlay" id="orderOverlay" onclick="closeOrder()"></div>
+<div class="drawer" id="orderDrawer">
+  <button class="drawer-close" onclick="closeOrder()">✕</button>
+  <div class="drawer-head">
+    <div class="drawer-title" id="orderTitle">Pedido</div>
+    <div class="drawer-sub" id="orderSubTitle"></div>
+  </div>
+  <div class="drawer-body" id="orderBody"></div>
+  <div class="drawer-footer">
+    <button class="btn secondary" onclick="closeOrder()">Cerrar</button>
+    <button class="btn" id="orderSaveBtn" onclick="saveOrder()">Guardar</button>
+  </div>
+</div>
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <button class="drawer-close" onclick="closeDrawer()">✕</button>
@@ -978,8 +1040,8 @@ body {
 <div class="toast" id="toast"></div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="assets/config.js?v=20261117c"></script>
-<script src="assets/db.js?v=20261117c"></script>
+<script src="assets/config.js?v=20261118a"></script>
+<script src="assets/db.js?v=20261118a"></script>
 <script>
 // ══════════════════════════════════════
 //  ESTADO
@@ -1045,6 +1107,7 @@ async function doLogout() {
 }
 
 function showAdmin() {
+  setTimeout(loadOrders, 800);   // contador de pedidos por atender en el menú
   document.getElementById('loginWrap').classList.add('hidden');
   document.getElementById('adminWrap').classList.remove('hidden');
   loadCatalog();
@@ -1823,6 +1886,139 @@ async function deletePiece() {
 }
 
 // ══════════════════════════════════════
+//  PEDIDOS
+//  Tarjeta: los crea el webhook de Stripe (Vercel). WhatsApp: los crea el
+//  carrito como "por confirmar". Aquí sólo se leen y se cambia estado/guía.
+// ══════════════════════════════════════
+const ORDER_ESTADOS = ['por confirmar', 'pagado', 'enviado', 'entregado', 'cancelado', 'reembolsado'];
+let allOrders = [];
+let orderFilter = 'abiertos';   // abiertos = por confirmar + pagado
+let openOrderId = null;
+
+const escH = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const moneyMX = n => '$' + Number(n || 0).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const fechaMX = iso => new Date(iso).toLocaleString('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+function waDigits(tel) {
+  let d = String(tel || '').replace(/\D/g, '');
+  if (d.length === 10) d = '52' + d;
+  return d;
+}
+
+async function loadOrders() {
+  const { data, error } = await sbClient.from('orders').select('*').order('created_at', { ascending: false }).limit(500);
+  if (error) {
+    document.getElementById('ordersSub').textContent = 'No se pudieron cargar los pedidos: ' + error.message;
+    return;
+  }
+  allOrders = data || [];
+  const abiertos = allOrders.filter(o => o.estado === 'por confirmar' || o.estado === 'pagado').length;
+  const badge = document.getElementById('ordersBadge');
+  badge.hidden = !abiertos; badge.textContent = abiertos;
+  document.getElementById('ordersSub').textContent =
+    `${allOrders.length} pedido${allOrders.length === 1 ? '' : 's'} · ${abiertos} por atender`;
+  renderOrders();
+}
+
+function setOrderFilter(f) { orderFilter = f; renderOrders(); }
+
+function renderOrders() {
+  const chips = [['abiertos', 'Por atender'], ['all', 'Todos'], ...ORDER_ESTADOS.map(e => [e, e[0].toUpperCase() + e.slice(1)])];
+  const count = f => f === 'all' ? allOrders.length
+    : f === 'abiertos' ? allOrders.filter(o => o.estado === 'por confirmar' || o.estado === 'pagado').length
+    : allOrders.filter(o => o.estado === f).length;
+  document.getElementById('orderChips').innerHTML = chips.map(([f, l]) =>
+    `<button type="button" class="chip ${orderFilter === f ? 'active' : ''}" onclick="setOrderFilter('${f}')">${l} (${count(f)})</button>`).join('');
+
+  const q = (document.getElementById('orderSearch').value || '').toLowerCase().trim();
+  const list = allOrders.filter(o => {
+    if (orderFilter === 'abiertos' && !(o.estado === 'por confirmar' || o.estado === 'pagado')) return false;
+    if (orderFilter !== 'all' && orderFilter !== 'abiertos' && o.estado !== orderFilter) return false;
+    if (!q) return true;
+    const hay = [o.cliente_nombre, o.cliente_tel, o.cliente_email, o.guia, String(o.id), ...(o.items || []).map(i => i.sku + ' ' + i.nombre)].join(' ').toLowerCase();
+    return hay.includes(q);
+  });
+  const el = document.getElementById('orderList');
+  if (!list.length) { el.innerHTML = `<div class="order-empty">Sin pedidos aquí todavía.</div>`; return; }
+  el.innerHTML = list.map(o => {
+    const piezas = (o.items || []).reduce((n, i) => n + (i.qty || 0), 0);
+    return `<div class="order-row" onclick="openOrder(${o.id})">
+      <div class="order-id"><b>#${o.id}</b>${fechaMX(o.created_at)}</div>
+      <div class="order-cli">${escH(o.cliente_nombre || 'Sin nombre')}<small>${piezas} pieza${piezas === 1 ? '' : 's'} · ${escH((o.items || []).map(i => i.nombre).join(', ')).slice(0, 80)}</small></div>
+      <div class="order-origen">${o.origen === 'tarjeta' ? 'Tarjeta' : 'WhatsApp'}</div>
+      <div class="order-total">${moneyMX(o.total)}</div>
+      <div><span class="estado-badge ${o.estado.replace(' ', '-')}">${o.estado}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function openOrder(id) {
+  const o = allOrders.find(x => x.id === id);
+  if (!o) return;
+  openOrderId = id;
+  document.getElementById('orderTitle').textContent = `Pedido #${o.id}`;
+  document.getElementById('orderSubTitle').textContent = `${fechaMX(o.created_at)} · ${o.origen === 'tarjeta' ? 'Pagado con tarjeta' : 'Pedido por WhatsApp'}`;
+  const tel = waDigits(o.cliente_tel);
+  const avisoTxt = `Hola ${o.cliente_nombre || ''}, tu pedido #${o.id} de Señores del Oro ya va en camino.` +
+    (o.paqueteria || o.guia ? ` Paquetería: ${o.paqueteria || ''} · Guía: ${o.guia || ''}` : '');
+  document.getElementById('orderBody').innerHTML = `
+    <div class="form-card">
+      <div class="form-card-title">Piezas</div>
+      <table class="order-items">
+        ${(o.items || []).map(i => `<tr><td>${escH(i.sku)} · ${escH(i.nombre)} × ${i.qty}</td><td>${moneyMX(i.precio * i.qty)}</td></tr>`).join('')}
+        <tr><td>Subtotal</td><td>${moneyMX(o.subtotal)}</td></tr>
+        <tr><td>Envío</td><td>${Number(o.envio) ? moneyMX(o.envio) : 'Gratis'}</td></tr>
+        <tr><td><b>Total</b></td><td><b>${moneyMX(o.total)}</b></td></tr>
+      </table>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Cliente y envío</div>
+      <div class="order-kv">
+        <b>${escH(o.cliente_nombre)}</b><br>
+        ${tel ? `Tel: <a href="https://wa.me/${tel}" target="_blank">${escH(o.cliente_tel)} (WhatsApp)</a><br>` : ''}
+        ${o.cliente_email ? `Correo: <a href="mailto:${escH(o.cliente_email)}">${escH(o.cliente_email)}</a><br>` : ''}
+        Dirección: ${escH(o.direccion) || '—'}<br>
+        ${o.notas ? `Notas: ${escH(o.notas)}<br>` : ''}
+        ${o.stripe_session_id ? `<a href="https://dashboard.stripe.com/search?query=${encodeURIComponent(o.stripe_session_id)}" target="_blank">Ver pago en Stripe</a>` : ''}
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Seguimiento</div>
+      <div class="field"><label>Estado</label>
+        <select id="oEstado">${ORDER_ESTADOS.map(e => `<option ${e === o.estado ? 'selected' : ''}>${e}</option>`).join('')}</select></div>
+      <div class="field"><label>Paquetería</label><input id="oPaqueteria" value="${escH(o.paqueteria)}" placeholder="DHL, Estafeta, FedEx…"></div>
+      <div class="field"><label>Número de guía</label><input id="oGuia" value="${escH(o.guia)}"></div>
+      <div class="field"><label>Notas internas</label><textarea id="oNotas" rows="2">${escH(o.notas)}</textarea></div>
+      ${tel ? `<a class="btn secondary sm" style="text-decoration:none" target="_blank" href="https://wa.me/${tel}?text=${encodeURIComponent(avisoTxt)}">Avisar al cliente por WhatsApp</a>` : ''}
+    </div>`;
+  document.getElementById('orderDrawer').classList.add('open');
+  document.getElementById('orderOverlay').classList.add('open');
+}
+
+function closeOrder() {
+  document.getElementById('orderDrawer').classList.remove('open');
+  document.getElementById('orderOverlay').classList.remove('open');
+  openOrderId = null;
+}
+
+async function saveOrder() {
+  if (!openOrderId) return;
+  const upd = {
+    estado: document.getElementById('oEstado').value,
+    paqueteria: document.getElementById('oPaqueteria').value.trim() || null,
+    guia: document.getElementById('oGuia').value.trim() || null,
+    notas: document.getElementById('oNotas').value.trim() || null,
+  };
+  const { data, error } = await sbClient.from('orders').update(upd).eq('id', openOrderId).select('id');
+  if (error || !data || !data.length) {
+    showToast(error ? 'No se guardó: ' + error.message : 'No se guardó (¿sesión de administrador?)', 'error');
+    return;
+  }
+  showToast('Pedido actualizado', '');
+  closeOrder();
+  loadOrders();
+}
+
+// ══════════════════════════════════════
 //  UTILS
 // ══════════════════════════════════════
 function driveToImg(url) {
@@ -1836,6 +2032,9 @@ function driveToImg(url) {
 function showPage(page) {
   document.querySelectorAll('.nav-item').forEach(n =>
     n.classList.toggle('active', n.dataset.page === page));
+  document.getElementById('pageCatalog').style.display = page === 'orders' ? 'none' : '';
+  document.getElementById('pageOrders').style.display = page === 'orders' ? '' : 'none';
+  if (page === 'orders') loadOrders();
 }
 
 let toastTimer = null;

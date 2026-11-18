@@ -409,6 +409,7 @@ function initCart() {
       }
       err.hidden = true;
       if (typeof trackPixel === 'function') trackPixel('Lead', pixelCart());
+      registrarPedidoWhatsApp(data);   // sin await: nunca bloquea abrir WhatsApp
       openWhatsAppOrder(data);
     });
 
@@ -435,6 +436,20 @@ function initCart() {
     if (data.refs) L.push(`Referencias: ${data.refs}`);
     if (data.notas) L.push(`Notas: ${data.notas}`);
     return L.join('\n');
+  }
+
+  // Guarda el pedido como "por confirmar" en Admin → Pedidos. Si falla, no pasa nada:
+  // el pedido igual llega por WhatsApp. keepalive para que salga aunque cambie de pestaña.
+  function registrarPedidoWhatsApp(data) {
+    if (!CHECKOUT_ENDPOINT) return;
+    try {
+      fetch(CHECKOUT_ENDPOINT.replace(/\/checkout$/, '/pedido-whatsapp'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: Cart.get(), cliente: data }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch (_) {}
   }
 
   function openWhatsAppOrder(data) {
